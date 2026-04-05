@@ -74,6 +74,9 @@ const FOOD_SPOTS = {
       { id: 1, name: 'Manner Coffee', type: 'Specialty Coffee', area: 'Xuhui' },
       { id: 2, name: 'Seesaw Coffee', type: 'Specialty Coffee', area: 'Jing\'an' },
       { id: 3, name: 'Egg Drop', type: 'Sandwich', area: 'Huangpu' },
+      { id: 4, name: 'Lost Bakery', type: 'Bakery', area: 'Xuhui' },
+      { id: 5, name: 'B Specification', type: 'Toast', area: 'Xuhui' },
+      { id: 6, name: 'Morning Sleep', type: 'Brunch', area: 'Huangpu' },
     ],
     Lunch: [
       { id: 4, name: 'Haidilao (海底捞)', type: 'Hotpot', area: 'Xuhui' },
@@ -90,7 +93,10 @@ const FOOD_SPOTS = {
     Breakfast: [
       { id: 1, name: 'Blue Bottle Coffee', type: 'Cafe', area: 'Omotesando' },
       { id: 2, name: 'Komeda Coffee', type: 'Coffee Shop', area: 'Shibuya' },
-      { id: 3, name: ' Lawson Store', type: 'Convenience', area: 'Various' },
+      { id: 3, name: 'Lawson Store', type: 'Convenience', area: 'Various' },
+      { id: 4, name: 'Sarabeth\'s', type: 'Brunch', area: 'Omotesando' },
+      { id: 5, name: 'Eggoman', type: 'Sandwich', area: 'Shibuya' },
+      { id: 6, name: 'B的外', type: 'Toast', area: 'Shibuya' },
     ],
     Lunch: [
       { id: 4, name: 'Ichiran Ramen', type: 'Ramen', area: 'Shibuya' },
@@ -108,6 +114,9 @@ const FOOD_SPOTS = {
       { id: 1, name: 'Café de Flore', type: 'Coffee Shop', area: 'Saint-Germain' },
       { id: 2, name: 'Du Pain et des Idées', type: 'Bakery', area: 'Canal Saint-Martin' },
       { id: 3, name: 'La Maison Sans Gluten', type: 'Cafe', area: 'Le Marais' },
+      { id: 4, name: 'Ten Belles', type: 'Brunch', area: 'Canal Saint-Martin' },
+      { id: 5, name: 'Kauder', type: 'Bakery', area: 'Le Marais' },
+      { id: 6, name: 'Café Merlin', type: 'Cafe', area: 'Montparnasse' },
     ],
     Lunch: [
       { id: 4, name: 'Breizh Café', type: 'Crepes', area: 'Marais' },
@@ -175,6 +184,9 @@ const FOOD_SPOTS = {
     Breakfast: [
       { id: 1, name: 'Corner Cafe', type: 'Coffee', area: 'Downtown' },
       { id: 2, name: 'Bakery House', type: 'Bakery', area: 'City Center' },
+      { id: 3, name: 'Morning Bistro', type: 'Brunch', area: 'Downtown' },
+      { id: 4, name: 'Toast House', type: 'Toast', area: 'City Center' },
+      { id: 5, name: 'Local Diner', type: 'Light Meal', area: 'Downtown' },
     ],
     Lunch: [
       { id: 3, name: 'Local Bistro', type: 'Casual', area: 'City Center' },
@@ -258,6 +270,7 @@ function CitySelection({ onNext }) {
 function AttractionSelection({ city, days, onNext, onBack }) {
   const [selected, setSelected] = useState([])
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const attractions = ATTRACTIONS[city] || ATTRACTIONS.default
 
@@ -277,12 +290,19 @@ function AttractionSelection({ city, days, onNext, onBack }) {
     setSelected((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     )
+    setError('')
   }
 
   const handleSubmit = () => {
+    const selectedAttractions = attractions.filter((a) => selected.includes(a.id))
+    console.log('Selected attractions:', selectedAttractions)
+    
+    if (selectedAttractions.length === 0) {
+      alert('Please select at least 1 attraction')
+      return
+    }
     setLoading(true)
     setTimeout(() => {
-      const selectedAttractions = attractions.filter((a) => selected.includes(a.id))
       onNext(selectedAttractions)
       setLoading(false)
     }, 800)
@@ -319,9 +339,10 @@ function AttractionSelection({ city, days, onNext, onBack }) {
           )
         })}
       </div>
+      {error && <p className="error-message">{error}</p>}
       <div className="button-row">
         <button className="btn-secondary" onClick={onBack}>Back</button>
-        <button className="btn-primary" onClick={handleSubmit} disabled={selected.length === 0 || loading}>
+        <button className="btn-primary" onClick={handleSubmit} disabled={loading}>
           {loading && <span className="loading-spinner"></span>}
           {loading ? 'Generating...' : 'Generate Route'}
         </button>
@@ -445,6 +466,7 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
   const [currentDay, setCurrentDay] = useState(0)
   const [routeData, setRouteData] = useState(null)
   const [showAddModal, setShowAddModal] = useState(null)
+  const [restDays, setRestDays] = useState(new Set())
   const foodData = FOOD_SPOTS[city] || FOOD_SPOTS.default
 
   const groupByDays = () => {
@@ -478,6 +500,22 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
   }
 
   const routeByDays = routeData || groupByDays()
+
+  const isItineraryEmpty = routeByDays.every(
+    day => day.morning.length === 0 && day.afternoon.length === 0
+  )
+
+  const toggleRestDay = (dayIndex) => {
+    setRestDays(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(dayIndex)) {
+        newSet.delete(dayIndex)
+      } else {
+        newSet.add(dayIndex)
+      }
+      return newSet
+    })
+  }
 
   const getAllSelectedAttractionNames = () => {
     const names = new Set()
@@ -557,6 +595,13 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
       [slot]: [...newData[dayIndex][slot], { ...attraction, slot, idx: newData[dayIndex][slot].length }]
     }
     setRouteData(newData)
+    if (restDays.has(dayIndex)) {
+      setRestDays(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(dayIndex)
+        return newSet
+      })
+    }
     setShowAddModal(null)
   }
 
@@ -564,22 +609,33 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
     setShowAddModal({ dayIndex, slot })
   }
 
-  const renderDayCard = (dayData, dayIndex) => (
+  const renderDayCard = (dayData, dayIndex) => {
+    const isRestDay = restDays.has(dayIndex)
+    const isEmpty = dayData.morning.length === 0 && dayData.afternoon.length === 0
+    
+    return (
     <div className="day-card">
       <div className="day-header">
         <span>Day {dayData.day}</span>
       </div>
       
-      {(dayData.morning.length === 0 && dayData.afternoon.length === 0) ? (
-        <div className="route-item rest-day">
+      {isRestDay ? (
+        <div className="rest-day">
           <span className="route-bullet">•</span>
           <span className="route-name">Rest Day</span>
+          <button className="btn-secondary rest-day-btn" onClick={() => toggleRestDay(dayIndex)}>Mark as Day with Plans</button>
+        </div>
+      ) : isEmpty ? (
+        <div className="empty-day">
+          <p className="empty-day-text">No places planned yet</p>
+          <button className="add-btn" onClick={() => handleAddClick(dayIndex, 'morning')}>+ Add Attraction</button>
+          <button className="btn-secondary rest-day-btn" onClick={() => toggleRestDay(dayIndex)}>Mark as Rest Day</button>
         </div>
       ) : (
         <>
           {getFoodByMealType(dayData.food, 'Breakfast') && (
             <div className={`route-item food meal-breakfast`}>
-              <span className="meal-icon">☕</span>
+              <span className="meal-icon">🍳</span>
               <div className="route-food-info">
                 <span className="meal-label">Breakfast</span>
                 <span className="route-name">{getFoodByMealType(dayData.food, 'Breakfast').name}</span>
@@ -660,6 +716,7 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
       )}
     </div>
   )
+}
 
   if (attractions.length === 0) {
     return (
@@ -700,6 +757,14 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
           </SwiperSlide>
         ))}
       </Swiper>
+
+      {isItineraryEmpty && (
+        <div className="empty-itinerary">
+          <p className="empty-title">No itinerary yet</p>
+          <p className="empty-subtitle">Start adding places ✨</p>
+          <button className="btn-primary" onClick={() => handleAddClick(0, 'morning')}>+ Add Attraction</button>
+        </div>
+      )}
 
       {showAddModal && (
         <div className="modal-overlay" onClick={() => setShowAddModal(null)}>

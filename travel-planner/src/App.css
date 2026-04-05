@@ -81,6 +81,15 @@ body {
   margin-bottom: 20px;
 }
 
+.error-message {
+  text-align: center;
+  color: #dc2626;
+  background: #fef2f2;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
 .form-group {
   margin-bottom: 16px;
 }
@@ -220,6 +229,32 @@ body {
   border-bottom: 2px solid #e5e7eb;
 }
 
+.empty-day {
+  text-align: center;
+  padding: 24px 16px;
+}
+
+.empty-day-text {
+  color: #6b7280;
+  margin: 0 0 16px;
+}
+
+.rest-day-btn {
+  margin-top: 12px;
+  font-size: 12px;
+  padding: 6px 12px;
+}
+
+.rest-day {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  color: #6b7280;
+}
+
 .day-counter {
   font-size: 14px;
   color: #6b7280;
@@ -276,6 +311,27 @@ body {
 
 .day-swiper {
   padding-bottom: 40px;
+}
+
+.empty-itinerary {
+  text-align: center;
+  padding: 40px 20px;
+  background: #f9fafb;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.empty-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 8px;
+}
+
+.empty-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 20px;
 }
 
 .day-swiper .swiper-pagination-bullet {
