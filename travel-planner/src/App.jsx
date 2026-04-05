@@ -1,52 +1,91 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Pagination } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/pagination'
 import './App.css'
 
 const ATTRACTIONS = {
+  Shanghai: [
+    { id: 1, name: 'Yu Garden (豫园)', description: 'Classic Chinese garden in old town', priority: 'high', area: 'Huangpu', category: 'attractions', label: '🏛️ Historic' },
+    { id: 2, name: 'The Bund (外滩)', description: 'Iconic waterfront with colonial buildings', priority: 'high', area: 'Huangpu', category: 'attractions', label: '🏛️ Landmark' },
+    { id: 3, name: 'Jing\'an Temple (静安寺)', description: 'Ancient Buddhist temple in CBD', priority: 'high', area: 'Jing\'an', category: 'attractions', label: '🏛️ Cultural' },
+    { id: 4, name: 'Tianzhu Church (天主教堂)', description: 'Former French Concession Gothic church', priority: 'medium', area: 'Xuhui', category: 'attractions', label: '🏛️ Historic' },
+    { id: 5, name: 'Lujiazui (陆家嘴)', description: 'Financial district with skyscrapers', priority: 'medium', area: 'Pudong', category: 'attractions', label: '🏛️ Skyline' },
+    { id: 6, name: 'Wukang Road (武康路)', description: 'Historic street with colonial architecture', priority: 'high', area: 'Xuhui', category: 'citywalk', label: '🚶 Citywalk' },
+    { id: 7, name: 'Former French Concession', description: 'Tree-lined streets with shikumen houses', priority: 'high', area: 'Xuhui', category: 'citywalk', label: '🚶 Citywalk' },
+    { id: 8, name: 'Xintiandi (新天地)', description: 'Shikumen houses converted to trendy nightlife', priority: 'high', area: 'Huangpu', category: 'citywalk', label: '🚶 Citywalk' },
+    { id: 9, name: 'West Huangpu Rd (西黄浦路)', description: 'Street with old buildings along the river', priority: 'medium', area: 'Huangpu', category: 'citywalk', label: '🚶 Citywalk' },
+    { id: 10, name: 'Xujiahui (徐家汇)', description: 'Shopping and cathedral area', priority: 'low', area: 'Xuhui', category: 'citywalk', label: '🚶 Citywalk' },
+    { id: 11, name: 'Seesaw Coffee (见闻咖啡)', description: 'Modern specialty coffee brand', priority: 'high', area: 'Jing\'an', category: 'cafe', label: '☕ Coffee' },
+    { id: 12, name: 'Manner Coffee', description: 'Popular specialty coffee with affordable prices', priority: 'high', area: 'Xuhui', category: 'cafe', label: '☕ Coffee' },
+    { id: 13, name: 'Peet\'s Coffee (皮爷咖啡)', description: 'American-style specialty coffee', priority: 'medium', area: 'Xuhui', category: 'cafe', label: '☕ Coffee' },
+    { id: 14, name: 'Huangpu River Night Cruise', description: 'Night cruise with skyline views', priority: 'high', area: 'Huangpu', category: 'photo', label: '📸 Photo Spot' },
+    { id: 15, name: 'Nanjing Road (南京路)', description: 'Famous shopping street', priority: 'medium', area: 'Huangpu', category: 'shopping', label: '🛍️ Shopping' },
+    { id: 16, name: 'Wuzhen (乌镇)', description: 'Water town with canals and bridges', priority: 'medium', area: 'Tongxiang', category: 'citywalk', label: '🚶 Day Trip' },
+  ],
   Tokyo: [
-    { id: 1, name: 'Tokyo Tower', description: 'Iconic red communications tower' },
-    { id: 2, name: 'Senso-ji Temple', description: 'Ancient Buddhist temple in Asakusa' },
-    { id: 3, name: 'Shibuya Crossing', description: 'World-famous pedestrian crossing' },
-    { id: 4, name: 'Meiji Shrine', description: 'Shinto shrine in a forest setting' },
-    { id: 5, name: 'Tsukiji Market', description: 'Famous fish market' },
+    { id: 1, name: 'Tokyo Tower', description: 'Iconic red communications tower', priority: 'high', area: 'Minato', category: 'attractions', label: '🏛️ Landmark' },
+    { id: 2, name: 'Senso-ji Temple', description: 'Ancient Buddhist temple in Asakusa', priority: 'high', area: 'Asakusa', category: 'attractions', label: '🏛️ Historic' },
+    { id: 3, name: 'Shibuya Crossing', description: 'World-famous pedestrian crossing', priority: 'high', area: 'Shibuya', category: 'photo', label: '📸 Photo Spot' },
+    { id: 4, name: 'Meiji Shrine', description: 'Shinto shrine in a forest setting', priority: 'medium', area: 'Shibuya', category: 'attractions', label: '🏛️ Cultural' },
+    { id: 5, name: 'Tsukiji Market', description: 'Famous fish market', priority: 'medium', area: 'Tsukiji', category: 'food', label: '🍣 Food' },
   ],
   Paris: [
-    { id: 1, name: 'Eiffel Tower', description: 'Iconic iron lattice tower' },
-    { id: 2, name: 'Louvre Museum', description: 'World\'s largest art museum' },
-    { id: 3, name: 'Notre-Dame', description: 'Medieval Catholic cathedral' },
-    { id: 4, name: 'Champs-Élysées', description: 'Famous shopping boulevard' },
-    { id: 5, name: 'Montmartre', description: 'Historic artists\' neighborhood' },
+    { id: 1, name: 'Eiffel Tower', description: 'Iconic iron lattice tower', priority: 'high', area: 'Champ de Mars', category: 'attractions', label: '🏛️ Landmark' },
+    { id: 2, name: 'Louvre Museum', description: 'World\'s largest art museum', priority: 'high', area: 'Louvre', category: 'attractions', label: '🏛️ Culture' },
+    { id: 3, name: 'Notre-Dame', description: 'Medieval Catholic cathedral', priority: 'medium', area: 'Île de la Cité', category: 'attractions', label: '🏛️ Historic' },
+    { id: 4, name: 'Champs-Élysées', description: 'Famous shopping boulevard', priority: 'medium', area: 'Champs-Élysées', category: 'shopping', label: '🛍️ Shopping' },
+    { id: 5, name: 'Montmartre', description: 'Historic artists\' neighborhood', priority: 'low', area: 'Montmartre', category: 'citywalk', label: '🚶 Citywalk' },
   ],
   'New York': [
-    { id: 1, name: 'Statue of Liberty', description: 'Iconic gift from France' },
-    { id: 2, name: 'Central Park', description: 'Urban park in Manhattan' },
-    { id: 3, name: 'Times Square', description: 'Bright lights and Broadway' },
-    { id: 4, name: 'Empire State Building', description: 'Art deco skyscraper' },
-    { id: 5, name: 'Brooklyn Bridge', description: 'Historic suspension bridge' },
+    { id: 1, name: 'Statue of Liberty', description: 'Iconic gift from France', priority: 'high', area: 'Battery Park', category: 'attractions', label: '🏛️ Landmark' },
+    { id: 2, name: 'Central Park', description: 'Urban park in Manhattan', priority: 'high', area: 'Midtown', category: 'attractions', label: '🏛️ Nature' },
+    { id: 3, name: 'Times Square', description: 'Bright lights and Broadway', priority: 'medium', area: 'Midtown', category: 'photo', label: '📸 Photo Spot' },
+    { id: 4, name: 'Empire State Building', description: 'Art deco skyscraper', priority: 'medium', area: 'Midtown', category: 'attractions', label: '🏛️ Iconic' },
+    { id: 5, name: 'Brooklyn Bridge', description: 'Historic suspension bridge', priority: 'low', area: 'Brooklyn', category: 'photo', label: '📸 Photo Spot' },
   ],
   London: [
-    { id: 1, name: 'Big Ben', description: 'Famous clock tower' },
-    { id: 2, name: 'Tower of London', description: 'Historic castle and fortress' },
-    { id: 3, name: 'Buckingham Palace', description: 'Royal residence' },
-    { id: 4, name: 'British Museum', description: 'World-renowned museum' },
-    { id: 5, name: 'London Eye', description: 'Giant observation wheel' },
+    { id: 1, name: 'Big Ben', description: 'Famous clock tower', priority: 'high', area: 'Westminster', category: 'attractions', label: '🏛️ Landmark' },
+    { id: 2, name: 'Tower of London', description: 'Historic castle and fortress', priority: 'high', area: 'Tower Hill', category: 'attractions', label: '🏛️ Historic' },
+    { id: 3, name: 'Buckingham Palace', description: 'Royal residence', priority: 'medium', area: 'Westminster', category: 'attractions', label: '🏛️ Royal' },
+    { id: 4, name: 'British Museum', description: 'World-renowned museum', priority: 'medium', area: 'Bloomsbury', category: 'attractions', label: '🏛️ Culture' },
+    { id: 5, name: 'London Eye', description: 'Giant observation wheel', priority: 'low', area: 'Westminster', category: 'photo', label: '📸 Photo Spot' },
   ],
   Rome: [
-    { id: 1, name: 'Colosseum', description: 'Ancient Roman amphitheater' },
-    { id: 2, name: 'Vatican Museums', description: 'Art museums in Vatican' },
-    { id: 3, name: 'Trevi Fountain', description: 'Baroque fountain' },
-    { id: 4, name: 'Roman Forum', description: 'Ancient Roman ruins' },
-    { id: 5, name: 'Pantheon', description: 'Ancient Roman temple' },
+    { id: 1, name: 'Colosseum', description: 'Ancient Roman amphitheater', priority: 'high', area: 'Centro', category: 'attractions', label: '🏛️ Landmark' },
+    { id: 2, name: 'Vatican Museums', description: 'Art museums in Vatican', priority: 'high', area: 'Vatican', category: 'attractions', label: '🏛️ Culture' },
+    { id: 3, name: 'Trevi Fountain', description: 'Baroque fountain', priority: 'medium', area: 'Centro', category: 'photo', label: '📸 Photo Spot' },
+    { id: 4, name: 'Roman Forum', description: 'Ancient Roman ruins', priority: 'medium', area: 'Centro', category: 'attractions', label: '🏛️ Historic' },
+    { id: 5, name: 'Pantheon', description: 'Ancient Roman temple', priority: 'low', area: 'Centro', category: 'attractions', label: '🏛️ Historic' },
   ],
   default: [
-    { id: 1, name: 'City Center', description: 'Main downtown area' },
-    { id: 2, name: 'Historic Old Town', description: 'Traditional historic district' },
-    { id: 3, name: 'Local Market', description: 'Fresh produce and crafts' },
-    { id: 4, name: 'Central Park', description: 'Beautiful city park' },
-    { id: 5, name: 'Museum District', description: 'Cultural attractions' },
+    { id: 1, name: 'City Center', description: 'Main downtown area', priority: 'high', area: 'Downtown', label: '⭐ Must Visit' },
+    { id: 2, name: 'Historic Old Town', description: 'Traditional historic district', priority: 'high', area: 'Old Town', label: '🏛️ Historic' },
+    { id: 3, name: 'Local Market', description: 'Fresh produce and crafts', priority: 'medium', area: 'Downtown', label: '🛒 Local' },
+    { id: 4, name: 'Central Park', description: 'Beautiful city park', priority: 'medium', area: 'Midtown', label: '🌳 Nature' },
+    { id: 5, name: 'Museum District', description: 'Cultural attractions', priority: 'low', area: 'Cultural', label: '🎨 Culture' },
   ],
 }
 
 const FOOD_SPOTS = {
+  Shanghai: {
+    Breakfast: [
+      { id: 1, name: 'Manner Coffee', type: 'Specialty Coffee', area: 'Xuhui' },
+      { id: 2, name: 'Seesaw Coffee', type: 'Specialty Coffee', area: 'Jing\'an' },
+      { id: 3, name: 'Egg Drop', type: 'Sandwich', area: 'Huangpu' },
+    ],
+    Lunch: [
+      { id: 4, name: 'Haidilao (海底捞)', type: 'Hotpot', area: 'Xuhui' },
+      { id: 5, name: 'Lost Bakery', type: 'Bistro', area: 'Xuhui' },
+      { id: 6, name: 'Shenzhen Lu (深圳路)', type: 'Dim Sum', area: 'Huangpu' },
+    ],
+    Dinner: [
+      { id: 7, name: 'Ultraviolet by Paul Pairet', type: 'Fine Dining', area: 'Huangpu' },
+      { id: 8, name: 'Fu He (福和)', type: 'Chinese Fusion', area: 'Xuhui' },
+      { id: 9, name: 'The Cannery', type: 'Seafood', area: 'Huangpu' },
+    ],
+  },
   Tokyo: {
     Breakfast: [
       { id: 1, name: 'Blue Bottle Coffee', type: 'Cafe', area: 'Omotesando' },
@@ -148,7 +187,7 @@ const FOOD_SPOTS = {
   },
 }
 
-const CITIES = ['Tokyo', 'Paris', 'New York', 'London', 'Rome']
+const CITIES = ['Shanghai', 'Tokyo', 'Paris', 'New York', 'London', 'Rome']
 
 function StepIndicator({ currentStep }) {
   const steps = ['City', 'Attractions', 'Route']
@@ -222,6 +261,18 @@ function AttractionSelection({ city, days, onNext, onBack }) {
 
   const attractions = ATTRACTIONS[city] || ATTRACTIONS.default
 
+  const groupByCategory = () => {
+    const groups = {}
+    attractions.forEach(a => {
+      const cat = a.category || 'attractions'
+      if (!groups[cat]) groups[cat] = []
+      groups[cat].push(a)
+    })
+    return groups
+  }
+
+  const grouped = groupByCategory()
+
   const toggleAttraction = (id) => {
     setSelected((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
@@ -242,19 +293,31 @@ function AttractionSelection({ city, days, onNext, onBack }) {
       <h2>Select Attractions</h2>
       <p className="subtitle">{city} - {days} days</p>
       <div className="attraction-list">
-        {attractions.map((attraction) => (
-          <label key={attraction.id} className={`attraction-item ${selected.includes(attraction.id) ? 'selected' : ''}`}>
-            <input
-              type="checkbox"
-              checked={selected.includes(attraction.id)}
-              onChange={() => toggleAttraction(attraction.id)}
-            />
-            <div className="attraction-info">
-              <span className="attraction-name">{attraction.name}</span>
-              <span className="attraction-desc">{attraction.description}</span>
+        {Object.entries(grouped).map(([category, items]) => {
+          const config = CATEGORY_CONFIG[category] || CATEGORY_CONFIG.attractions
+          return (
+            <div key={category} className="category-group">
+              <div className="category-header" style={{ borderLeftColor: config.color }}>
+                <span className="category-icon">{config.icon}</span>
+                <span className="category-name">{config.name}</span>
+              </div>
+              {items.map((attraction) => (
+                <label key={attraction.id} className={`attraction-item ${selected.includes(attraction.id) ? 'selected' : ''}`}>
+                  <input
+                    type="checkbox"
+                    checked={selected.includes(attraction.id)}
+                    onChange={() => toggleAttraction(attraction.id)}
+                  />
+                  <div className="attraction-info">
+                    <span className="attraction-name">{attraction.name}</span>
+                    <span className="attraction-desc">{attraction.description}</span>
+                  </div>
+                  <span className="item-label" style={{ backgroundColor: config.color + '20', color: config.color }}>{attraction.label}</span>
+                </label>
+              ))}
             </div>
-          </label>
-        ))}
+          )
+        })}
       </div>
       <div className="button-row">
         <button className="btn-secondary" onClick={onBack}>Back</button>
@@ -267,7 +330,121 @@ function AttractionSelection({ city, days, onNext, onBack }) {
   )
 }
 
+const CATEGORY_CONFIG = {
+  attractions: { icon: '🏛️', name: 'Attractions', color: '#3b82f6' },
+  citywalk: { icon: '🚶', name: 'Citywalk', color: '#10b981' },
+  cafe: { icon: '☕', name: 'Cafe', color: '#92400e' },
+  photo: { icon: '📸', name: 'Photo Spot', color: '#ec4899' },
+  food: { icon: '🍜', name: 'Food', color: '#f59e0b' },
+  shopping: { icon: '🛍️', name: 'Shopping', color: '#8b5cf6' },
+}
+
+function AddModalList({ items, onSelect }) {
+  const [expandedCats, setExpandedCats] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 500 + Math.random() * 300)
+    return () => clearTimeout(timer)
+  }, [])
+
+  const groupByCategory = () => {
+    const groups = {}
+    items.forEach(a => {
+      const cat = a.category || 'attractions'
+      if (!groups[cat]) groups[cat] = []
+      groups[cat].push(a)
+    })
+    return groups
+  }
+
+  const grouped = groupByCategory()
+
+  const toggleCategory = (cat) => {
+    setExpandedCats(prev => 
+      prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat]
+    )
+  }
+
+  const categoryOrder = ['attractions', 'citywalk', 'cafe', 'photo', 'food', 'shopping']
+  const orderedGroups = categoryOrder.filter(cat => grouped[cat]?.length > 0)
+
+  const getRecommendedItem = (items) => items.find(item => item.priority === 'high')
+  const getRegularItems = (items, recommended) => items.filter(item => item !== recommended)
+
+  if (isLoading) {
+    return (
+      <div className="add-modal-list">
+        {[1, 2, 3, 4, 5].map(i => (
+          <div key={i} className="skeleton-card">
+            <div className="skeleton-line title"></div>
+            <div className="skeleton-line tag"></div>
+            <div className="skeleton-line desc"></div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <div className="add-modal-list">
+      {orderedGroups.map(category => {
+        const config = CATEGORY_CONFIG[category] || CATEGORY_CONFIG.attractions
+        const isExpanded = expandedCats.includes(category)
+        const catItems = grouped[category]
+        const recommended = getRecommendedItem(catItems)
+        const regularItems = getRegularItems(catItems, recommended)
+        
+        return (
+          <div key={category} className="modal-category">
+            <div 
+              className="modal-category-header"
+              style={{ borderLeftColor: config.color }}
+              onClick={() => toggleCategory(category)}
+            >
+              <span className="collapse-arrow">{isExpanded ? '▼' : '▶'}</span>
+              <span className="category-icon">{config.icon}</span>
+              <span className="category-name">{config.name}</span>
+              <span className="category-count">({catItems.length})</span>
+            </div>
+            {isExpanded && (
+              <div className="modal-category-items">
+                {recommended && (
+                  <div 
+                    key={recommended.id} 
+                    className="attraction-option recommended"
+                    onClick={() => onSelect(recommended)}
+                  >
+                    <span className="recommended-badge">⭐</span>
+                    <span className="option-name">{recommended.name}</span>
+                    <span className="option-label" style={{ backgroundColor: config.color + '20', color: config.color }}>{recommended.label}</span>
+                    <span className="option-desc">{recommended.description}</span>
+                  </div>
+                )}
+                {regularItems.map(attraction => (
+                  <div 
+                    key={attraction.id} 
+                    className="attraction-option"
+                    onClick={() => onSelect(attraction)}
+                  >
+                    <span className="option-name">{attraction.name}</span>
+                    <span className="option-label" style={{ backgroundColor: config.color + '20', color: config.color }}>{attraction.label}</span>
+                    <span className="option-desc">{attraction.description}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 function RouteResult({ city, days, attractions, onStartOver, onBack }) {
+  const [currentDay, setCurrentDay] = useState(0)
+  const [routeData, setRouteData] = useState(null)
+  const [showAddModal, setShowAddModal] = useState(null)
   const foodData = FOOD_SPOTS[city] || FOOD_SPOTS.default
 
   const groupByDays = () => {
@@ -281,8 +458,8 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
       const dayAttractions = attractions.slice(attrStart, attrEnd)
       
       const half = Math.ceil(dayAttractions.length / 2)
-      const morning = dayAttractions.slice(0, half)
-      const afternoon = dayAttractions.slice(half)
+      const morning = dayAttractions.slice(0, half).map((a, idx) => ({ ...a, slot: 'morning', idx }))
+      const afternoon = dayAttractions.slice(half).map((a, idx) => ({ ...a, slot: 'afternoon', idx }))
       
       const dayFood = mealTypes.map((meal) => {
         const spots = foodData[meal] || []
@@ -300,9 +477,203 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
     return result
   }
 
-  const routeByDays = groupByDays()
+  const routeByDays = routeData || groupByDays()
+
+  const getAllSelectedAttractionNames = () => {
+    const names = new Set()
+    routeByDays.forEach(day => {
+      day.morning.forEach(a => names.add(a.name))
+      day.afternoon.forEach(a => names.add(a.name))
+    })
+    return names
+  }
+
+  const getCurrentDayArea = () => {
+    const dayData = routeByDays[currentDay]
+    const areas = new Set()
+    dayData.morning.forEach(a => a.area && areas.add(a.area))
+    dayData.afternoon.forEach(a => a.area && areas.add(a.area))
+    return areas.size > 0 ? Array.from(areas)[0] : null
+  }
+
+  const availableAttractions = ATTRACTIONS[city] || ATTRACTIONS.default
+  const selectedNames = getAllSelectedAttractionNames()
+  const currentArea = getCurrentDayArea()
+  let unusedAttractions = availableAttractions.filter(a => !selectedNames.has(a.name))
+  
+  const priorityOrder = { high: 0, medium: 1, low: 2 }
+  unusedAttractions.sort((a, b) => {
+    if (currentArea) {
+      const aInArea = a.area === currentArea ? 0 : 1
+      const bInArea = b.area === currentArea ? 0 : 1
+      if (aInArea !== bInArea) return aInArea - bInArea
+    }
+    return priorityOrder[a.priority] - priorityOrder[b.priority]
+  })
 
   const getFoodByMealType = (food, type) => food.find(f => f.mealType === type)
+
+  const removeAttraction = (dayIndex, slot, itemIdx) => {
+    const newData = [...routeByDays]
+    newData[dayIndex] = {
+      ...newData[dayIndex],
+      [slot]: newData[dayIndex][slot].filter((_, i) => i !== itemIdx)
+    }
+    setRouteData(newData)
+  }
+
+  const replaceFood = (dayIndex, mealType) => {
+    const currentFood = routeByDays[dayIndex].food
+    const current = getFoodByMealType(currentFood, mealType)
+    const allFood = foodData[mealType] || []
+    const currentIndex = allFood.findIndex(f => f.id === current?.id)
+    const nextIndex = (currentIndex + 1) % allFood.length
+    const newFood = { ...allFood[nextIndex], mealType }
+    
+    const newData = [...routeByDays]
+    newData[dayIndex] = {
+      ...newData[dayIndex],
+      food: currentFood.map(f => f.mealType === mealType ? newFood : f)
+    }
+    setRouteData(newData)
+  }
+
+  const moveItem = (dayIndex, slot, itemIdx, direction) => {
+    const items = [...routeByDays[dayIndex][slot]]
+    const newIdx = itemIdx + direction
+    if (newIdx < 0 || newIdx >= items.length) return
+    const newItems = [...items]
+    ;[newItems[itemIdx], newItems[newIdx]] = [newItems[newIdx], newItems[itemIdx]]
+    
+    const newData = [...routeByDays]
+    newData[dayIndex] = { ...newData[dayIndex], [slot]: newItems }
+    setRouteData(newData)
+  }
+
+  const addAttraction = (dayIndex, slot, attraction) => {
+    const newData = [...routeByDays]
+    newData[dayIndex] = {
+      ...newData[dayIndex],
+      [slot]: [...newData[dayIndex][slot], { ...attraction, slot, idx: newData[dayIndex][slot].length }]
+    }
+    setRouteData(newData)
+    setShowAddModal(null)
+  }
+
+  const handleAddClick = (dayIndex, slot) => {
+    setShowAddModal({ dayIndex, slot })
+  }
+
+  const renderDayCard = (dayData, dayIndex) => (
+    <div className="day-card">
+      <div className="day-header">
+        <span>Day {dayData.day}</span>
+      </div>
+      
+      {(dayData.morning.length === 0 && dayData.afternoon.length === 0) ? (
+        <div className="route-item rest-day">
+          <span className="route-bullet">•</span>
+          <span className="route-name">Rest Day</span>
+        </div>
+      ) : (
+        <>
+          {getFoodByMealType(dayData.food, 'Breakfast') && (
+            <div className={`route-item food meal-breakfast`}>
+              <span className="meal-icon">☕</span>
+              <div className="route-food-info">
+                <span className="meal-label">Breakfast</span>
+                <span className="route-name">{getFoodByMealType(dayData.food, 'Breakfast').name}</span>
+                <span className="route-food-type">{getFoodByMealType(dayData.food, 'Breakfast').type} • {getFoodByMealType(dayData.food, 'Breakfast').area}</span>
+              </div>
+              <button className="edit-btn" onClick={() => replaceFood(dayIndex, 'Breakfast')}>↻</button>
+            </div>
+          )}
+          
+          <div className="time-slot">
+            <div className="time-label morning">Morning</div>
+            {dayData.morning.length === 0 ? (
+              <div className="route-item empty-slot">
+                <span className="route-name">Free time</span>
+              </div>
+            ) : (
+              dayData.morning.map((attraction, index) => (
+                <div key={`m-${index}`} className="route-item attraction">
+                  <span className="route-bullet">•</span>
+                  <span className="route-name">{attraction.name}</span>
+                  <div className="item-actions">
+                    <button className="move-btn" onClick={() => moveItem(dayIndex, 'morning', index, -1)} disabled={index === 0}>↑</button>
+                    <button className="move-btn" onClick={() => moveItem(dayIndex, 'morning', index, 1)} disabled={index === dayData.morning.length - 1}>↓</button>
+                    <button className="remove-btn" onClick={() => removeAttraction(dayIndex, 'morning', index)}>×</button>
+                  </div>
+                </div>
+              ))
+            )}
+            <button className="add-btn" onClick={() => handleAddClick(dayIndex, 'morning')}>+ Add Attraction</button>
+          </div>
+          
+          {getFoodByMealType(dayData.food, 'Lunch') && (
+            <div className={`route-item food meal-lunch`}>
+              <span className="meal-icon">🍜</span>
+              <div className="route-food-info">
+                <span className="meal-label">Lunch</span>
+                <span className="route-name">{getFoodByMealType(dayData.food, 'Lunch').name}</span>
+                <span className="route-food-type">{getFoodByMealType(dayData.food, 'Lunch').type} • {getFoodByMealType(dayData.food, 'Lunch').area}</span>
+              </div>
+              <button className="edit-btn" onClick={() => replaceFood(dayIndex, 'Lunch')}>↻</button>
+            </div>
+          )}
+          
+          <div className="time-slot">
+            <div className="time-label afternoon">Afternoon</div>
+            {dayData.afternoon.length === 0 ? (
+              <div className="route-item empty-slot">
+                <span className="route-name">Free time</span>
+              </div>
+            ) : (
+              dayData.afternoon.map((attraction, index) => (
+                <div key={`a-${index}`} className="route-item attraction">
+                  <span className="route-bullet">•</span>
+                  <span className="route-name">{attraction.name}</span>
+                  <div className="item-actions">
+                    <button className="move-btn" onClick={() => moveItem(dayIndex, 'afternoon', index, -1)} disabled={index === 0}>↑</button>
+                    <button className="move-btn" onClick={() => moveItem(dayIndex, 'afternoon', index, 1)} disabled={index === dayData.afternoon.length - 1}>↓</button>
+                    <button className="remove-btn" onClick={() => removeAttraction(dayIndex, 'afternoon', index)}>×</button>
+                  </div>
+                </div>
+              ))
+            )}
+            <button className="add-btn" onClick={() => handleAddClick(dayIndex, 'afternoon')}>+ Add Attraction</button>
+          </div>
+          
+          {getFoodByMealType(dayData.food, 'Dinner') && (
+            <div className={`route-item food meal-dinner`}>
+              <span className="meal-icon">🍽️</span>
+              <div className="route-food-info">
+                <span className="meal-label">Dinner</span>
+                <span className="route-name">{getFoodByMealType(dayData.food, 'Dinner').name}</span>
+                <span className="route-food-type">{getFoodByMealType(dayData.food, 'Dinner').type} • {getFoodByMealType(dayData.food, 'Dinner').area}</span>
+              </div>
+              <button className="edit-btn" onClick={() => replaceFood(dayIndex, 'Dinner')}>↻</button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  )
+
+  if (attractions.length === 0) {
+    return (
+      <div className="page">
+        <h2>Your Route</h2>
+        <p className="subtitle">{city} - {days} day{days > 1 ? 's' : ''}</p>
+        <p className="no-attractions">No attractions selected</p>
+        <div className="button-row">
+          <button className="btn-secondary" onClick={onBack}>Back</button>
+          <button className="btn-primary" onClick={onStartOver}>Start Over</button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="page">
@@ -314,92 +685,45 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
         <span>Hotel location</span>
         <span className="coming-soon">Coming soon</span>
       </div>
-      
-      <div className="route-list">
-        {attractions.length === 0 ? (
-          <p className="no-attractions">No attractions selected</p>
-        ) : (
-          routeByDays.map(({ day, morning, afternoon, food }) => (
-            <div key={day} className="day-group">
-              <div className="day-header">Day {day}</div>
-              
-              {(morning.length === 0 && afternoon.length === 0) ? (
-                <div className="route-item rest-day">
-                  <span className="route-bullet">•</span>
-                  <span className="route-name">Rest Day</span>
-                </div>
+
+      <Swiper
+        modules={[Pagination]}
+        spaceBetween={0}
+        slidesPerView={1}
+        pagination={{ clickable: true }}
+        onSlideChange={(swiper) => setCurrentDay(swiper.activeIndex)}
+        className="day-swiper"
+      >
+        {routeByDays.map((dayData, index) => (
+          <SwiperSlide key={index}>
+            {renderDayCard(dayData, index)}
+          </SwiperSlide>
+        ))}
+      </Swiper>
+
+      {showAddModal && (
+        <div className="modal-overlay" onClick={() => setShowAddModal(null)}>
+          <div className="modal-content add-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Add Attraction</h3>
+            </div>
+            <div className="modal-body">
+              {unusedAttractions.length === 0 ? (
+                <p className="no-attractions">All attractions have been selected</p>
               ) : (
-                <>
-                  {getFoodByMealType(food, 'Breakfast') && (
-                    <div className={`route-item food meal-breakfast`}>
-                      <span className="meal-icon">☕</span>
-                      <div className="route-food-info">
-                        <span className="meal-label">Breakfast</span>
-                        <span className="route-name">{getFoodByMealType(food, 'Breakfast').name}</span>
-                        <span className="route-food-type">{getFoodByMealType(food, 'Breakfast').type} • {getFoodByMealType(food, 'Breakfast').area}</span>
-                      </div>
-                    </div>
-                  )}
-                  
-                  <div className="time-slot">
-                    <div className="time-label morning">Morning</div>
-                    {morning.length === 0 ? (
-                      <div className="route-item empty-slot">
-                        <span className="route-name">Free time</span>
-                      </div>
-                    ) : (
-                      morning.map((attraction, index) => (
-                        <div key={`m-${index}`} className="route-item attraction">
-                          <span className="route-bullet">•</span>
-                          <span className="route-name">{attraction.name}</span>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                  
-                  {getFoodByMealType(food, 'Lunch') && (
-                    <div className={`route-item food meal-lunch`}>
-                      <span className="meal-icon">🍜</span>
-                      <div className="route-food-info">
-                        <span className="meal-label">Lunch</span>
-                        <span className="route-name">{getFoodByMealType(food, 'Lunch').name}</span>
-                        <span className="route-food-type">{getFoodByMealType(food, 'Lunch').type} • {getFoodByMealType(food, 'Lunch').area}</span>
-                      </div>
-                    </div>
-                  )}
-                  
-                  <div className="time-slot">
-                    <div className="time-label afternoon">Afternoon</div>
-                    {afternoon.length === 0 ? (
-                      <div className="route-item empty-slot">
-                        <span className="route-name">Free time</span>
-                      </div>
-                    ) : (
-                      afternoon.map((attraction, index) => (
-                        <div key={`a-${index}`} className="route-item attraction">
-                          <span className="route-bullet">•</span>
-                          <span className="route-name">{attraction.name}</span>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                  
-                  {getFoodByMealType(food, 'Dinner') && (
-                    <div className={`route-item food meal-dinner`}>
-                      <span className="meal-icon">🍽️</span>
-                      <div className="route-food-info">
-                        <span className="meal-label">Dinner</span>
-                        <span className="route-name">{getFoodByMealType(food, 'Dinner').name}</span>
-                        <span className="route-food-type">{getFoodByMealType(food, 'Dinner').type} • {getFoodByMealType(food, 'Dinner').area}</span>
-                      </div>
-                    </div>
-                  )}
-                </>
+                <AddModalList 
+                  items={unusedAttractions} 
+                  onSelect={(attraction) => addAttraction(showAddModal.dayIndex, showAddModal.slot, attraction)}
+                />
               )}
             </div>
-          ))
-        )}
-      </div>
+            <div className="modal-footer">
+              <button className="btn-secondary" onClick={() => setShowAddModal(null)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="button-row">
         <button className="btn-secondary" onClick={onBack}>Back</button>
         <button className="btn-primary" onClick={onStartOver}>Start Over</button>
