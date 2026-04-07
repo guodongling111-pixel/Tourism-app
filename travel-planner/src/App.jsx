@@ -1,6 +1,22 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Pagination } from 'swiper/modules'
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import 'swiper/css'
 import 'swiper/css/pagination'
 import './App.css'
@@ -462,6 +478,30 @@ function AddModalList({ items, onSelect }) {
   )
 }
 
+function SortableItem({ id, children }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    boxShadow: isDragging ? '0 4px 12px rgba(0,0,0,0.15)' : 'none',
+  }
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      {children}
+    </div>
+  )
+}
+
 function RouteResult({ city, days, attractions, onStartOver, onBack }) {
   const [currentDay, setCurrentDay] = useState(0)
   const [routeData, setRouteData] = useState(null)
@@ -469,31 +509,172 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
   const [restDays, setRestDays] = useState(new Set())
   const foodData = FOOD_SPOTS[city] || FOOD_SPOTS.default
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
+
+  const handleDragEnd = (event, slot, dayIndex) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+
+    const items = routeData ? routeData[dayIndex][slot] : groupByDays()[dayIndex][slot]
+    const oldIndex = items.findIndex(i => i.id === active.id)
+    const newIndex = items.findIndex(i => i.id === over.id)
+
+    const newData = [...(routeData || groupByDays())]
+    newData[dayIndex] = {
+      ...newData[dayIndex],
+      [slot]: arrayMove(items, oldIndex, newIndex).map((a, idx) => ({ ...a, idx }))
+    }
+    setRouteData(newData)
+  }
+
+  const MAX_ATTRACTIONS_PER_DAY = 3
+
+  const AREA_ORDER = {
+    Shanghai: ['Huangpu', 'Jing\'an', 'Xuhui', 'Pudong'],
+    Tokyo: ['Shibuya', 'Asakusa', 'Minato', 'Tsukiji'],
+    Paris: ['Champs-Élysées', 'Montmartre', 'Latin Quarter', 'Le Marais'],
+  }
+
+  const NIGHT_ATTRACTIONS = [
+    'Night Cruise', 'Night View', 'Evening', 'dinner', 'Rooftop'
+  ]
+
+  const isNightAttraction = (name) => {
+    return NIGHT_ATTRACTIONS.some(key => 
+      name.toLowerCase().includes(key.toLowerCase())
+    )
+  }
+
+  const getAreaOrder = (area) => {
+    const cityOrder = AREA_ORDER[city] || Object.values(AREA_ORDER).flat()
+    const idx = cityOrder.indexOf(area)
+    return idx >= 0 ? idx : 999
+  }
+
   const groupByDays = () => {
     const result = []
-    const attractionsPerDay = Math.ceil(attractions.length / days)
     const mealTypes = ['Breakfast', 'Lunch', 'Dinner']
     
+    const attractionsWithMeta = attractions.map(a => ({
+      ...a,
+      area: a.area || 'default',
+      isNight: isNightAttraction(a.name),
+      areaOrder: getAreaOrder(a.area)
+    }))
+    
+    const areaGroups = {}
+    attractionsWithMeta.forEach(a => {
+      if (!areaGroups[a.area]) areaGroups[a.area] = []
+      areaGroups[a.area].push(a)
+    })
+    
+    const sortedAreas = Object.entries(areaGroups)
+      .sort((a, b) => a[1][0].areaOrder - b[1][0].areaOrder || b[1].length - a[1].length)
+    
+    const morningAttractions = []
+    const eveningAttractions = []
+    
+    sortedAreas.forEach(([area, items]) => {
+      items.forEach(item => {
+        if (item.isNight) {
+          eveningAttractions.push(item)
+        } else {
+          morningAttractions.push(item)
+        }
+      })
+    })
+    
+    const dayAttractions = Array.from({ length: days }, () => [])
+    const dayAreas = Array(days).fill(null)
+    const dayAreaOrders = Array(days).fill(999)
+    
+    const assignAttractions = (attrList) => {
+      for (const item of attrList) {
+        let bestDay = -1
+        let bestScore = Infinity
+        
+        for (let d = 0; d < days; d++) {
+          if (dayAttractions[d].length >= MAX_ATTRACTIONS_PER_DAY) continue
+          
+          let score = dayAttractions[d].length * 10
+          
+          if (dayAreaOrders[d] < item.areaOrder) {
+            score += 100
+          }
+          
+          if (dayAreas[d] === item.area) {
+            score -= 20
+          } else if (dayAreas[d] === null) {
+            score -= 5
+          }
+          
+          if (score < bestScore) {
+            bestScore = score
+            bestDay = d
+          }
+        }
+        
+        if (bestDay === -1) {
+          let minCount = MAX_ATTRACTIONS_PER_DAY
+          for (let d = 0; d < days; d++) {
+            if (dayAttractions[d].length < minCount) {
+              minCount = dayAttractions[d].length
+              bestDay = d
+            }
+          }
+        }
+        
+        if (bestDay !== -1) {
+          dayAttractions[bestDay].push(item)
+          if (dayAreas[bestDay] === null) {
+            dayAreas[bestDay] = item.area
+            dayAreaOrders[bestDay] = item.areaOrder
+          }
+        }
+      }
+    }
+    
+    assignAttractions(morningAttractions)
+    assignAttractions(eveningAttractions)
+    
+    const getFoodByArea = (dayIndex, area) => {
+      const foodResult = []
+      mealTypes.forEach(meal => {
+        const allSpots = foodData[meal] || []
+        const matchingSpots = allSpots.filter(spot => spot.area === area)
+        const fallbackSpots = allSpots.filter(spot => spot.area !== area)
+        const spots = matchingSpots.length > 0 ? matchingSpots : fallbackSpots
+        const spot = spots.length > 0 ? spots[dayIndex % spots.length] : null
+        if (spot) foodResult.push({ ...spot, mealType: meal })
+      })
+      return foodResult
+    }
+    
     for (let i = 0; i < days; i++) {
-      const attrStart = i * attractionsPerDay
-      const attrEnd = Math.min(attrStart + attractionsPerDay, attractions.length)
-      const dayAttractions = attractions.slice(attrStart, attrEnd)
+      const dayItems = dayAttractions[i]
+      const dayArea = dayAreas[i]
       
-      const half = Math.ceil(dayAttractions.length / 2)
-      const morning = dayAttractions.slice(0, half).map((a, idx) => ({ ...a, slot: 'morning', idx }))
-      const afternoon = dayAttractions.slice(half).map((a, idx) => ({ ...a, slot: 'afternoon', idx }))
+      const nightItems = dayItems.filter(a => a.isNight)
+      const dayItemsOnly = dayItems.filter(a => !a.isNight)
       
-      const dayFood = mealTypes.map((meal) => {
-        const spots = foodData[meal] || []
-        const spot = spots[i % spots.length]
-        return spot ? { ...spot, mealType: meal } : null
-      }).filter(Boolean)
+      const morning = dayItemsOnly.slice(0, Math.min(2, dayItemsOnly.length)).map((a, idx) => ({ ...a, slot: 'morning', idx }))
+      const afternoon = dayItemsOnly.slice(Math.min(2, dayItemsOnly.length)).map((a, idx) => ({ ...a, slot: 'afternoon', idx }))
+      const evening = nightItems.map((a, idx) => ({ ...a, slot: 'evening', idx }))
+      
+      const dayFood = getFoodByArea(i, dayArea)
       
       result.push({ 
         day: i + 1, 
         morning, 
-        afternoon, 
-        food: dayFood 
+        afternoon,
+        evening,
+        food: dayFood,
+        area: dayArea
       })
     }
     return result
@@ -502,7 +683,7 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
   const routeByDays = routeData || groupByDays()
 
   const isItineraryEmpty = routeByDays.every(
-    day => day.morning.length === 0 && day.afternoon.length === 0
+    day => day.morning.length === 0 && day.afternoon.length === 0 && (!day.evening || day.evening.length === 0)
   )
 
   const toggleRestDay = (dayIndex) => {
@@ -611,7 +792,7 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
 
   const renderDayCard = (dayData, dayIndex) => {
     const isRestDay = restDays.has(dayIndex)
-    const isEmpty = dayData.morning.length === 0 && dayData.afternoon.length === 0
+    const isEmpty = dayData.morning.length === 0 && dayData.afternoon.length === 0 && (!dayData.evening || dayData.evening.length === 0)
     
     return (
     <div className="day-card">
@@ -652,17 +833,26 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
                 <span className="route-name">Free time</span>
               </div>
             ) : (
-              dayData.morning.map((attraction, index) => (
-                <div key={`m-${index}`} className="route-item attraction">
-                  <span className="route-bullet">•</span>
-                  <span className="route-name">{attraction.name}</span>
-                  <div className="item-actions">
-                    <button className="move-btn" onClick={() => moveItem(dayIndex, 'morning', index, -1)} disabled={index === 0}>↑</button>
-                    <button className="move-btn" onClick={() => moveItem(dayIndex, 'morning', index, 1)} disabled={index === dayData.morning.length - 1}>↓</button>
-                    <button className="remove-btn" onClick={() => removeAttraction(dayIndex, 'morning', index)}>×</button>
-                  </div>
-                </div>
-              ))
+              <SortableContext
+                items={dayData.morning.map(a => a.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {dayData.morning.map((attraction, index) => (
+                  <SortableItem key={attraction.id} id={attraction.id}>
+                    <div 
+                      className="route-item attraction"
+                      onDragEnd={(e) => handleDragEnd({ ...e, active: { id: attraction.id }, over: e.over }, 'morning', dayIndex)}
+                    >
+                      <span className="drag-handle">⋮⋮</span>
+                      <span className="route-number">{index + 1}</span>
+                      <span className="route-name">{attraction.name}</span>
+                      <div className="item-actions">
+                        <button className="remove-btn" onClick={() => removeAttraction(dayIndex, 'morning', index)}>×</button>
+                      </div>
+                    </div>
+                  </SortableItem>
+                ))}
+              </SortableContext>
             )}
             <button className="add-btn" onClick={() => handleAddClick(dayIndex, 'morning')}>+ Add Attraction</button>
           </div>
@@ -686,17 +876,25 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
                 <span className="route-name">Free time</span>
               </div>
             ) : (
-              dayData.afternoon.map((attraction, index) => (
-                <div key={`a-${index}`} className="route-item attraction">
-                  <span className="route-bullet">•</span>
-                  <span className="route-name">{attraction.name}</span>
-                  <div className="item-actions">
-                    <button className="move-btn" onClick={() => moveItem(dayIndex, 'afternoon', index, -1)} disabled={index === 0}>↑</button>
-                    <button className="move-btn" onClick={() => moveItem(dayIndex, 'afternoon', index, 1)} disabled={index === dayData.afternoon.length - 1}>↓</button>
-                    <button className="remove-btn" onClick={() => removeAttraction(dayIndex, 'afternoon', index)}>×</button>
-                  </div>
-                </div>
-              ))
+              <SortableContext
+                items={dayData.afternoon.map(a => a.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {dayData.afternoon.map((attraction, index) => (
+                  <SortableItem key={attraction.id} id={attraction.id}>
+                    <div 
+                      className="route-item attraction"
+                    >
+                      <span className="drag-handle">⋮⋮</span>
+                      <span className="route-number">{dayData.morning.length + index + 1}</span>
+                      <span className="route-name">{attraction.name}</span>
+                      <div className="item-actions">
+                        <button className="remove-btn" onClick={() => removeAttraction(dayIndex, 'afternoon', index)}>×</button>
+                      </div>
+                    </div>
+                  </SortableItem>
+                ))}
+              </SortableContext>
             )}
             <button className="add-btn" onClick={() => handleAddClick(dayIndex, 'afternoon')}>+ Add Attraction</button>
           </div>
@@ -710,6 +908,21 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
                 <span className="route-food-type">{getFoodByMealType(dayData.food, 'Dinner').type} • {getFoodByMealType(dayData.food, 'Dinner').area}</span>
               </div>
               <button className="edit-btn" onClick={() => replaceFood(dayIndex, 'Dinner')}>↻</button>
+            </div>
+          )}
+
+          {dayData.evening && dayData.evening.length > 0 && (
+            <div className="time-slot">
+              <div className="time-label evening">Evening</div>
+              {dayData.evening.map((attraction, index) => (
+                <div key={`e-${index}`} className="route-item attraction">
+                  <span className="route-bullet">🌙</span>
+                  <span className="route-name">{attraction.name}</span>
+                  <div className="item-actions">
+                    <button className="remove-btn" onClick={() => removeAttraction(dayIndex, 'evening', index)}>×</button>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </>
