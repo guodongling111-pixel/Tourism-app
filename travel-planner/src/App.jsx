@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Pagination } from 'swiper/modules'
+import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet'
+import L from 'leaflet'
 import {
   DndContext,
   closestCenter,
@@ -21,66 +23,169 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import './App.css'
 
+const fixLeafletIcon = () => {
+  delete L.Icon.Default.prototype._getIconUrl
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+  })
+}
+fixLeafletIcon()
+
+const MOCK_MARKERS = [
+  { id: 1, name: 'Yu Garden', lat: 31.2284, lng: 121.4956 },
+  { id: 2, name: 'The Bund', lat: 31.2408, lng: 121.4991 },
+  { id: 3, name: 'Jing\'an Temple', lat: 31.2286, lng: 121.4458 },
+  { id: 4, name: 'Nanjing Road', lat: 31.2297, lng: 121.4809 },
+  { id: 5, name: 'Xintiandi', lat: 31.2184, lng: 121.4811 },
+]
+
+function RouteMap({ dayData, currentDay }) {
+  const mapRef = useRef(null)
+  
+  useEffect(() => {
+    console.log('Map update - currentDay:', currentDay)
+    console.log('Map dayData:', dayData)
+  }, [currentDay, dayData])
+  
+  useEffect(() => {
+    if (mapRef.current && dayData) {
+      const validMarkers = [
+        ...(dayData.morning || []),
+        ...(dayData.afternoon || []),
+        ...(dayData.evening || [])
+      ].filter(a => a.lat && a.lng)
+      
+      if (validMarkers.length > 0) {
+        if (validMarkers.length === 1) {
+          mapRef.current.setView([validMarkers[0].lat, validMarkers[0].lng], 14)
+        } else {
+          const bounds = validMarkers.map(m => [m.lat, m.lng])
+          mapRef.current.fitBounds(bounds, { padding: [50, 50] })
+        }
+      }
+    }
+  }, [dayData])
+  
+  const cityCoords = {
+    Shanghai: [31.2304, 121.4737],
+    Tokyo: [35.6762, 139.6503],
+    Paris: [48.8566, 2.3522],
+    'New York': [40.7128, -74.0060],
+    London: [51.5074, -0.1278],
+    Rome: [41.9028, 12.4964],
+  }
+  
+  const defaultCenter = [31.2304, 121.4737]
+  const center = cityCoords['Shanghai'] || defaultCenter
+  
+  const allAttractions = [...(dayData?.morning || []), ...(dayData?.afternoon || []), ...(dayData?.evening || [])]
+  const validMarkers = allAttractions.filter(a => a.lat && a.lng)
+  
+  const getMarkerNumber = (idx) => {
+    const morningCount = dayData?.morning?.length || 0
+    if (idx < morningCount) return idx + 1
+    return idx + 1
+  }
+  
+  return (
+    <div style={{ marginTop: '20px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e5e7eb' }}>
+      <MapContainer 
+        ref={mapRef}
+        center={center} 
+        zoom={12} 
+        style={{ height: '300px', width: '100%' }}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        {validMarkers.length > 1 && (
+          <Polyline
+            positions={validMarkers.map(m => [m.lat, m.lng])}
+            color="#3b82f6"
+            weight={3}
+            opacity={0.7}
+          />
+        )}
+        {validMarkers.map((marker, idx) => (
+          <Marker 
+            key={`${currentDay}-${marker.slot}-${idx}`} 
+            position={[marker.lat, marker.lng]}
+          >
+            <Popup>
+              <strong>{marker.name}</strong>
+              <br />
+              Stop {getMarkerNumber(idx)} • {marker.slot}
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+    </div>
+  )
+}
+
 const ATTRACTIONS = {
   Shanghai: [
-    { id: 1, name: 'Yu Garden (豫园)', description: 'Classic Chinese garden in old town', priority: 'high', area: 'Huangpu', category: 'attractions', label: '🏛️ Historic' },
-    { id: 2, name: 'The Bund (外滩)', description: 'Iconic waterfront with colonial buildings', priority: 'high', area: 'Huangpu', category: 'attractions', label: '🏛️ Landmark' },
-    { id: 3, name: 'Jing\'an Temple (静安寺)', description: 'Ancient Buddhist temple in CBD', priority: 'high', area: 'Jing\'an', category: 'attractions', label: '🏛️ Cultural' },
-    { id: 4, name: 'Tianzhu Church (天主教堂)', description: 'Former French Concession Gothic church', priority: 'medium', area: 'Xuhui', category: 'attractions', label: '🏛️ Historic' },
-    { id: 5, name: 'Lujiazui (陆家嘴)', description: 'Financial district with skyscrapers', priority: 'medium', area: 'Pudong', category: 'attractions', label: '🏛️ Skyline' },
-    { id: 6, name: 'Wukang Road (武康路)', description: 'Historic street with colonial architecture', priority: 'high', area: 'Xuhui', category: 'citywalk', label: '🚶 Citywalk' },
-    { id: 7, name: 'Former French Concession', description: 'Tree-lined streets with shikumen houses', priority: 'high', area: 'Xuhui', category: 'citywalk', label: '🚶 Citywalk' },
-    { id: 8, name: 'Xintiandi (新天地)', description: 'Shikumen houses converted to trendy nightlife', priority: 'high', area: 'Huangpu', category: 'citywalk', label: '🚶 Citywalk' },
-    { id: 9, name: 'West Huangpu Rd (西黄浦路)', description: 'Street with old buildings along the river', priority: 'medium', area: 'Huangpu', category: 'citywalk', label: '🚶 Citywalk' },
-    { id: 10, name: 'Xujiahui (徐家汇)', description: 'Shopping and cathedral area', priority: 'low', area: 'Xuhui', category: 'citywalk', label: '🚶 Citywalk' },
-    { id: 11, name: 'Seesaw Coffee (见闻咖啡)', description: 'Modern specialty coffee brand', priority: 'high', area: 'Jing\'an', category: 'cafe', label: '☕ Coffee' },
-    { id: 12, name: 'Manner Coffee', description: 'Popular specialty coffee with affordable prices', priority: 'high', area: 'Xuhui', category: 'cafe', label: '☕ Coffee' },
-    { id: 13, name: 'Peet\'s Coffee (皮爷咖啡)', description: 'American-style specialty coffee', priority: 'medium', area: 'Xuhui', category: 'cafe', label: '☕ Coffee' },
-    { id: 14, name: 'Huangpu River Night Cruise', description: 'Night cruise with skyline views', priority: 'high', area: 'Huangpu', category: 'photo', label: '📸 Photo Spot' },
-    { id: 15, name: 'Nanjing Road (南京路)', description: 'Famous shopping street', priority: 'medium', area: 'Huangpu', category: 'shopping', label: '🛍️ Shopping' },
-    { id: 16, name: 'Wuzhen (乌镇)', description: 'Water town with canals and bridges', priority: 'medium', area: 'Tongxiang', category: 'citywalk', label: '🚶 Day Trip' },
+    { id: 1, name: 'Yu Garden (豫园)', description: 'Classic Chinese garden in old town', priority: 'high', area: 'Huangpu', category: 'attractions', label: '🏛️ Historic', lat: 31.2278, lng: 121.4921 },
+    { id: 2, name: 'The Bund (外滩)', description: 'Iconic waterfront with colonial buildings', priority: 'high', area: 'Huangpu', category: 'attractions', label: '🏛️ Landmark', lat: 31.2408, lng: 121.4901 },
+    { id: 3, name: 'Jing\'an Temple (静安寺)', description: 'Ancient Buddhist temple in CBD', priority: 'high', area: 'Jing\'an', category: 'attractions', label: '🏛️ Cultural', lat: 31.2286, lng: 121.4458 },
+    { id: 4, name: 'Tianzhu Church (天主教堂)', description: 'Former French Concession Gothic church', priority: 'medium', area: 'Xuhui', category: 'attractions', label: '🏛️ Historic', lat: 31.2061, lng: 121.4329 },
+    { id: 5, name: 'Lujiazui (陆家嘴)', description: 'Financial district with skyscrapers', priority: 'medium', area: 'Pudong', category: 'attractions', label: '🏛️ Skyline', lat: 31.2203, lng: 121.5356 },
+    { id: 6, name: 'Wukang Road (武康路)', description: 'Historic street with colonial architecture', priority: 'high', area: 'Xuhui', category: 'citywalk', label: '🚶 Citywalk', lat: 31.2089, lng: 121.4361 },
+    { id: 7, name: 'Former French Concession', description: 'Tree-lined streets with shikumen houses', priority: 'high', area: 'Xuhui', category: 'citywalk', label: '🚶 Citywalk', lat: 31.2043, lng: 121.4482 },
+    { id: 8, name: 'Xintiandi (新天地)', description: 'Shikumen houses converted to trendy nightlife', priority: 'high', area: 'Huangpu', category: 'citywalk', label: '🚶 Citywalk', lat: 31.2184, lng: 121.4811 },
+    { id: 9, name: 'West Huangpu Rd (西黄浦路)', description: 'Street with old buildings along the river', priority: 'medium', area: 'Huangpu', category: 'citywalk', label: '🚶 Citywalk', lat: 31.2324, lng: 121.4872 },
+    { id: 10, name: 'Xujiahui (徐家汇)', description: 'Shopping and cathedral area', priority: 'low', area: 'Xuhui', category: 'citywalk', label: '🚶 Citywalk', lat: 31.2004, lng: 121.4334 },
+    { id: 11, name: 'Seesaw Coffee (见闻咖啡)', description: 'Modern specialty coffee brand', priority: 'high', area: 'Jing\'an', category: 'cafe', label: '☕ Coffee', lat: 31.2234, lng: 121.4478 },
+    { id: 12, name: 'Manner Coffee', description: 'Popular specialty coffee with affordable prices', priority: 'high', area: 'Xuhui', category: 'cafe', label: '☕ Coffee', lat: 31.2078, lng: 121.4412 },
+    { id: 13, name: 'Peet\'s Coffee (皮爷咖啡)', description: 'American-style specialty coffee', priority: 'medium', area: 'Xuhui', category: 'cafe', label: '☕ Coffee', lat: 31.2099, lng: 121.4501 },
+    { id: 14, name: 'Huangpu River Night Cruise', description: 'Night cruise with skyline views', priority: 'high', area: 'Huangpu', category: 'photo', label: '📸 Photo Spot', lat: 31.2389, lng: 121.5012 },
+    { id: 15, name: 'Nanjing Road (南京路)', description: 'Famous shopping street', priority: 'medium', area: 'Huangpu', category: 'shopping', label: '🛍️ Shopping', lat: 31.2297, lng: 121.4809 },
+    { id: 16, name: 'Wuzhen (乌镇)', description: 'Water town with canals and bridges', priority: 'medium', area: 'Tongxiang', category: 'citywalk', label: '🚶 Day Trip', lat: 30.7421, lng: 120.4932 },
   ],
   Tokyo: [
-    { id: 1, name: 'Tokyo Tower', description: 'Iconic red communications tower', priority: 'high', area: 'Minato', category: 'attractions', label: '🏛️ Landmark' },
-    { id: 2, name: 'Senso-ji Temple', description: 'Ancient Buddhist temple in Asakusa', priority: 'high', area: 'Asakusa', category: 'attractions', label: '🏛️ Historic' },
-    { id: 3, name: 'Shibuya Crossing', description: 'World-famous pedestrian crossing', priority: 'high', area: 'Shibuya', category: 'photo', label: '📸 Photo Spot' },
-    { id: 4, name: 'Meiji Shrine', description: 'Shinto shrine in a forest setting', priority: 'medium', area: 'Shibuya', category: 'attractions', label: '🏛️ Cultural' },
-    { id: 5, name: 'Tsukiji Market', description: 'Famous fish market', priority: 'medium', area: 'Tsukiji', category: 'food', label: '🍣 Food' },
+    { id: 1, name: 'Tokyo Tower', description: 'Iconic red communications tower', priority: 'high', area: 'Minato', category: 'attractions', label: '🏛️ Landmark', lat: 35.6586, lng: 139.7454 },
+    { id: 2, name: 'Senso-ji Temple', description: 'Ancient Buddhist temple in Asakusa', priority: 'high', area: 'Asakusa', category: 'attractions', label: '🏛️ Historic', lat: 35.7148, lng: 139.7967 },
+    { id: 3, name: 'Shibuya Crossing', description: 'World-famous pedestrian crossing', priority: 'high', area: 'Shibuya', category: 'photo', label: '📸 Photo Spot', lat: 35.6595, lng: 139.7004 },
+    { id: 4, name: 'Meiji Shrine', description: 'Shinto shrine in a forest setting', priority: 'medium', area: 'Shibuya', category: 'attractions', label: '🏛️ Cultural', lat: 35.6764, lng: 139.6993 },
+    { id: 5, name: 'Tsukiji Market', description: 'Famous fish market', priority: 'medium', area: 'Tsukiji', category: 'food', label: '🍣 Food', lat: 35.6654, lng: 139.7707 },
   ],
   Paris: [
-    { id: 1, name: 'Eiffel Tower', description: 'Iconic iron lattice tower', priority: 'high', area: 'Champ de Mars', category: 'attractions', label: '🏛️ Landmark' },
-    { id: 2, name: 'Louvre Museum', description: 'World\'s largest art museum', priority: 'high', area: 'Louvre', category: 'attractions', label: '🏛️ Culture' },
-    { id: 3, name: 'Notre-Dame', description: 'Medieval Catholic cathedral', priority: 'medium', area: 'Île de la Cité', category: 'attractions', label: '🏛️ Historic' },
-    { id: 4, name: 'Champs-Élysées', description: 'Famous shopping boulevard', priority: 'medium', area: 'Champs-Élysées', category: 'shopping', label: '🛍️ Shopping' },
-    { id: 5, name: 'Montmartre', description: 'Historic artists\' neighborhood', priority: 'low', area: 'Montmartre', category: 'citywalk', label: '🚶 Citywalk' },
+    { id: 1, name: 'Eiffel Tower', description: 'Iconic iron lattice tower', priority: 'high', area: 'Champ de Mars', category: 'attractions', label: '🏛️ Landmark', lat: 48.8584, lng: 2.2945 },
+    { id: 2, name: 'Louvre Museum', description: 'World\'s largest art museum', priority: 'high', area: 'Louvre', category: 'attractions', label: '🏛️ Culture', lat: 48.8606, lng: 2.3376 },
+    { id: 3, name: 'Notre-Dame', description: 'Medieval Catholic cathedral', priority: 'medium', area: 'Île de la Cité', category: 'attractions', label: '🏛️ Historic', lat: 48.8530, lng: 2.3499 },
+    { id: 4, name: 'Champs-Élysées', description: 'Famous shopping boulevard', priority: 'medium', area: 'Champs-Élysées', category: 'shopping', label: '🛍️ Shopping', lat: 48.8698, lng: 2.3078 },
+    { id: 5, name: 'Montmartre', description: 'Historic artists\' neighborhood', priority: 'low', area: 'Montmartre', category: 'citywalk', label: '🚶 Citywalk', lat: 48.8867, lng: 2.3431 },
   ],
   'New York': [
-    { id: 1, name: 'Statue of Liberty', description: 'Iconic gift from France', priority: 'high', area: 'Battery Park', category: 'attractions', label: '🏛️ Landmark' },
-    { id: 2, name: 'Central Park', description: 'Urban park in Manhattan', priority: 'high', area: 'Midtown', category: 'attractions', label: '🏛️ Nature' },
-    { id: 3, name: 'Times Square', description: 'Bright lights and Broadway', priority: 'medium', area: 'Midtown', category: 'photo', label: '📸 Photo Spot' },
-    { id: 4, name: 'Empire State Building', description: 'Art deco skyscraper', priority: 'medium', area: 'Midtown', category: 'attractions', label: '🏛️ Iconic' },
-    { id: 5, name: 'Brooklyn Bridge', description: 'Historic suspension bridge', priority: 'low', area: 'Brooklyn', category: 'photo', label: '📸 Photo Spot' },
+    { id: 1, name: 'Statue of Liberty', description: 'Iconic gift from France', priority: 'high', area: 'Battery Park', category: 'attractions', label: '🏛️ Landmark', lat: 40.6892, lng: -74.0445 },
+    { id: 2, name: 'Central Park', description: 'Urban park in Manhattan', priority: 'high', area: 'Midtown', category: 'attractions', label: '🏛️ Nature', lat: 40.7812, lng: -73.9665 },
+    { id: 3, name: 'Times Square', description: 'Bright lights and Broadway', priority: 'medium', area: 'Midtown', category: 'photo', label: '📸 Photo Spot', lat: 40.7580, lng: -73.9855 },
+    { id: 4, name: 'Empire State Building', description: 'Art deco skyscraper', priority: 'medium', area: 'Midtown', category: 'attractions', label: '🏛️ Iconic', lat: 40.7484, lng: -73.9857 },
+    { id: 5, name: 'Brooklyn Bridge', description: 'Historic suspension bridge', priority: 'low', area: 'Brooklyn', category: 'photo', label: '📸 Photo Spot', lat: 40.7061, lng: -73.9969 },
   ],
   London: [
-    { id: 1, name: 'Big Ben', description: 'Famous clock tower', priority: 'high', area: 'Westminster', category: 'attractions', label: '🏛️ Landmark' },
-    { id: 2, name: 'Tower of London', description: 'Historic castle and fortress', priority: 'high', area: 'Tower Hill', category: 'attractions', label: '🏛️ Historic' },
-    { id: 3, name: 'Buckingham Palace', description: 'Royal residence', priority: 'medium', area: 'Westminster', category: 'attractions', label: '🏛️ Royal' },
-    { id: 4, name: 'British Museum', description: 'World-renowned museum', priority: 'medium', area: 'Bloomsbury', category: 'attractions', label: '🏛️ Culture' },
-    { id: 5, name: 'London Eye', description: 'Giant observation wheel', priority: 'low', area: 'Westminster', category: 'photo', label: '📸 Photo Spot' },
+    { id: 1, name: 'Big Ben', description: 'Famous clock tower', priority: 'high', area: 'Westminster', category: 'attractions', label: '🏛️ Landmark', lat: 51.5007, lng: -0.1246 },
+    { id: 2, name: 'Tower of London', description: 'Historic castle and fortress', priority: 'high', area: 'Tower Hill', category: 'attractions', label: '🏛️ Historic', lat: 51.5081, lng: -0.0759 },
+    { id: 3, name: 'Buckingham Palace', description: 'Royal residence', priority: 'medium', area: 'Westminster', category: 'attractions', label: '🏛️ Royal', lat: 51.5014, lng: -0.1419 },
+    { id: 4, name: 'British Museum', description: 'World-renowned museum', priority: 'medium', area: 'Bloomsbury', category: 'attractions', label: '🏛️ Culture', lat: 51.5194, lng: -0.1270 },
+    { id: 5, name: 'London Eye', description: 'Giant observation wheel', priority: 'low', area: 'Westminster', category: 'photo', label: '📸 Photo Spot', lat: 51.5033, lng: -0.1196 },
   ],
   Rome: [
-    { id: 1, name: 'Colosseum', description: 'Ancient Roman amphitheater', priority: 'high', area: 'Centro', category: 'attractions', label: '🏛️ Landmark' },
-    { id: 2, name: 'Vatican Museums', description: 'Art museums in Vatican', priority: 'high', area: 'Vatican', category: 'attractions', label: '🏛️ Culture' },
-    { id: 3, name: 'Trevi Fountain', description: 'Baroque fountain', priority: 'medium', area: 'Centro', category: 'photo', label: '📸 Photo Spot' },
-    { id: 4, name: 'Roman Forum', description: 'Ancient Roman ruins', priority: 'medium', area: 'Centro', category: 'attractions', label: '🏛️ Historic' },
-    { id: 5, name: 'Pantheon', description: 'Ancient Roman temple', priority: 'low', area: 'Centro', category: 'attractions', label: '🏛️ Historic' },
+    { id: 1, name: 'Colosseum', description: 'Ancient Roman amphitheater', priority: 'high', area: 'Centro', category: 'attractions', label: '🏛️ Landmark', lat: 41.8902, lng: 12.4922 },
+    { id: 2, name: 'Vatican Museums', description: 'Art museums in Vatican', priority: 'high', area: 'Vatican', category: 'attractions', label: '🏛️ Culture', lat: 41.9050, lng: 12.4490 },
+    { id: 3, name: 'Trevi Fountain', description: 'Baroque fountain', priority: 'medium', area: 'Centro', category: 'photo', label: '📸 Photo Spot', lat: 41.9009, lng: 12.4833 },
+    { id: 4, name: 'Roman Forum', description: 'Ancient Roman ruins', priority: 'medium', area: 'Centro', category: 'attractions', label: '🏛️ Historic', lat: 41.8925, lng: 12.4853 },
+    { id: 5, name: 'Pantheon', description: 'Ancient Roman temple', priority: 'low', area: 'Centro', category: 'attractions', label: '🏛️ Historic', lat: 41.8986, lng: 12.4769 },
   ],
   default: [
-    { id: 1, name: 'City Center', description: 'Main downtown area', priority: 'high', area: 'Downtown', label: '⭐ Must Visit' },
-    { id: 2, name: 'Historic Old Town', description: 'Traditional historic district', priority: 'high', area: 'Old Town', label: '🏛️ Historic' },
-    { id: 3, name: 'Local Market', description: 'Fresh produce and crafts', priority: 'medium', area: 'Downtown', label: '🛒 Local' },
-    { id: 4, name: 'Central Park', description: 'Beautiful city park', priority: 'medium', area: 'Midtown', label: '🌳 Nature' },
-    { id: 5, name: 'Museum District', description: 'Cultural attractions', priority: 'low', area: 'Cultural', label: '🎨 Culture' },
+    { id: 1, name: 'City Center', description: 'Main downtown area', priority: 'high', area: 'Downtown', label: '⭐ Must Visit', lat: 40.7128, lng: -74.0060 },
+    { id: 2, name: 'Historic Old Town', description: 'Traditional historic district', priority: 'high', area: 'Old Town', label: '🏛️ Historic', lat: 40.7195, lng: -74.0020 },
+    { id: 3, name: 'Local Market', description: 'Fresh produce and crafts', priority: 'medium', area: 'Downtown', label: '🛒 Local', lat: 40.7150, lng: -74.0080 },
+    { id: 4, name: 'Central Park', description: 'Beautiful city park', priority: 'medium', area: 'Midtown', label: '🌳 Nature', lat: 40.7829, lng: -73.9654 },
+    { id: 5, name: 'Museum District', description: 'Cultural attractions', priority: 'low', area: 'Cultural', label: '🎨 Culture', lat: 40.7794, lng: -73.9632 },
   ],
 }
 
@@ -516,18 +621,45 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
     })
   )
 
-  const handleDragEnd = (event, slot, dayIndex) => {
+  const handleDragEnd = (event) => {
     const { active, over } = event
     if (!over || active.id === over.id) return
 
-    const items = routeData ? routeData[dayIndex][slot] : groupByDays()[dayIndex][slot]
-    const oldIndex = items.findIndex(i => i.id === active.id)
-    const newIndex = items.findIndex(i => i.id === over.id)
+    const activeId = active.id
+    const overId = over.id
 
-    const newData = [...(routeData || groupByDays())]
-    newData[dayIndex] = {
-      ...newData[dayIndex],
-      [slot]: arrayMove(items, oldIndex, newIndex).map((a, idx) => ({ ...a, idx }))
+    let foundDayIndex = -1
+    let foundSlot = ''
+    let foundOldIndex = -1
+    let foundNewIndex = -1
+
+    for (let d = 0; d < routeByDays.length; d++) {
+      const day = routeByDays[d]
+      for (const slot of ['morning', 'afternoon']) {
+        const items = day[slot] || []
+        const oldIdx = items.findIndex(i => i.id === activeId)
+        const newIdx = items.findIndex(i => i.id === overId)
+        if (oldIdx !== -1 && newIdx !== -1) {
+          foundDayIndex = d
+          foundSlot = slot
+          foundOldIndex = oldIdx
+          foundNewIndex = newIdx
+          break
+        }
+      }
+      if (foundDayIndex !== -1) break
+    }
+
+    if (foundDayIndex === -1) return
+
+    const items = [...routeByDays[foundDayIndex][foundSlot]]
+    const movedItems = arrayMove(items, foundOldIndex, foundNewIndex).map((a, idx) => ({ ...a, idx }))
+    const updatedItems = addTransportToItems(movedItems)
+
+    const newData = [...routeByDays]
+    newData[foundDayIndex] = {
+      ...newData[foundDayIndex],
+      [foundSlot]: updatedItems
     }
     setRouteData(newData)
   }
@@ -554,6 +686,40 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
     const cityOrder = AREA_ORDER[city] || Object.values(AREA_ORDER).flat()
     const idx = cityOrder.indexOf(area)
     return idx >= 0 ? idx : 999
+  }
+
+  const getDistanceKm = (lat1, lng1, lat2, lng2) => {
+    const R = 6371
+    const dLat = (lat2 - lat1) * Math.PI / 180
+    const dLng = (lng2 - lng1) * Math.PI / 180
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLng/2) * Math.sin(dLng/2)
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+    return R * c
+  }
+
+  const getTransportToNext = (current, next) => {
+    if (!next) return null
+
+    const sameArea = current.area === next.area
+    if (sameArea) {
+      return { type: 'walk', duration: `${10 + Math.floor(Math.random() * 11)} min` }
+    }
+
+    const dist = current.lat && next.lat ? getDistanceKm(current.lat, current.lng, next.lat, next.lng) : 0
+
+    if (dist < 3) {
+      return { type: 'metro', duration: `${15 + Math.floor(Math.random() * 16)} min` }
+    }
+    return { type: 'taxi', duration: `${20 + Math.floor(Math.random() * 21)} min` }
+  }
+
+  const addTransportToItems = (items) => {
+    return items.map((item, idx) => ({
+      ...item,
+      transportToNext: getTransportToNext(item, items[idx + 1])
+    }))
   }
 
   const groupByDays = () => {
@@ -662,9 +828,9 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
       const nightItems = dayItems.filter(a => a.isNight)
       const dayItemsOnly = dayItems.filter(a => !a.isNight)
       
-      const morning = dayItemsOnly.slice(0, Math.min(2, dayItemsOnly.length)).map((a, idx) => ({ ...a, slot: 'morning', idx }))
-      const afternoon = dayItemsOnly.slice(Math.min(2, dayItemsOnly.length)).map((a, idx) => ({ ...a, slot: 'afternoon', idx }))
-      const evening = nightItems.map((a, idx) => ({ ...a, slot: 'evening', idx }))
+      const morning = addTransportToItems(dayItemsOnly.slice(0, Math.min(2, dayItemsOnly.length)).map((a, idx) => ({ ...a, slot: 'morning', idx })))
+      const afternoon = addTransportToItems(dayItemsOnly.slice(Math.min(2, dayItemsOnly.length)).map((a, idx) => ({ ...a, slot: 'afternoon', idx })))
+      const evening = addTransportToItems(nightItems.map((a, idx) => ({ ...a, slot: 'evening', idx })))
       
       const dayFood = getFoodByArea(i, dayArea)
       
@@ -734,9 +900,10 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
 
   const removeAttraction = (dayIndex, slot, itemIdx) => {
     const newData = [...routeByDays]
+    const filteredItems = newData[dayIndex][slot].filter((_, i) => i !== itemIdx)
     newData[dayIndex] = {
       ...newData[dayIndex],
-      [slot]: newData[dayIndex][slot].filter((_, i) => i !== itemIdx)
+      [slot]: addTransportToItems(filteredItems)
     }
     setRouteData(newData)
   }
@@ -771,9 +938,16 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
 
   const addAttraction = (dayIndex, slot, attraction) => {
     const newData = [...routeByDays]
+    const slotItems = [...newData[dayIndex][slot]]
+    const newItem = { ...attraction, slot, idx: slotItems.length }
+    newItem.transportToNext = null
+    slotItems.push(newItem)
+
+    const updatedItems = addTransportToItems(slotItems)
+    
     newData[dayIndex] = {
       ...newData[dayIndex],
-      [slot]: [...newData[dayIndex][slot], { ...attraction, slot, idx: newData[dayIndex][slot].length }]
+      [slot]: updatedItems
     }
     setRouteData(newData)
     if (restDays.has(dayIndex)) {
@@ -839,13 +1013,20 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
               >
                 {dayData.morning.map((attraction, index) => (
                   <SortableItem key={attraction.id} id={attraction.id}>
-                    <div 
-                      className="route-item attraction"
-                      onDragEnd={(e) => handleDragEnd({ ...e, active: { id: attraction.id }, over: e.over }, 'morning', dayIndex)}
-                    >
+                    <div className="route-item attraction">
                       <span className="drag-handle">⋮⋮</span>
                       <span className="route-number">{index + 1}</span>
-                      <span className="route-name">{attraction.name}</span>
+                      <div className="attraction-content">
+                        <span className="route-name">{attraction.name}</span>
+                        {attraction.transportToNext && (
+                          <span className="transport-info">
+                            {attraction.transportToNext.type === 'walk' && '🚶 '}
+                            {attraction.transportToNext.type === 'metro' && '🚇 '}
+                            {attraction.transportToNext.type === 'taxi' && '🚕 '}
+                            {attraction.transportToNext.duration}
+                          </span>
+                        )}
+                      </div>
                       <div className="item-actions">
                         <button className="remove-btn" onClick={() => removeAttraction(dayIndex, 'morning', index)}>×</button>
                       </div>
@@ -882,12 +1063,20 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
               >
                 {dayData.afternoon.map((attraction, index) => (
                   <SortableItem key={attraction.id} id={attraction.id}>
-                    <div 
-                      className="route-item attraction"
-                    >
+                    <div className="route-item attraction">
                       <span className="drag-handle">⋮⋮</span>
                       <span className="route-number">{dayData.morning.length + index + 1}</span>
-                      <span className="route-name">{attraction.name}</span>
+                      <div className="attraction-content">
+                        <span className="route-name">{attraction.name}</span>
+                        {attraction.transportToNext && (
+                          <span className="transport-info">
+                            {attraction.transportToNext.type === 'walk' && '🚶 '}
+                            {attraction.transportToNext.type === 'metro' && '🚇 '}
+                            {attraction.transportToNext.type === 'taxi' && '🚕 '}
+                            {attraction.transportToNext.duration}
+                          </span>
+                        )}
+                      </div>
                       <div className="item-actions">
                         <button className="remove-btn" onClick={() => removeAttraction(dayIndex, 'afternoon', index)}>×</button>
                       </div>
@@ -917,7 +1106,17 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
               {dayData.evening.map((attraction, index) => (
                 <div key={`e-${index}`} className="route-item attraction">
                   <span className="route-bullet">🌙</span>
-                  <span className="route-name">{attraction.name}</span>
+                  <div className="attraction-content">
+                    <span className="route-name">{attraction.name}</span>
+                    {attraction.transportToNext && (
+                      <span className="transport-info">
+                        {attraction.transportToNext.type === 'walk' && '🚶 '}
+                        {attraction.transportToNext.type === 'metro' && '🚇 '}
+                        {attraction.transportToNext.type === 'taxi' && '🚕 '}
+                        {attraction.transportToNext.duration}
+                      </span>
+                    )}
+                  </div>
                   <div className="item-actions">
                     <button className="remove-btn" onClick={() => removeAttraction(dayIndex, 'evening', index)}>×</button>
                   </div>
@@ -956,20 +1155,26 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
         <span className="coming-soon">Coming soon</span>
       </div>
 
-      <Swiper
-        modules={[Pagination]}
-        spaceBetween={0}
-        slidesPerView={1}
-        pagination={{ clickable: true }}
-        onSlideChange={(swiper) => setCurrentDay(swiper.activeIndex)}
-        className="day-swiper"
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
       >
-        {routeByDays.map((dayData, index) => (
-          <SwiperSlide key={index}>
-            {renderDayCard(dayData, index)}
-          </SwiperSlide>
-        ))}
-      </Swiper>
+        <Swiper
+          modules={[Pagination]}
+          spaceBetween={0}
+          slidesPerView={1}
+          pagination={{ clickable: true }}
+          onSlideChange={(swiper) => setCurrentDay(swiper.activeIndex)}
+          className="day-swiper"
+        >
+          {routeByDays.map((dayData, index) => (
+            <SwiperSlide key={index}>
+              {renderDayCard(dayData, index)}
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </DndContext>
 
       {isItineraryEmpty && (
         <div className="empty-itinerary">
@@ -1006,6 +1211,8 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
         <button className="btn-secondary" onClick={onBack}>Back</button>
         <button className="btn-primary" onClick={onStartOver}>Start Over</button>
       </div>
+
+      <RouteMap dayData={routeByDays[currentDay]} currentDay={currentDay} />
     </div>
   )
 }
