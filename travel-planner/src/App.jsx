@@ -612,8 +612,16 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
   const [routeData, setRouteData] = useState(null)
   const [showAddModal, setShowAddModal] = useState(null)
   const [showFoodModal, setShowFoodModal] = useState(null)
+  const [showRestFoodModal, setShowRestFoodModal] = useState(false)
+  const [selectedCategory, setSelectedCategory] = useState(null)
   const [restDays, setRestDays] = useState(new Set())
   const foodData = FOOD_SPOTS[city] || FOOD_SPOTS.default
+
+  const restDayFoodData = {
+    local: ["生煎包", "小笼包", "葱油拌面", "蟹粉拌面"],
+    light: ["沙拉", "三明治", "轻食碗", "藜麦饭"],
+    tea: ["喜茶", "奈雪", "茶百道", "一点点"]
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -860,6 +868,58 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
 
   const routeByDays = routeData || groupByDays()
 
+  const getSegments = (dayData) => {
+    const segments = []
+    const places = []
+
+    places.push({ name: 'Hotel', type: 'hotel', area: null })
+    
+    const breakfast = dayData.food?.find(f => f.mealType === 'Breakfast')
+    if (breakfast) places.push({ name: breakfast.name, type: 'food', area: breakfast.area, mealType: 'Breakfast' })
+    
+    dayData.morning.forEach(a => places.push({ name: a.name, type: 'attraction', area: a.area }))
+    
+    const lunch = dayData.food?.find(f => f.mealType === 'Lunch')
+    if (lunch) places.push({ name: lunch.name, type: 'food', area: lunch.area, mealType: 'Lunch' })
+    
+    dayData.afternoon.forEach(a => places.push({ name: a.name, type: 'attraction', area: a.area }))
+    
+    const dinner = dayData.food?.find(f => f.mealType === 'Dinner')
+    if (dinner) places.push({ name: dinner.name, type: 'food', area: dinner.area, mealType: 'Dinner' })
+    
+    dayData.evening?.forEach(a => places.push({ name: a.name, type: 'attraction', area: a.area }))
+
+    for (let i = 0; i < places.length - 1; i++) {
+      const from = places[i]
+      const to = places[i + 1]
+      
+      const sameArea = from.area && to.area && from.area === to.area
+      const isWalk = sameArea
+      const isMetro = !sameArea && Math.random() > 0.3
+      
+      let transportType, duration
+      if (isWalk) {
+        transportType = 'walk'
+        duration = `${8 + Math.floor(Math.random() * 10)} min`
+      } else if (isMetro) {
+        transportType = 'metro'
+        duration = `${15 + Math.floor(Math.random() * 15)} min`
+      } else {
+        transportType = 'taxi'
+        duration = `${20 + Math.floor(Math.random() * 20)} min`
+      }
+
+      segments.push({
+        from: from.name,
+        to: to.name,
+        type: transportType,
+        duration
+      })
+    }
+
+    return segments
+  }
+
   const isItineraryEmpty = routeByDays.every(
     day => day.morning.length === 0 && day.afternoon.length === 0 && (!day.evening || day.evening.length === 0)
   )
@@ -983,6 +1043,7 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
   const renderDayCard = (dayData, dayIndex) => {
     const isRestDay = restDays.has(dayIndex)
     const isEmpty = dayData.morning.length === 0 && dayData.afternoon.length === 0 && (!dayData.evening || dayData.evening.length === 0)
+    const segments = getSegments(dayData)
     
     return (
     <div className="day-card">
@@ -991,10 +1052,29 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
       </div>
       
       {isRestDay ? (
-        <div className="rest-day">
-          <span className="route-bullet">•</span>
-          <span className="route-name">Rest Day</span>
-          <button className="btn-secondary rest-day-btn" onClick={() => toggleRestDay(dayIndex)}>Mark as Day with Plans</button>
+        <div className="rest-day-content">
+          <div className="rest-day-header">
+            <span className="rest-day-icon">🛌</span>
+            <span className="rest-day-title">Rest Day</span>
+          </div>
+          <p className="rest-day-subtitle">Take it easy today</p>
+          
+          <div className="rest-day-food">
+            <div className="rest-food-item" onClick={() => { setSelectedCategory('local'); setShowRestFoodModal(true); }}>
+              <span className="rest-food-icon">🍜</span>
+              <span className="rest-food-name">Local Food</span>
+            </div>
+            <div className="rest-food-item" onClick={() => { setSelectedCategory('light'); setShowRestFoodModal(true); }}>
+              <span className="rest-food-icon">🥗</span>
+              <span className="rest-food-name">Light Meal</span>
+            </div>
+            <div className="rest-food-item" onClick={() => { setSelectedCategory('tea'); setShowRestFoodModal(true); }}>
+              <span className="rest-food-icon">🧋</span>
+              <span className="rest-food-name">Milk Tea</span>
+            </div>
+          </div>
+          
+          <button className="btn-secondary rest-day-toggle" onClick={() => toggleRestDay(dayIndex)}>Mark as Day with Plans</button>
         </div>
       ) : isEmpty ? (
         <div className="empty-day">
@@ -1004,6 +1084,17 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
         </div>
       ) : (
         <>
+          <div className="day-segments">
+            {segments.map((seg, idx) => (
+              <div key={idx} className="segment-item">
+                <span className="segment-from">{seg.from}</span>
+                <span className="segment-arrow">
+                  ↓ {seg.type === 'walk' ? '🚶' : seg.type === 'metro' ? '🚇' : '🚕'} {seg.duration}
+                </span>
+                <span className="segment-to">{seg.to}</span>
+              </div>
+            ))}
+          </div>
           {getFoodByMealType(dayData.food, 'Breakfast') && (
             <div className={`route-item food meal-breakfast`}>
               <span className="meal-icon">🍳</span>
@@ -1298,6 +1389,29 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
             </div>
             <div className="modal-footer">
               <button className="btn-secondary" onClick={() => setShowFoodModal(null)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showRestFoodModal && selectedCategory && (
+        <div className="modal-overlay" onClick={() => { setShowRestFoodModal(false); setSelectedCategory(null); }}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Recommended {selectedCategory === 'local' ? 'Local Food' : selectedCategory === 'light' ? 'Light Meal' : 'Milk Tea'}</h3>
+            </div>
+            <div className="modal-body">
+              <div className="restaurant-list">
+                {(restDayFoodData[selectedCategory] || []).map((item, idx) => (
+                  <div key={idx} className="restaurant-option">
+                    <span className="restaurant-name">{item}</span>
+                    <span className="restaurant-type">Popular</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-secondary" onClick={() => { setShowRestFoodModal(false); setSelectedCategory(null); }}>Close</button>
             </div>
           </div>
         </div>
