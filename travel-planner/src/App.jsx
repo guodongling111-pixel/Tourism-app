@@ -192,130 +192,130 @@ const ATTRACTIONS = {
 const FOOD_SPOTS = {
   Shanghai: {
     Breakfast: [
-      { id: 1, name: 'Manner Coffee', type: 'Specialty Coffee', area: 'Xuhui' },
-      { id: 2, name: 'Seesaw Coffee', type: 'Specialty Coffee', area: 'Jing\'an' },
-      { id: 3, name: 'Egg Drop', type: 'Sandwich', area: 'Huangpu' },
-      { id: 4, name: 'Lost Bakery', type: 'Bakery', area: 'Xuhui' },
-      { id: 5, name: 'B Specification', type: 'Toast', area: 'Xuhui' },
-      { id: 6, name: 'Morning Sleep', type: 'Brunch', area: 'Huangpu' },
+      { id: 1, name: 'Manner Coffee', type: 'Specialty Coffee', area: 'Xuhui', tags: ['popular', 'instagram'] },
+      { id: 2, name: 'Seesaw Coffee', type: 'Specialty Coffee', area: 'Jing\'an', tags: ['popular', 'coffee expert'] },
+      { id: 3, name: 'Egg Drop', type: 'Sandwich', area: 'Huangpu', tags: ['viral', 'local favorite'] },
+      { id: 4, name: 'Lost Bakery', type: 'Bakery', area: 'Xuhui', tags: ['popular', 'photo spot'] },
+      { id: 5, name: 'B Specification', type: 'Toast', area: 'Xuhui', tags: ['local favorite'] },
+      { id: 6, name: 'Morning Sleep', type: 'Brunch', area: 'Huangpu', tags: ['cozy'] },
     ],
     Lunch: [
-      { id: 4, name: 'Haidilao (海底捞)', type: 'Hotpot', area: 'Xuhui' },
-      { id: 5, name: 'Lost Bakery', type: 'Bistro', area: 'Xuhui' },
-      { id: 6, name: 'Shenzhen Lu (深圳路)', type: 'Dim Sum', area: 'Huangpu' },
+      { id: 4, name: 'Haidilao (海底捞)', type: 'Hotpot', area: 'Xuhui', tags: ['popular', 'service'] },
+      { id: 5, name: 'Lost Bakery', type: 'Bistro', area: 'Xuhui', tags: ['local favorite'] },
+      { id: 6, name: 'Shenzhen Lu (深圳路)', type: 'Dim Sum', area: 'Huangpu', tags: ['local favorite', 'traditional'] },
     ],
     Dinner: [
-      { id: 7, name: 'Ultraviolet by Paul Pairet', type: 'Fine Dining', area: 'Huangpu' },
-      { id: 8, name: 'Fu He (福和)', type: 'Chinese Fusion', area: 'Xuhui' },
-      { id: 9, name: 'The Cannery', type: 'Seafood', area: 'Huangpu' },
+      { id: 7, name: 'Ultraviolet by Paul Pairet', type: 'Fine Dining', area: 'Huangpu', tags: ['米其林', 'photo spot'] },
+      { id: 8, name: 'Fu He (福和)', type: 'Chinese Fusion', area: 'Xuhui', tags: ['popular', 'creative'] },
+      { id: 9, name: 'The Cannery', type: 'Seafood', area: 'Huangpu', tags: ['cozy', 'photo spot'] },
     ],
   },
   Tokyo: {
     Breakfast: [
-      { id: 1, name: 'Blue Bottle Coffee', type: 'Cafe', area: 'Omotesando' },
-      { id: 2, name: 'Komeda Coffee', type: 'Coffee Shop', area: 'Shibuya' },
-      { id: 3, name: 'Lawson Store', type: 'Convenience', area: 'Various' },
-      { id: 4, name: 'Sarabeth\'s', type: 'Brunch', area: 'Omotesando' },
-      { id: 5, name: 'Eggoman', type: 'Sandwich', area: 'Shibuya' },
-      { id: 6, name: 'B的外', type: 'Toast', area: 'Shibuya' },
+      { id: 1, name: 'Blue Bottle Coffee', type: 'Cafe', area: 'Omotesando', tags: ['popular', 'instagram'] },
+      { id: 2, name: 'Komeda Coffee', type: 'Coffee Shop', area: 'Shibuya', tags: ['traditional', 'local favorite'] },
+      { id: 3, name: 'Lawson Store', type: 'Convenience', area: 'Various', tags: ['budget', 'local favorite'] },
+      { id: 4, name: 'Sarabeth\'s', type: 'Brunch', area: 'Omotesando', tags: ['popular', 'photo spot'] },
+      { id: 5, name: 'Eggoman', type: 'Sandwich', area: 'Shibuya', tags: ['viral', 'local favorite'] },
+      { id: 6, name: 'B的外', type: 'Toast', area: 'Shibuya', tags: ['popular'] },
     ],
     Lunch: [
-      { id: 4, name: 'Ichiran Ramen', type: 'Ramen', area: 'Shibuya' },
-      { id: 5, name: 'Maisen', type: 'Tonkatsu', area: 'Shibuya' },
-      { id: 6, name: 'Gyukatsu Motomura', type: 'Beef Cutlet', area: 'Shibuya' },
+      { id: 4, name: 'Ichiran Ramen', type: 'Ramen', area: 'Shibuya', tags: ['popular', 'local favorite'] },
+      { id: 5, name: 'Maisen', type: 'Tonkatsu', area: 'Shibuya', tags: ['popular', 'traditional'] },
+      { id: 6, name: 'Gyukatsu Motomura', type: 'Beef Cutlet', area: 'Shibuya', tags: ['viral', 'photo spot'] },
     ],
     Dinner: [
-      { id: 7, name: 'Tsukiji Sushi', type: 'Sushi', area: 'Tsukiji' },
-      { id: 8, name: 'Ushiya', type: 'BBQ', area: 'Shibuya' },
-      { id: 9, name: 'Gontran Cherrier', type: 'Bakery', area: 'Shibuya' },
+      { id: 7, name: 'Tsukiji Sushi', type: 'Sushi', area: 'Tsukiji', tags: ['米其林', 'traditional'] },
+      { id: 8, name: 'Ushiya', type: 'BBQ', area: 'Shibuya', tags: ['popular', 'local favorite'] },
+      { id: 9, name: 'Gontran Cherrier', type: 'Bakery', area: 'Shibuya', tags: ['popular', 'photo spot'] },
     ],
   },
   Paris: {
     Breakfast: [
-      { id: 1, name: 'Café de Flore', type: 'Coffee Shop', area: 'Saint-Germain' },
-      { id: 2, name: 'Du Pain et des Idées', type: 'Bakery', area: 'Canal Saint-Martin' },
-      { id: 3, name: 'La Maison Sans Gluten', type: 'Cafe', area: 'Le Marais' },
-      { id: 4, name: 'Ten Belles', type: 'Brunch', area: 'Canal Saint-Martin' },
-      { id: 5, name: 'Kauder', type: 'Bakery', area: 'Le Marais' },
-      { id: 6, name: 'Café Merlin', type: 'Cafe', area: 'Montparnasse' },
+      { id: 1, name: 'Café de Flore', type: 'Coffee Shop', area: 'Saint-Germain', tags: ['historic', 'photo spot'] },
+      { id: 2, name: 'Du Pain et des Idées', type: 'Bakery', area: 'Canal Saint-Martin', tags: ['popular', 'local favorite'] },
+      { id: 3, name: 'La Maison Sans Gluten', type: 'Cafe', area: 'Le Marais', tags: ['healthy', 'instagram'] },
+      { id: 4, name: 'Ten Belles', type: 'Brunch', area: 'Canal Saint-Martin', tags: ['popular', 'coffee expert'] },
+      { id: 5, name: 'Kauder', type: 'Bakery', area: 'Le Marais', tags: ['local favorite', 'traditional'] },
+      { id: 6, name: 'Café Merlin', type: 'Cafe', area: 'Montparnasse', tags: ['cozy', 'historic'] },
     ],
     Lunch: [
-      { id: 4, name: 'Breizh Café', type: 'Crepes', area: 'Marais' },
-      { id: 5, name: 'Le Comptoir du Panthéon', type: 'Bistro', area: 'Latin Quarter' },
-      { id: 6, name: 'Café Martini', type: 'Bistro', area: 'Montparnasse' },
+      { id: 4, name: 'Breizh Café', type: 'Crepes', area: 'Marais', tags: ['popular', 'local favorite'] },
+      { id: 5, name: 'Le Comptoir du Panthéon', type: 'Bistro', area: 'Latin Quarter', tags: ['traditional', 'cozy'] },
+      { id: 6, name: 'Café Martini', type: 'Bistro', area: 'Montparnasse', tags: ['local favorite'] },
     ],
     Dinner: [
-      { id: 7, name: 'L\'Ambroisie', type: 'French Fine Dining', area: 'Place Vendôme' },
-      { id: 8, name: 'Le Cinq', type: 'French', area: 'George V' },
-      { id: 9, name: 'Bouillon Chartier', type: 'French', area: 'Grand Boulevard' },
+      { id: 7, name: 'L\'Ambroisie', type: 'French Fine Dining', area: 'Place Vendôme', tags: ['米其林', 'romantic'] },
+      { id: 8, name: 'Le Cinq', type: 'French', area: 'George V', tags: ['米其林', 'popular'] },
+      { id: 9, name: 'Bouillon Chartier', type: 'French', area: 'Grand Boulevard', tags: ['local favorite', 'budget'] },
     ],
   },
   'New York': {
     Breakfast: [
-      { id: 1, name: 'Blue Bottle Coffee', type: 'Cafe', area: 'Brooklyn' },
-      { id: 2, name: 'Joe\'s Coffee', type: 'Coffee Shop', area: 'West Village' },
-      { id: 3, name: 'Clinton Street Baking', type: 'Bakery', area: 'Lower East Side' },
+      { id: 1, name: 'Blue Bottle Coffee', type: 'Cafe', area: 'Brooklyn', tags: ['popular', 'instagram'] },
+      { id: 2, name: 'Joe\'s Coffee', type: 'Coffee Shop', area: 'West Village', tags: ['local favorite', 'cozy'] },
+      { id: 3, name: 'Clinton Street Baking', type: 'Bakery', area: 'Lower East Side', tags: ['popular', 'photo spot'] },
     ],
     Lunch: [
-      { id: 4, name: 'Katz\'s Delicatessen', type: 'Deli', area: 'Lower East Side' },
-      { id: 5, name: 'Joe\'s Pizza', type: 'Pizza', area: 'Greenwich Village' },
-      { id: 6, name: 'Shake Shack', type: 'Burger', area: 'Madison Square' },
+      { id: 4, name: 'Katz\'s Delicatessen', type: 'Deli', area: 'Lower East Side', tags: ['historic', 'local favorite'] },
+      { id: 5, name: 'Joe\'s Pizza', type: 'Pizza', area: 'Greenwich Village', tags: ['popular', 'budget'] },
+      { id: 6, name: 'Shake Shack', type: 'Burger', area: 'Madison Square', tags: ['popular', 'viral'] },
     ],
     Dinner: [
-      { id: 7, name: 'Le Bernardin', type: 'Seafood', area: 'Midtown' },
-      { id: 8, name: 'Carbone', type: 'Italian', area: 'West Village' },
-      { id: 9, name: 'Keens', type: 'Steakhouse', area: 'Garment District' },
+      { id: 7, name: 'Le Bernardin', type: 'Seafood', area: 'Midtown', tags: ['米其林', 'popular'] },
+      { id: 8, name: 'Carbone', type: 'Italian', area: 'West Village', tags: ['popular', 'photo spot'] },
+      { id: 9, name: 'Keens', type: 'Steakhouse', area: 'Garment District', tags: ['historic', 'traditional'] },
     ],
   },
   London: {
     Breakfast: [
-      { id: 1, name: 'Monmouth Coffee', type: 'Coffee', area: 'Borough' },
-      { id: 2, name: 'The Coal Shed', type: 'Full English', area: 'Tower Bridge' },
-      { id: 3, name: 'Flat Iron', type: 'Cafe', area: 'Covent Garden' },
+      { id: 1, name: 'Monmouth Coffee', type: 'Coffee', area: 'Borough', tags: ['popular', 'coffee expert'] },
+      { id: 2, name: 'The Coal Shed', type: 'Full English', area: 'Tower Bridge', tags: ['traditional', 'local favorite'] },
+      { id: 3, name: 'Flat Iron', type: 'Cafe', area: 'Covent Garden', tags: ['popular', 'budget'] },
     ],
     Lunch: [
-      { id: 4, name: 'Dishoom', type: 'Indian', area: 'Covent Garden' },
-      { id: 5, name: 'Borough Market', type: 'Market Food', area: 'Southwark' },
-      { id: 6, name: 'Brick Lane Curry', type: 'Indian', area: 'Brick Lane' },
+      { id: 4, name: 'Dishoom', type: 'Indian', area: 'Covent Garden', tags: ['popular', 'local favorite'] },
+      { id: 5, name: 'Borough Market', type: 'Market Food', area: 'Southwark', tags: ['local favorite', 'vibrant'] },
+      { id: 6, name: 'Brick Lane Curry', type: 'Indian', area: 'Brick Lane', tags: ['traditional', 'budget'] },
     ],
     Dinner: [
-      { id: 7, name: 'The Ledbury', type: 'Fine Dining', area: 'Notting Hill' },
-      { id: 8, name: 'The Harwood Arms', type: 'Pub', area: 'Fulham' },
-      { id: 9, name: 'The Wolseley', type: 'European', area: 'Piccadilly' },
+      { id: 7, name: 'The Ledbury', type: 'Fine Dining', area: 'Notting Hill', tags: ['米其林', 'romantic'] },
+      { id: 8, name: 'The Harwood Arms', type: 'Pub', area: 'Fulham', tags: ['popular', 'local favorite'] },
+      { id: 9, name: 'The Wolseley', type: 'European', area: 'Piccadilly', tags: ['classic', 'photo spot'] },
     ],
   },
   Rome: {
     Breakfast: [
-      { id: 1, name: 'Sant\'Eustachio Il Caffè', type: 'Coffee', area: 'Piazza di Sant\'Eustachio' },
-      { id: 2, name: 'Roscioli', type: 'Cafe', area: 'Campo de\' Fiori' },
-      { id: 3, name: 'Piazza Madonna', type: 'Bar', area: 'Centro Storico' },
+      { id: 1, name: 'Sant\'Eustachio Il Caffè', type: 'Coffee', area: 'Piazza di Sant\'Eustachio', tags: ['historic', 'local favorite'] },
+      { id: 2, name: 'Roscioli', type: 'Cafe', area: 'Campo de\' Fiori', tags: ['popular', 'instagram'] },
+      { id: 3, name: 'Piazza Madonna', type: 'Bar', area: 'Centro Storico', tags: ['cozy', 'traditional'] },
     ],
     Lunch: [
-      { id: 4, name: 'Pizzarium', type: 'Pizza al Taglio', area: 'Trastevere' },
-      { id: 5, name: 'Da Enzo al 29', type: 'Trattoria', area: 'Trastevere' },
-      { id: 6, name: 'Roscioli Salumeria', type: 'Cured Meats', area: 'Campo de\' Fiori' },
+      { id: 4, name: 'Pizzarium', type: 'Pizza al Taglio', area: 'Trastevere', tags: ['popular', 'viral'] },
+      { id: 5, name: 'Da Enzo al 29', type: 'Trattoria', area: 'Trastevere', tags: ['local favorite', 'traditional'] },
+      { id: 6, name: 'Roscioli Salumeria', type: 'Cured Meats', area: 'Campo de\' Fiori', tags: ['popular', 'photo spot'] },
     ],
     Dinner: [
-      { id: 7, name: 'Il Pagliaccio', type: 'Fine Dining', area: 'Centro Storico' },
-      { id: 8, name: 'Trattoria da Danilo', type: 'Trattoria', area: 'Testaccio' },
-      { id: 9, name: 'Giolitti', type: 'Gelato', area: 'Centro Storico' },
+      { id: 7, name: 'Il Pagliaccio', type: 'Fine Dining', area: 'Centro Storico', tags: ['米其林', 'romantic'] },
+      { id: 8, name: 'Trattoria da Danilo', type: 'Trattoria', area: 'Testaccio', tags: ['local favorite', 'traditional'] },
+      { id: 9, name: 'Giolitti', type: 'Gelato', area: 'Centro Storico', tags: ['popular', 'photo spot'] },
     ],
   },
   default: {
     Breakfast: [
-      { id: 1, name: 'Corner Cafe', type: 'Coffee', area: 'Downtown' },
-      { id: 2, name: 'Bakery House', type: 'Bakery', area: 'City Center' },
-      { id: 3, name: 'Morning Bistro', type: 'Brunch', area: 'Downtown' },
-      { id: 4, name: 'Toast House', type: 'Toast', area: 'City Center' },
-      { id: 5, name: 'Local Diner', type: 'Light Meal', area: 'Downtown' },
+      { id: 1, name: 'Corner Cafe', type: 'Coffee', area: 'Downtown', tags: ['popular'] },
+      { id: 2, name: 'Bakery House', type: 'Bakery', area: 'City Center', tags: ['local favorite'] },
+      { id: 3, name: 'Morning Bistro', type: 'Brunch', area: 'Downtown', tags: ['cozy'] },
+      { id: 4, name: 'Toast House', type: 'Toast', area: 'City Center', tags: ['popular'] },
+      { id: 5, name: 'Local Diner', type: 'Light Meal', area: 'Downtown', tags: ['budget'] },
     ],
     Lunch: [
-      { id: 3, name: 'Local Bistro', type: 'Casual', area: 'City Center' },
-      { id: 4, name: 'Food Court', type: 'Various', area: 'Mall' },
+      { id: 3, name: 'Local Bistro', type: 'Casual', area: 'City Center', tags: ['local favorite'] },
+      { id: 4, name: 'Food Court', type: 'Various', area: 'Mall', tags: ['budget', 'variety'] },
     ],
     Dinner: [
-      { id: 5, name: 'Restaurant Bell', type: 'Fine Dining', area: 'City Center' },
-      { id: 6, name: 'Family Restaurant', type: 'Casual', area: 'Downtown' },
+      { id: 5, name: 'Restaurant Bell', type: 'Fine Dining', area: 'City Center', tags: ['romantic'] },
+      { id: 6, name: 'Family Restaurant', type: 'Casual', area: 'Downtown', tags: ['cozy', 'budget'] },
     ],
   },
 }
@@ -601,7 +601,7 @@ function SortableItem({ id, children }) {
   }
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div ref={setNodeRef} style={style} {...attributes}>
       {children}
     </div>
   )
@@ -611,6 +611,7 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
   const [currentDay, setCurrentDay] = useState(0)
   const [routeData, setRouteData] = useState(null)
   const [showAddModal, setShowAddModal] = useState(null)
+  const [showFoodModal, setShowFoodModal] = useState(null)
   const [restDays, setRestDays] = useState(new Set())
   const foodData = FOOD_SPOTS[city] || FOOD_SPOTS.default
 
@@ -808,12 +809,23 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
     assignAttractions(morningAttractions)
     assignAttractions(eveningAttractions)
     
-    const getFoodByArea = (dayIndex, area) => {
+    const getFoodByArea = (dayIndex, area, allAttractions) => {
+      const firstMorning = allAttractions[0]?.area
+      const lastMorning = allAttractions[allAttractions.length - 1]?.area
+      const eveningArea = dayAttractions[dayIndex].find(a => a.isNight)?.area
+
+      const areas = {
+        Breakfast: firstMorning || area,
+        Lunch: lastMorning || firstMorning || area,
+        Dinner: eveningArea || lastMorning || area
+      }
+
       const foodResult = []
       mealTypes.forEach(meal => {
+        const targetArea = areas[meal]
         const allSpots = foodData[meal] || []
-        const matchingSpots = allSpots.filter(spot => spot.area === area)
-        const fallbackSpots = allSpots.filter(spot => spot.area !== area)
+        const matchingSpots = allSpots.filter(spot => spot.area === targetArea)
+        const fallbackSpots = allSpots.filter(spot => spot.area !== targetArea)
         const spots = matchingSpots.length > 0 ? matchingSpots : fallbackSpots
         const spot = spots.length > 0 ? spots[dayIndex % spots.length] : null
         if (spot) foodResult.push({ ...spot, mealType: meal })
@@ -831,8 +843,8 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
       const morning = addTransportToItems(dayItemsOnly.slice(0, Math.min(2, dayItemsOnly.length)).map((a, idx) => ({ ...a, slot: 'morning', idx })))
       const afternoon = addTransportToItems(dayItemsOnly.slice(Math.min(2, dayItemsOnly.length)).map((a, idx) => ({ ...a, slot: 'afternoon', idx })))
       const evening = addTransportToItems(nightItems.map((a, idx) => ({ ...a, slot: 'evening', idx })))
-      
-      const dayFood = getFoodByArea(i, dayArea)
+
+      const dayFood = getFoodByArea(i, dayArea, morning)
       
       result.push({ 
         day: i + 1, 
@@ -898,30 +910,34 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
 
   const getFoodByMealType = (food, type) => food.find(f => f.mealType === type)
 
-  const removeAttraction = (dayIndex, slot, itemIdx) => {
-    const newData = [...routeByDays]
-    const filteredItems = newData[dayIndex][slot].filter((_, i) => i !== itemIdx)
-    newData[dayIndex] = {
-      ...newData[dayIndex],
-      [slot]: addTransportToItems(filteredItems)
-    }
-    setRouteData(newData)
-  }
+  const removeAttraction = (dayIndex, time, index) => {
+    const newData = routeByDays.map((day, i) => {
+      if (i !== dayIndex) return day;
+      const timeArray = day[time] || [];
+      return {
+        ...day,
+        [time]: timeArray.filter((_, idx) => idx !== index)
+      };
+    });
+    setRouteData(newData);
+  };
 
   const replaceFood = (dayIndex, mealType) => {
+    setShowFoodModal({ dayIndex, mealType })
+  }
+
+  const selectRestaurant = (restaurant) => {
+    if (!showFoodModal) return
+    const { dayIndex, mealType } = showFoodModal
     const currentFood = routeByDays[dayIndex].food
-    const current = getFoodByMealType(currentFood, mealType)
-    const allFood = foodData[mealType] || []
-    const currentIndex = allFood.findIndex(f => f.id === current?.id)
-    const nextIndex = (currentIndex + 1) % allFood.length
-    const newFood = { ...allFood[nextIndex], mealType }
     
     const newData = [...routeByDays]
     newData[dayIndex] = {
       ...newData[dayIndex],
-      food: currentFood.map(f => f.mealType === mealType ? newFood : f)
+      food: currentFood.map(f => f.mealType === mealType ? { ...restaurant, mealType } : f)
     }
     setRouteData(newData)
+    setShowFoodModal(null)
   }
 
   const moveItem = (dayIndex, slot, itemIdx, direction) => {
@@ -1028,7 +1044,15 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
                         )}
                       </div>
                       <div className="item-actions">
-                        <button className="remove-btn" onClick={() => removeAttraction(dayIndex, 'morning', index)}>×</button>
+                        <span 
+                          style={{ cursor: 'pointer', color: '#9ca3af', fontSize: '18px' }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            removeAttraction(dayIndex, 'morning', index);
+                            return false;
+                          }}
+                        >×</span>
                       </div>
                     </div>
                   </SortableItem>
@@ -1078,7 +1102,15 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
                         )}
                       </div>
                       <div className="item-actions">
-                        <button className="remove-btn" onClick={() => removeAttraction(dayIndex, 'afternoon', index)}>×</button>
+                        <span 
+                          style={{ cursor: 'pointer', color: '#9ca3af', fontSize: '18px' }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.log("🗑️ delete afternoon:", dayIndex, index);
+                            removeAttraction(dayIndex, 'afternoon', index);
+                          }}
+                        >×</span>
                       </div>
                     </div>
                   </SortableItem>
@@ -1118,7 +1150,15 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
                     )}
                   </div>
                   <div className="item-actions">
-                    <button className="remove-btn" onClick={() => removeAttraction(dayIndex, 'evening', index)}>×</button>
+                    <span 
+                      style={{ cursor: 'pointer', color: '#9ca3af', fontSize: '18px' }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log("🗑️ delete evening:", dayIndex, index);
+                        removeAttraction(dayIndex, 'evening', index);
+                      }}
+                    >×</span>
                   </div>
                 </div>
               ))}
@@ -1202,6 +1242,62 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
             </div>
             <div className="modal-footer">
               <button className="btn-secondary" onClick={() => setShowAddModal(null)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showFoodModal && (
+        <div className="modal-overlay" onClick={() => setShowFoodModal(null)}>
+          <div className="modal-content food-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Choose {showFoodModal.mealType}</h3>
+            </div>
+            <div className="modal-body">
+              {(() => {
+                const dayArea = routeByDays[showFoodModal.dayIndex].area
+                const allRestaurants = foodData[showFoodModal.mealType] || []
+                const sameArea = allRestaurants.filter(r => r.area === dayArea)
+                const otherArea = allRestaurants.filter(r => r.area !== dayArea)
+                const restaurants = sameArea.length > 0 ? sameArea : otherArea
+
+                if (restaurants.length === 0) {
+                  return <p className="no-attractions">No restaurants available</p>
+                }
+
+                return (
+                  <div className="restaurant-list">
+                    {sameArea.length > 0 && (
+                      <div className="restaurant-section">
+                        <div className="restaurant-section-title">📍 Same area - {dayArea}</div>
+                        {sameArea.map(r => (
+                          <div key={r.id} className="restaurant-option" onClick={() => selectRestaurant(r)}>
+                            <span className="restaurant-name">{r.name}</span>
+                            <span className="restaurant-type">{r.type}</span>
+                            {r.tags?.map(tag => (
+                              <span key={tag} className="restaurant-tag">{tag}</span>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {otherArea.length > 0 && (
+                      <div className="restaurant-section">
+                        <div className="restaurant-section-title">Other areas</div>
+                        {otherArea.map(r => (
+                          <div key={r.id} className="restaurant-option" onClick={() => selectRestaurant(r)}>
+                            <span className="restaurant-name">{r.name}</span>
+                            <span className="restaurant-type">{r.type} • {r.area}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )
+              })()}
+            </div>
+            <div className="modal-footer">
+              <button className="btn-secondary" onClick={() => setShowFoodModal(null)}>Cancel</button>
             </div>
           </div>
         </div>
