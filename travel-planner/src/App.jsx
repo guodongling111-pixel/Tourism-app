@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Pagination } from 'swiper/modules'
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet'
@@ -192,130 +192,130 @@ const ATTRACTIONS = {
 const FOOD_SPOTS = {
   Shanghai: {
     Breakfast: [
-      { id: 1, name: 'Manner Coffee', type: 'Specialty Coffee', area: 'Xuhui' },
-      { id: 2, name: 'Seesaw Coffee', type: 'Specialty Coffee', area: 'Jing\'an' },
-      { id: 3, name: 'Egg Drop', type: 'Sandwich', area: 'Huangpu' },
-      { id: 4, name: 'Lost Bakery', type: 'Bakery', area: 'Xuhui' },
-      { id: 5, name: 'B Specification', type: 'Toast', area: 'Xuhui' },
-      { id: 6, name: 'Morning Sleep', type: 'Brunch', area: 'Huangpu' },
+      { id: 1, name: 'Manner Coffee', type: 'Specialty Coffee', area: 'Xuhui', tags: ['popular', 'instagram'] },
+      { id: 2, name: 'Seesaw Coffee', type: 'Specialty Coffee', area: 'Jing\'an', tags: ['popular', 'coffee expert'] },
+      { id: 3, name: 'Egg Drop', type: 'Sandwich', area: 'Huangpu', tags: ['viral', 'local favorite'] },
+      { id: 4, name: 'Lost Bakery', type: 'Bakery', area: 'Xuhui', tags: ['popular', 'photo spot'] },
+      { id: 5, name: 'B Specification', type: 'Toast', area: 'Xuhui', tags: ['local favorite'] },
+      { id: 6, name: 'Morning Sleep', type: 'Brunch', area: 'Huangpu', tags: ['cozy'] },
     ],
     Lunch: [
-      { id: 4, name: 'Haidilao (海底捞)', type: 'Hotpot', area: 'Xuhui' },
-      { id: 5, name: 'Lost Bakery', type: 'Bistro', area: 'Xuhui' },
-      { id: 6, name: 'Shenzhen Lu (深圳路)', type: 'Dim Sum', area: 'Huangpu' },
+      { id: 4, name: 'Haidilao (海底捞)', type: 'Hotpot', area: 'Xuhui', tags: ['popular', 'service'] },
+      { id: 5, name: 'Lost Bakery', type: 'Bistro', area: 'Xuhui', tags: ['local favorite'] },
+      { id: 6, name: 'Shenzhen Lu (深圳路)', type: 'Dim Sum', area: 'Huangpu', tags: ['local favorite', 'traditional'] },
     ],
     Dinner: [
-      { id: 7, name: 'Ultraviolet by Paul Pairet', type: 'Fine Dining', area: 'Huangpu' },
-      { id: 8, name: 'Fu He (福和)', type: 'Chinese Fusion', area: 'Xuhui' },
-      { id: 9, name: 'The Cannery', type: 'Seafood', area: 'Huangpu' },
+      { id: 7, name: 'Ultraviolet by Paul Pairet', type: 'Fine Dining', area: 'Huangpu', tags: ['米其林', 'photo spot'] },
+      { id: 8, name: 'Fu He (福和)', type: 'Chinese Fusion', area: 'Xuhui', tags: ['popular', 'creative'] },
+      { id: 9, name: 'The Cannery', type: 'Seafood', area: 'Huangpu', tags: ['cozy', 'photo spot'] },
     ],
   },
   Tokyo: {
     Breakfast: [
-      { id: 1, name: 'Blue Bottle Coffee', type: 'Cafe', area: 'Omotesando' },
-      { id: 2, name: 'Komeda Coffee', type: 'Coffee Shop', area: 'Shibuya' },
-      { id: 3, name: 'Lawson Store', type: 'Convenience', area: 'Various' },
-      { id: 4, name: 'Sarabeth\'s', type: 'Brunch', area: 'Omotesando' },
-      { id: 5, name: 'Eggoman', type: 'Sandwich', area: 'Shibuya' },
-      { id: 6, name: 'B的外', type: 'Toast', area: 'Shibuya' },
+      { id: 1, name: 'Blue Bottle Coffee', type: 'Cafe', area: 'Omotesando', tags: ['popular', 'instagram'] },
+      { id: 2, name: 'Komeda Coffee', type: 'Coffee Shop', area: 'Shibuya', tags: ['traditional', 'local favorite'] },
+      { id: 3, name: 'Lawson Store', type: 'Convenience', area: 'Various', tags: ['budget', 'local favorite'] },
+      { id: 4, name: 'Sarabeth\'s', type: 'Brunch', area: 'Omotesando', tags: ['popular', 'photo spot'] },
+      { id: 5, name: 'Eggoman', type: 'Sandwich', area: 'Shibuya', tags: ['viral', 'local favorite'] },
+      { id: 6, name: 'B的外', type: 'Toast', area: 'Shibuya', tags: ['popular'] },
     ],
     Lunch: [
-      { id: 4, name: 'Ichiran Ramen', type: 'Ramen', area: 'Shibuya' },
-      { id: 5, name: 'Maisen', type: 'Tonkatsu', area: 'Shibuya' },
-      { id: 6, name: 'Gyukatsu Motomura', type: 'Beef Cutlet', area: 'Shibuya' },
+      { id: 4, name: 'Ichiran Ramen', type: 'Ramen', area: 'Shibuya', tags: ['popular', 'local favorite'] },
+      { id: 5, name: 'Maisen', type: 'Tonkatsu', area: 'Shibuya', tags: ['popular', 'traditional'] },
+      { id: 6, name: 'Gyukatsu Motomura', type: 'Beef Cutlet', area: 'Shibuya', tags: ['viral', 'photo spot'] },
     ],
     Dinner: [
-      { id: 7, name: 'Tsukiji Sushi', type: 'Sushi', area: 'Tsukiji' },
-      { id: 8, name: 'Ushiya', type: 'BBQ', area: 'Shibuya' },
-      { id: 9, name: 'Gontran Cherrier', type: 'Bakery', area: 'Shibuya' },
+      { id: 7, name: 'Tsukiji Sushi', type: 'Sushi', area: 'Tsukiji', tags: ['米其林', 'traditional'] },
+      { id: 8, name: 'Ushiya', type: 'BBQ', area: 'Shibuya', tags: ['popular', 'local favorite'] },
+      { id: 9, name: 'Gontran Cherrier', type: 'Bakery', area: 'Shibuya', tags: ['popular', 'photo spot'] },
     ],
   },
   Paris: {
     Breakfast: [
-      { id: 1, name: 'Café de Flore', type: 'Coffee Shop', area: 'Saint-Germain' },
-      { id: 2, name: 'Du Pain et des Idées', type: 'Bakery', area: 'Canal Saint-Martin' },
-      { id: 3, name: 'La Maison Sans Gluten', type: 'Cafe', area: 'Le Marais' },
-      { id: 4, name: 'Ten Belles', type: 'Brunch', area: 'Canal Saint-Martin' },
-      { id: 5, name: 'Kauder', type: 'Bakery', area: 'Le Marais' },
-      { id: 6, name: 'Café Merlin', type: 'Cafe', area: 'Montparnasse' },
+      { id: 1, name: 'Café de Flore', type: 'Coffee Shop', area: 'Saint-Germain', tags: ['historic', 'photo spot'] },
+      { id: 2, name: 'Du Pain et des Idées', type: 'Bakery', area: 'Canal Saint-Martin', tags: ['popular', 'local favorite'] },
+      { id: 3, name: 'La Maison Sans Gluten', type: 'Cafe', area: 'Le Marais', tags: ['healthy', 'instagram'] },
+      { id: 4, name: 'Ten Belles', type: 'Brunch', area: 'Canal Saint-Martin', tags: ['popular', 'coffee expert'] },
+      { id: 5, name: 'Kauder', type: 'Bakery', area: 'Le Marais', tags: ['local favorite', 'traditional'] },
+      { id: 6, name: 'Café Merlin', type: 'Cafe', area: 'Montparnasse', tags: ['cozy', 'historic'] },
     ],
     Lunch: [
-      { id: 4, name: 'Breizh Café', type: 'Crepes', area: 'Marais' },
-      { id: 5, name: 'Le Comptoir du Panthéon', type: 'Bistro', area: 'Latin Quarter' },
-      { id: 6, name: 'Café Martini', type: 'Bistro', area: 'Montparnasse' },
+      { id: 4, name: 'Breizh Café', type: 'Crepes', area: 'Marais', tags: ['popular', 'local favorite'] },
+      { id: 5, name: 'Le Comptoir du Panthéon', type: 'Bistro', area: 'Latin Quarter', tags: ['traditional', 'cozy'] },
+      { id: 6, name: 'Café Martini', type: 'Bistro', area: 'Montparnasse', tags: ['local favorite'] },
     ],
     Dinner: [
-      { id: 7, name: 'L\'Ambroisie', type: 'French Fine Dining', area: 'Place Vendôme' },
-      { id: 8, name: 'Le Cinq', type: 'French', area: 'George V' },
-      { id: 9, name: 'Bouillon Chartier', type: 'French', area: 'Grand Boulevard' },
+      { id: 7, name: 'L\'Ambroisie', type: 'French Fine Dining', area: 'Place Vendôme', tags: ['米其林', 'romantic'] },
+      { id: 8, name: 'Le Cinq', type: 'French', area: 'George V', tags: ['米其林', 'popular'] },
+      { id: 9, name: 'Bouillon Chartier', type: 'French', area: 'Grand Boulevard', tags: ['local favorite', 'budget'] },
     ],
   },
   'New York': {
     Breakfast: [
-      { id: 1, name: 'Blue Bottle Coffee', type: 'Cafe', area: 'Brooklyn' },
-      { id: 2, name: 'Joe\'s Coffee', type: 'Coffee Shop', area: 'West Village' },
-      { id: 3, name: 'Clinton Street Baking', type: 'Bakery', area: 'Lower East Side' },
+      { id: 1, name: 'Blue Bottle Coffee', type: 'Cafe', area: 'Brooklyn', tags: ['popular', 'instagram'] },
+      { id: 2, name: 'Joe\'s Coffee', type: 'Coffee Shop', area: 'West Village', tags: ['local favorite', 'cozy'] },
+      { id: 3, name: 'Clinton Street Baking', type: 'Bakery', area: 'Lower East Side', tags: ['popular', 'photo spot'] },
     ],
     Lunch: [
-      { id: 4, name: 'Katz\'s Delicatessen', type: 'Deli', area: 'Lower East Side' },
-      { id: 5, name: 'Joe\'s Pizza', type: 'Pizza', area: 'Greenwich Village' },
-      { id: 6, name: 'Shake Shack', type: 'Burger', area: 'Madison Square' },
+      { id: 4, name: 'Katz\'s Delicatessen', type: 'Deli', area: 'Lower East Side', tags: ['historic', 'local favorite'] },
+      { id: 5, name: 'Joe\'s Pizza', type: 'Pizza', area: 'Greenwich Village', tags: ['popular', 'budget'] },
+      { id: 6, name: 'Shake Shack', type: 'Burger', area: 'Madison Square', tags: ['popular', 'viral'] },
     ],
     Dinner: [
-      { id: 7, name: 'Le Bernardin', type: 'Seafood', area: 'Midtown' },
-      { id: 8, name: 'Carbone', type: 'Italian', area: 'West Village' },
-      { id: 9, name: 'Keens', type: 'Steakhouse', area: 'Garment District' },
+      { id: 7, name: 'Le Bernardin', type: 'Seafood', area: 'Midtown', tags: ['米其林', 'popular'] },
+      { id: 8, name: 'Carbone', type: 'Italian', area: 'West Village', tags: ['popular', 'photo spot'] },
+      { id: 9, name: 'Keens', type: 'Steakhouse', area: 'Garment District', tags: ['historic', 'traditional'] },
     ],
   },
   London: {
     Breakfast: [
-      { id: 1, name: 'Monmouth Coffee', type: 'Coffee', area: 'Borough' },
-      { id: 2, name: 'The Coal Shed', type: 'Full English', area: 'Tower Bridge' },
-      { id: 3, name: 'Flat Iron', type: 'Cafe', area: 'Covent Garden' },
+      { id: 1, name: 'Monmouth Coffee', type: 'Coffee', area: 'Borough', tags: ['popular', 'coffee expert'] },
+      { id: 2, name: 'The Coal Shed', type: 'Full English', area: 'Tower Bridge', tags: ['traditional', 'local favorite'] },
+      { id: 3, name: 'Flat Iron', type: 'Cafe', area: 'Covent Garden', tags: ['popular', 'budget'] },
     ],
     Lunch: [
-      { id: 4, name: 'Dishoom', type: 'Indian', area: 'Covent Garden' },
-      { id: 5, name: 'Borough Market', type: 'Market Food', area: 'Southwark' },
-      { id: 6, name: 'Brick Lane Curry', type: 'Indian', area: 'Brick Lane' },
+      { id: 4, name: 'Dishoom', type: 'Indian', area: 'Covent Garden', tags: ['popular', 'local favorite'] },
+      { id: 5, name: 'Borough Market', type: 'Market Food', area: 'Southwark', tags: ['local favorite', 'vibrant'] },
+      { id: 6, name: 'Brick Lane Curry', type: 'Indian', area: 'Brick Lane', tags: ['traditional', 'budget'] },
     ],
     Dinner: [
-      { id: 7, name: 'The Ledbury', type: 'Fine Dining', area: 'Notting Hill' },
-      { id: 8, name: 'The Harwood Arms', type: 'Pub', area: 'Fulham' },
-      { id: 9, name: 'The Wolseley', type: 'European', area: 'Piccadilly' },
+      { id: 7, name: 'The Ledbury', type: 'Fine Dining', area: 'Notting Hill', tags: ['米其林', 'romantic'] },
+      { id: 8, name: 'The Harwood Arms', type: 'Pub', area: 'Fulham', tags: ['popular', 'local favorite'] },
+      { id: 9, name: 'The Wolseley', type: 'European', area: 'Piccadilly', tags: ['classic', 'photo spot'] },
     ],
   },
   Rome: {
     Breakfast: [
-      { id: 1, name: 'Sant\'Eustachio Il Caffè', type: 'Coffee', area: 'Piazza di Sant\'Eustachio' },
-      { id: 2, name: 'Roscioli', type: 'Cafe', area: 'Campo de\' Fiori' },
-      { id: 3, name: 'Piazza Madonna', type: 'Bar', area: 'Centro Storico' },
+      { id: 1, name: 'Sant\'Eustachio Il Caffè', type: 'Coffee', area: 'Piazza di Sant\'Eustachio', tags: ['historic', 'local favorite'] },
+      { id: 2, name: 'Roscioli', type: 'Cafe', area: 'Campo de\' Fiori', tags: ['popular', 'instagram'] },
+      { id: 3, name: 'Piazza Madonna', type: 'Bar', area: 'Centro Storico', tags: ['cozy', 'traditional'] },
     ],
     Lunch: [
-      { id: 4, name: 'Pizzarium', type: 'Pizza al Taglio', area: 'Trastevere' },
-      { id: 5, name: 'Da Enzo al 29', type: 'Trattoria', area: 'Trastevere' },
-      { id: 6, name: 'Roscioli Salumeria', type: 'Cured Meats', area: 'Campo de\' Fiori' },
+      { id: 4, name: 'Pizzarium', type: 'Pizza al Taglio', area: 'Trastevere', tags: ['popular', 'viral'] },
+      { id: 5, name: 'Da Enzo al 29', type: 'Trattoria', area: 'Trastevere', tags: ['local favorite', 'traditional'] },
+      { id: 6, name: 'Roscioli Salumeria', type: 'Cured Meats', area: 'Campo de\' Fiori', tags: ['popular', 'photo spot'] },
     ],
     Dinner: [
-      { id: 7, name: 'Il Pagliaccio', type: 'Fine Dining', area: 'Centro Storico' },
-      { id: 8, name: 'Trattoria da Danilo', type: 'Trattoria', area: 'Testaccio' },
-      { id: 9, name: 'Giolitti', type: 'Gelato', area: 'Centro Storico' },
+      { id: 7, name: 'Il Pagliaccio', type: 'Fine Dining', area: 'Centro Storico', tags: ['米其林', 'romantic'] },
+      { id: 8, name: 'Trattoria da Danilo', type: 'Trattoria', area: 'Testaccio', tags: ['local favorite', 'traditional'] },
+      { id: 9, name: 'Giolitti', type: 'Gelato', area: 'Centro Storico', tags: ['popular', 'photo spot'] },
     ],
   },
   default: {
     Breakfast: [
-      { id: 1, name: 'Corner Cafe', type: 'Coffee', area: 'Downtown' },
-      { id: 2, name: 'Bakery House', type: 'Bakery', area: 'City Center' },
-      { id: 3, name: 'Morning Bistro', type: 'Brunch', area: 'Downtown' },
-      { id: 4, name: 'Toast House', type: 'Toast', area: 'City Center' },
-      { id: 5, name: 'Local Diner', type: 'Light Meal', area: 'Downtown' },
+      { id: 1, name: 'Corner Cafe', type: 'Coffee', area: 'Downtown', tags: ['popular'] },
+      { id: 2, name: 'Bakery House', type: 'Bakery', area: 'City Center', tags: ['local favorite'] },
+      { id: 3, name: 'Morning Bistro', type: 'Brunch', area: 'Downtown', tags: ['cozy'] },
+      { id: 4, name: 'Toast House', type: 'Toast', area: 'City Center', tags: ['popular'] },
+      { id: 5, name: 'Local Diner', type: 'Light Meal', area: 'Downtown', tags: ['budget'] },
     ],
     Lunch: [
-      { id: 3, name: 'Local Bistro', type: 'Casual', area: 'City Center' },
-      { id: 4, name: 'Food Court', type: 'Various', area: 'Mall' },
+      { id: 3, name: 'Local Bistro', type: 'Casual', area: 'City Center', tags: ['local favorite'] },
+      { id: 4, name: 'Food Court', type: 'Various', area: 'Mall', tags: ['budget', 'variety'] },
     ],
     Dinner: [
-      { id: 5, name: 'Restaurant Bell', type: 'Fine Dining', area: 'City Center' },
-      { id: 6, name: 'Family Restaurant', type: 'Casual', area: 'Downtown' },
+      { id: 5, name: 'Restaurant Bell', type: 'Fine Dining', area: 'City Center', tags: ['romantic'] },
+      { id: 6, name: 'Family Restaurant', type: 'Casual', area: 'Downtown', tags: ['cozy', 'budget'] },
     ],
   },
 }
@@ -392,6 +392,8 @@ function AttractionSelection({ city, days, onNext, onBack }) {
   const [selected, setSelected] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [xhsInput, setXhsInput] = useState('')
+  const [xhsCustomItems, setXhsCustomItems] = useState([])
 
   const attractions = ATTRACTIONS[city] || ATTRACTIONS.default
 
@@ -414,17 +416,206 @@ function AttractionSelection({ city, days, onNext, onBack }) {
     setError('')
   }
 
+  const parseXiaohongshu = (text) => {
+    try {
+      if (!text || text.trim() === '') {
+        setError('Please paste some content first')
+        return
+      }
+
+      const allAttractions = Object.values(ATTRACTIONS).flat()
+      
+      if (text.includes('→') || text.includes('->')) {
+        const places = text.split(/→|->/).map(p => p.trim()).filter(Boolean)
+        
+        const morning = []
+        const afternoon = []
+        const evening = []
+        
+        places.forEach((loc, idx) => {
+          const cleaned = loc.trim()
+          if (!cleaned || cleaned.length < 2) return
+          
+          const matched = allAttractions.find(attr => {
+            const chineseNames = attr.name.match(/[\u4e00-\u9fa5]+/g) || []
+            return chineseNames.some(cn => cleaned.includes(cn)) ||
+                   cleaned.toLowerCase().includes(attr.name.split(' ')[0].toLowerCase())
+          })
+          
+          if (matched) {
+            const item = { ...matched, source: 'known' }
+            if (places.length >= 4) {
+              if (idx < 2) morning.push(item)
+              else if (idx < places.length - 1) afternoon.push(item)
+              else evening.push(item)
+            } else if (places.length === 3) {
+              if (idx === 0) morning.push(item)
+              else if (idx === 1) afternoon.push(item)
+              else evening.push(item)
+            } else if (places.length === 2) {
+              if (idx === 0) morning.push(item)
+              else afternoon.push(item)
+            }
+          } else {
+            const chineseMatch = cleaned.match(/[\u4e00-\u9fa5]{2,}/g)
+            if (chineseMatch) {
+              chineseMatch.forEach(cn => {
+                const customItem = {
+                  id: `custom-${Date.now()}-${Math.random()}`,
+                  name: cn,
+                  description: 'Custom location',
+                  priority: 'medium',
+                  area: 'Custom',
+                  category: 'citywalk',
+                  label: '📍 Custom',
+                  source: 'custom',
+                  lat: null,
+                  lng: null
+                }
+                if (places.length >= 4) {
+                  if (idx < 2) morning.push(customItem)
+                  else if (idx < places.length - 1) afternoon.push(customItem)
+                  else evening.push(customItem)
+                } else if (places.length === 3) {
+                  if (idx === 0) morning.push(customItem)
+                  else if (idx === 1) afternoon.push(customItem)
+                  else evening.push(customItem)
+                } else if (places.length === 2) {
+                  if (idx === 0) morning.push(customItem)
+                  else afternoon.push(customItem)
+                }
+              })
+            }
+          }
+        })
+        
+        if (morning.length === 0 && afternoon.length === 0 && evening.length === 0) {
+          setError('No valid travel info found')
+          return
+        }
+        
+        const result = [{
+          day: 1,
+          morning: morning.map((a, i) => ({ ...a, idx: i })),
+          afternoon: afternoon.map((a, i) => ({ ...a, idx: i })),
+          evening: evening.map((a, i) => ({ ...a, idx: i })),
+          food: []
+        }]
+        
+        setSelected([])
+        setXhsCustomItems([])
+        setXhsInput('')
+        setError('')
+        
+        onNext(result, true)
+        return
+      }
+      
+      const lines = text.split(/\n+/)
+      const result = []
+      
+      lines.forEach(line => {
+        const trimmed = line.trim()
+        if (!trimmed) return
+        
+        const match = trimmed.match(/Day(\d+)/)
+        const dayNum = match ? parseInt(match[1]) : null
+        
+        const parts = trimmed.split("：")
+        const content = parts.length > 1 ? parts[1] : (parts[0].split(/Day\d+/)[1] || parts[0])
+        
+        const locations = content.split(/\s+/).filter(l => l.trim())
+        
+        const morning = []
+        const afternoon = []
+        const evening = []
+        
+        locations.forEach((loc, idx) => {
+          const cleaned = loc.trim()
+          if (!cleaned || cleaned.length < 2) return
+          
+          const matched = allAttractions.find(attr => {
+            const chineseNames = attr.name.match(/[\u4e00-\u9fa5]+/g) || []
+            return chineseNames.some(cn => cleaned.includes(cn)) ||
+                   cleaned.toLowerCase().includes(attr.name.split(' ')[0].toLowerCase())
+          })
+          
+          if (matched) {
+            const item = { ...matched, source: 'known', originalName: cleaned }
+            if (idx < 2) morning.push(item)
+            else if (idx < locations.length - 1) afternoon.push(item)
+            else evening.push(item)
+          } else {
+            const chineseMatch = cleaned.match(/[\u4e00-\u9fa5]{2,}/g)
+            if (chineseMatch) {
+              chineseMatch.forEach(cn => {
+                const customItem = {
+                  id: `custom-${Date.now()}-${Math.random()}`,
+                  name: cn,
+                  description: 'Custom location',
+                  priority: 'medium',
+                  area: 'Custom',
+                  category: 'citywalk',
+                  label: '📍 Custom',
+                  source: 'custom',
+                  lat: null,
+                  lng: null
+                }
+                if (idx < 2) morning.push(customItem)
+                else if (idx < locations.length - 1) afternoon.push(customItem)
+                else evening.push(customItem)
+              })
+            }
+          }
+        })
+        
+        if (morning.length > 0 || afternoon.length > 0 || evening.length > 0) {
+          result.push({
+            day: dayNum || result.length + 1,
+            morning: morning.map((a, i) => ({ ...a, idx: i })),
+            afternoon: afternoon.map((a, i) => ({ ...a, idx: i })),
+            evening: evening.map((a, i) => ({ ...a, idx: i })),
+            food: []
+          })
+        }
+      })
+      
+      if (result.length === 0) {
+        setError('No valid travel info found')
+        return
+      }
+      
+      console.log("parsed days:", result)
+      
+      while (result.length < days) {
+        result.push({ day: result.length + 1, morning: [], afternoon: [], evening: [], food: [] })
+      }
+      
+      setSelected([])
+      setXhsCustomItems([])
+      setXhsInput('')
+      setError('')
+      
+      const hasUserOrder = /morning|afternoon|evening|上午|下午|晚上/i.test(text)
+      onNext(result, hasUserOrder)
+    } catch (err) {
+      console.error("parse error:", err)
+      setError('Parsing failed: ' + err.message)
+    }
+  }
+
   const handleSubmit = () => {
     const selectedAttractions = attractions.filter((a) => selected.includes(a.id))
     console.log('Selected attractions:', selectedAttractions)
     
-    if (selectedAttractions.length === 0) {
+    if (selectedAttractions.length === 0 && xhsCustomItems.length === 0) {
       alert('Please select at least 1 attraction')
       return
     }
     setLoading(true)
     setTimeout(() => {
-      onNext(selectedAttractions)
+      const dayData = [{ day: 1, attractions: [...selectedAttractions, ...xhsCustomItems] }]
+      onNext(dayData, false)
       setLoading(false)
     }, 800)
   }
@@ -433,6 +624,24 @@ function AttractionSelection({ city, days, onNext, onBack }) {
     <div className="page">
       <h2>Select Attractions</h2>
       <p className="subtitle">{city} - {days} days</p>
+      
+      <div className="xhs-import">
+        <div className="xhs-header">
+          <span className="xhs-icon">📕</span>
+          <span className="xhs-title">Import from Xiaohongshu</span>
+        </div>
+        <textarea
+          className="xhs-textarea"
+          placeholder="Paste Xiaohongshu post content or link"
+          value={xhsInput}
+          onChange={(e) => setXhsInput(e.target.value)}
+        />
+        <button className="btn-primary xhs-btn" onClick={() => parseXiaohongshu(xhsInput)}>
+          Generate from Post
+        </button>
+        {error && <p className="xhs-error">{error}</p>}
+      </div>
+      
       <div className="attraction-list">
         {Object.entries(grouped).map(([category, items]) => {
           const config = CATEGORY_CONFIG[category] || CATEGORY_CONFIG.attractions
@@ -601,18 +810,41 @@ function SortableItem({ id, children }) {
   }
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div ref={setNodeRef} style={style} {...attributes}>
       {children}
     </div>
   )
 }
 
-function RouteResult({ city, days, attractions, onStartOver, onBack }) {
+function RouteResult({ city, days, attractions, userDefinedOrder = false, onStartOver, onBack }) {
   const [currentDay, setCurrentDay] = useState(0)
   const [routeData, setRouteData] = useState(null)
   const [showAddModal, setShowAddModal] = useState(null)
+  const [showFoodModal, setShowFoodModal] = useState(null)
+  const [showRestFoodModal, setShowRestFoodModal] = useState(false)
+  const [selectedCategory, setSelectedCategory] = useState(null)
   const [restDays, setRestDays] = useState(new Set())
+  const [showDeliveryModal, setShowDeliveryModal] = useState(false)
+  const [selectedMealType, setSelectedMealType] = useState(null)
   const foodData = FOOD_SPOTS[city] || FOOD_SPOTS.default
+
+  const processedAttractions = React.useMemo(() => {
+    if (!attractions || !Array.isArray(attractions)) return []
+    if (attractions.length === 0) return []
+    if (attractions[0] && attractions[0].morning !== undefined) {
+      return attractions
+    }
+    if (attractions[0] && attractions[0].attractions !== undefined) {
+      return attractions.flatMap(d => d.attractions || [])
+    }
+    return attractions
+  }, [attractions])
+
+  const restDayFoodData = {
+    local: ["生煎包", "小笼包", "葱油拌面", "蟹粉拌面"],
+    light: ["沙拉", "三明治", "轻食碗", "藜麦饭"],
+    tea: ["喜茶", "奈雪", "茶百道", "一点点"]
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -676,6 +908,31 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
     'Night Cruise', 'Night View', 'Evening', 'dinner', 'Rooftop'
   ]
 
+  useEffect(() => {
+    console.log("useEffect running:", { userDefinedOrder, attractionsLength: attractions?.length })
+    if (!attractions || !Array.isArray(attractions) || attractions.length === 0) return
+    
+    const firstItem = attractions[0]
+    const hasSlotFormat = firstItem && firstItem.morning !== undefined
+    console.log("hasSlotFormat:", hasSlotFormat)
+    
+    if (userDefinedOrder || hasSlotFormat) {
+      const processedData = attractions.map(day => ({
+        ...day,
+        morning: day.morning || [],
+        afternoon: day.afternoon || [],
+        evening: day.evening || [],
+        food: day.food && day.food.length > 0 ? day.food : [
+          { mealType: 'Breakfast', name: null, type: null, area: null },
+          { mealType: 'Lunch', name: null, type: null, area: null },
+          { mealType: 'Dinner', name: null, type: null, area: null }
+        ]
+      }))
+      console.log("setting routeData:", processedData)
+      setRouteData(processedData)
+    }
+  }, [userDefinedOrder, attractions])
+
   const isNightAttraction = (name) => {
     return NIGHT_ATTRACTIONS.some(key => 
       name.toLowerCase().includes(key.toLowerCase())
@@ -723,10 +980,17 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
   }
 
   const groupByDays = () => {
+    if (!processedAttractions || processedAttractions.length === 0) return []
+    
+    const firstItem = processedAttractions[0]
+    if (firstItem && firstItem.morning !== undefined) {
+      return processedAttractions
+    }
+    
     const result = []
     const mealTypes = ['Breakfast', 'Lunch', 'Dinner']
     
-    const attractionsWithMeta = attractions.map(a => ({
+    const attractionsWithMeta = processedAttractions.map(a => ({
       ...a,
       area: a.area || 'default',
       isNight: isNightAttraction(a.name),
@@ -808,12 +1072,23 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
     assignAttractions(morningAttractions)
     assignAttractions(eveningAttractions)
     
-    const getFoodByArea = (dayIndex, area) => {
+    const getFoodByArea = (dayIndex, area, allAttractions) => {
+      const firstMorning = allAttractions[0]?.area
+      const lastMorning = allAttractions[allAttractions.length - 1]?.area
+      const eveningArea = dayAttractions[dayIndex].find(a => a.isNight)?.area
+
+      const areas = {
+        Breakfast: firstMorning || area,
+        Lunch: lastMorning || firstMorning || area,
+        Dinner: eveningArea || lastMorning || area
+      }
+
       const foodResult = []
       mealTypes.forEach(meal => {
+        const targetArea = areas[meal]
         const allSpots = foodData[meal] || []
-        const matchingSpots = allSpots.filter(spot => spot.area === area)
-        const fallbackSpots = allSpots.filter(spot => spot.area !== area)
+        const matchingSpots = allSpots.filter(spot => spot.area === targetArea)
+        const fallbackSpots = allSpots.filter(spot => spot.area !== targetArea)
         const spots = matchingSpots.length > 0 ? matchingSpots : fallbackSpots
         const spot = spots.length > 0 ? spots[dayIndex % spots.length] : null
         if (spot) foodResult.push({ ...spot, mealType: meal })
@@ -831,8 +1106,8 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
       const morning = addTransportToItems(dayItemsOnly.slice(0, Math.min(2, dayItemsOnly.length)).map((a, idx) => ({ ...a, slot: 'morning', idx })))
       const afternoon = addTransportToItems(dayItemsOnly.slice(Math.min(2, dayItemsOnly.length)).map((a, idx) => ({ ...a, slot: 'afternoon', idx })))
       const evening = addTransportToItems(nightItems.map((a, idx) => ({ ...a, slot: 'evening', idx })))
-      
-      const dayFood = getFoodByArea(i, dayArea)
+
+      const dayFood = getFoodByArea(i, dayArea, morning)
       
       result.push({ 
         day: i + 1, 
@@ -847,6 +1122,58 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
   }
 
   const routeByDays = routeData || groupByDays()
+
+  const getSegments = (dayData) => {
+    const segments = []
+    const places = []
+
+    places.push({ name: 'Hotel', type: 'hotel', area: null })
+    
+    const breakfast = dayData.food?.find(f => f.mealType === 'Breakfast')
+    if (breakfast) places.push({ name: breakfast.name, type: 'food', area: breakfast.area, mealType: 'Breakfast' })
+    
+    dayData.morning.forEach(a => places.push({ name: a.name, type: 'attraction', area: a.area }))
+    
+    const lunch = dayData.food?.find(f => f.mealType === 'Lunch')
+    if (lunch) places.push({ name: lunch.name, type: 'food', area: lunch.area, mealType: 'Lunch' })
+    
+    dayData.afternoon.forEach(a => places.push({ name: a.name, type: 'attraction', area: a.area }))
+    
+    const dinner = dayData.food?.find(f => f.mealType === 'Dinner')
+    if (dinner) places.push({ name: dinner.name, type: 'food', area: dinner.area, mealType: 'Dinner' })
+    
+    dayData.evening?.forEach(a => places.push({ name: a.name, type: 'attraction', area: a.area }))
+
+    for (let i = 0; i < places.length - 1; i++) {
+      const from = places[i]
+      const to = places[i + 1]
+      
+      const sameArea = from.area && to.area && from.area === to.area
+      const isWalk = sameArea
+      const isMetro = !sameArea && Math.random() > 0.3
+      
+      let transportType, duration
+      if (isWalk) {
+        transportType = 'walk'
+        duration = `${8 + Math.floor(Math.random() * 10)} min`
+      } else if (isMetro) {
+        transportType = 'metro'
+        duration = `${15 + Math.floor(Math.random() * 15)} min`
+      } else {
+        transportType = 'taxi'
+        duration = `${20 + Math.floor(Math.random() * 20)} min`
+      }
+
+      segments.push({
+        from: from.name,
+        to: to.name,
+        type: transportType,
+        duration
+      })
+    }
+
+    return segments
+  }
 
   const isItineraryEmpty = routeByDays.every(
     day => day.morning.length === 0 && day.afternoon.length === 0 && (!day.evening || day.evening.length === 0)
@@ -898,30 +1225,61 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
 
   const getFoodByMealType = (food, type) => food.find(f => f.mealType === type)
 
-  const removeAttraction = (dayIndex, slot, itemIdx) => {
-    const newData = [...routeByDays]
-    const filteredItems = newData[dayIndex][slot].filter((_, i) => i !== itemIdx)
-    newData[dayIndex] = {
-      ...newData[dayIndex],
-      [slot]: addTransportToItems(filteredItems)
+  const isDelivery = (foodItem) => foodItem?.type === 'delivery'
+
+  const getFoodDisplay = (foodItem) => {
+    if (!foodItem) return null
+    if (foodItem.type === 'delivery') {
+      return { icon: '🛵', name: foodItem.name, subtitle: 'Delivery' }
     }
-    setRouteData(newData)
+    return { icon: foodItem.mealType === 'Breakfast' ? '🍳' : foodItem.mealType === 'Lunch' ? '🍜' : '🍽️', name: foodItem.name, subtitle: `${foodItem.type} • ${foodItem.area}` }
   }
 
+  const removeAttraction = (dayIndex, time, index) => {
+    const newData = routeByDays.map((day, i) => {
+      if (i !== dayIndex) return day;
+      const timeArray = day[time] || [];
+      return {
+        ...day,
+        [time]: timeArray.filter((_, idx) => idx !== index)
+      };
+    });
+    setRouteData(newData);
+  };
+
   const replaceFood = (dayIndex, mealType) => {
+    setShowFoodModal({ dayIndex, mealType })
+  }
+
+  const selectRestaurant = (restaurant) => {
+    if (!showFoodModal) return
+    const { dayIndex, mealType } = showFoodModal
     const currentFood = routeByDays[dayIndex].food
-    const current = getFoodByMealType(currentFood, mealType)
-    const allFood = foodData[mealType] || []
-    const currentIndex = allFood.findIndex(f => f.id === current?.id)
-    const nextIndex = (currentIndex + 1) % allFood.length
-    const newFood = { ...allFood[nextIndex], mealType }
     
     const newData = [...routeByDays]
     newData[dayIndex] = {
       ...newData[dayIndex],
-      food: currentFood.map(f => f.mealType === mealType ? newFood : f)
+      food: currentFood.map(f => f.mealType === mealType ? { ...restaurant, mealType } : f)
     }
     setRouteData(newData)
+    setShowFoodModal(null)
+  }
+
+  const selectDelivery = (deliveryName) => {
+    if (!selectedMealType) return
+    const dayIndex = showFoodModal?.dayIndex
+    if (dayIndex === undefined) return
+    
+    const currentFood = routeByDays[dayIndex].food
+    
+    const newData = [...routeByDays]
+    newData[dayIndex] = {
+      ...newData[dayIndex],
+      food: currentFood.map(f => f.mealType === selectedMealType ? { name: deliveryName, type: 'delivery', mealType: selectedMealType } : f)
+    }
+    setRouteData(newData)
+    setShowDeliveryModal(false)
+    setSelectedMealType(null)
   }
 
   const moveItem = (dayIndex, slot, itemIdx, direction) => {
@@ -967,6 +1325,7 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
   const renderDayCard = (dayData, dayIndex) => {
     const isRestDay = restDays.has(dayIndex)
     const isEmpty = dayData.morning.length === 0 && dayData.afternoon.length === 0 && (!dayData.evening || dayData.evening.length === 0)
+    const segments = getSegments(dayData)
     
     return (
     <div className="day-card">
@@ -975,10 +1334,29 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
       </div>
       
       {isRestDay ? (
-        <div className="rest-day">
-          <span className="route-bullet">•</span>
-          <span className="route-name">Rest Day</span>
-          <button className="btn-secondary rest-day-btn" onClick={() => toggleRestDay(dayIndex)}>Mark as Day with Plans</button>
+        <div className="rest-day-content">
+          <div className="rest-day-header">
+            <span className="rest-day-icon">🛌</span>
+            <span className="rest-day-title">Rest Day</span>
+          </div>
+          <p className="rest-day-subtitle">Take it easy today</p>
+          
+          <div className="rest-day-food">
+            <div className="rest-food-item" onClick={() => { setSelectedCategory('local'); setShowRestFoodModal(true); }}>
+              <span className="rest-food-icon">🍜</span>
+              <span className="rest-food-name">Local Food</span>
+            </div>
+            <div className="rest-food-item" onClick={() => { setSelectedCategory('light'); setShowRestFoodModal(true); }}>
+              <span className="rest-food-icon">🥗</span>
+              <span className="rest-food-name">Light Meal</span>
+            </div>
+            <div className="rest-food-item" onClick={() => { setSelectedCategory('tea'); setShowRestFoodModal(true); }}>
+              <span className="rest-food-icon">🧋</span>
+              <span className="rest-food-name">Milk Tea</span>
+            </div>
+          </div>
+          
+          <button className="btn-secondary rest-day-toggle" onClick={() => toggleRestDay(dayIndex)}>Mark as Day with Plans</button>
         </div>
       ) : isEmpty ? (
         <div className="empty-day">
@@ -988,13 +1366,25 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
         </div>
       ) : (
         <>
-          {getFoodByMealType(dayData.food, 'Breakfast') && (
+          <div className="day-segments">
+            {segments.map((seg, idx) => (
+              <div key={idx} className="segment-item">
+                <span className="segment-from">{seg.from}</span>
+                <span className="segment-arrow">
+                  ↓ {seg.type === 'walk' ? '🚶' : seg.type === 'metro' ? '🚇' : '🚕'} {seg.duration}
+                </span>
+                <span className="segment-to">{seg.to}</span>
+              </div>
+            ))}
+          </div>
+          
+          {dayData.food && dayData.food.find(f => f.mealType === 'Breakfast') && (
             <div className={`route-item food meal-breakfast`}>
-              <span className="meal-icon">🍳</span>
+              <span className="meal-icon">{isDelivery(getFoodByMealType(dayData.food, 'Breakfast')) ? '🛵' : '🍳'}</span>
               <div className="route-food-info">
                 <span className="meal-label">Breakfast</span>
-                <span className="route-name">{getFoodByMealType(dayData.food, 'Breakfast').name}</span>
-                <span className="route-food-type">{getFoodByMealType(dayData.food, 'Breakfast').type} • {getFoodByMealType(dayData.food, 'Breakfast').area}</span>
+                <span className="route-name">{getFoodByMealType(dayData.food, 'Breakfast')?.name || 'Tap to add'}</span>
+                {getFoodByMealType(dayData.food, 'Breakfast')?.name && <span className="route-food-type">{isDelivery(getFoodByMealType(dayData.food, 'Breakfast')) ? 'Delivery' : `${getFoodByMealType(dayData.food, 'Breakfast').type} • ${getFoodByMealType(dayData.food, 'Breakfast').area}`}</span>}
               </div>
               <button className="edit-btn" onClick={() => replaceFood(dayIndex, 'Breakfast')}>↻</button>
             </div>
@@ -1028,7 +1418,15 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
                         )}
                       </div>
                       <div className="item-actions">
-                        <button className="remove-btn" onClick={() => removeAttraction(dayIndex, 'morning', index)}>×</button>
+                        <span 
+                          style={{ cursor: 'pointer', color: '#9ca3af', fontSize: '18px' }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            removeAttraction(dayIndex, 'morning', index);
+                            return false;
+                          }}
+                        >×</span>
                       </div>
                     </div>
                   </SortableItem>
@@ -1038,13 +1436,13 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
             <button className="add-btn" onClick={() => handleAddClick(dayIndex, 'morning')}>+ Add Attraction</button>
           </div>
           
-          {getFoodByMealType(dayData.food, 'Lunch') && (
+          {dayData.food && dayData.food.find(f => f.mealType === 'Lunch') && (
             <div className={`route-item food meal-lunch`}>
-              <span className="meal-icon">🍜</span>
+              <span className="meal-icon">{isDelivery(getFoodByMealType(dayData.food, 'Lunch')) ? '🛵' : '🍜'}</span>
               <div className="route-food-info">
                 <span className="meal-label">Lunch</span>
-                <span className="route-name">{getFoodByMealType(dayData.food, 'Lunch').name}</span>
-                <span className="route-food-type">{getFoodByMealType(dayData.food, 'Lunch').type} • {getFoodByMealType(dayData.food, 'Lunch').area}</span>
+                <span className="route-name">{getFoodByMealType(dayData.food, 'Lunch')?.name || 'Tap to add'}</span>
+                {getFoodByMealType(dayData.food, 'Lunch')?.name && <span className="route-food-type">{isDelivery(getFoodByMealType(dayData.food, 'Lunch')) ? 'Delivery' : `${getFoodByMealType(dayData.food, 'Lunch').type} • ${getFoodByMealType(dayData.food, 'Lunch').area}`}</span>}
               </div>
               <button className="edit-btn" onClick={() => replaceFood(dayIndex, 'Lunch')}>↻</button>
             </div>
@@ -1078,7 +1476,15 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
                         )}
                       </div>
                       <div className="item-actions">
-                        <button className="remove-btn" onClick={() => removeAttraction(dayIndex, 'afternoon', index)}>×</button>
+                        <span 
+                          style={{ cursor: 'pointer', color: '#9ca3af', fontSize: '18px' }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.log("🗑️ delete afternoon:", dayIndex, index);
+                            removeAttraction(dayIndex, 'afternoon', index);
+                          }}
+                        >×</span>
                       </div>
                     </div>
                   </SortableItem>
@@ -1088,13 +1494,13 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
             <button className="add-btn" onClick={() => handleAddClick(dayIndex, 'afternoon')}>+ Add Attraction</button>
           </div>
           
-          {getFoodByMealType(dayData.food, 'Dinner') && (
+          {dayData.food && dayData.food.find(f => f.mealType === 'Dinner') && (
             <div className={`route-item food meal-dinner`}>
-              <span className="meal-icon">🍽️</span>
+              <span className="meal-icon">{isDelivery(getFoodByMealType(dayData.food, 'Dinner')) ? '🛵' : '🍽️'}</span>
               <div className="route-food-info">
                 <span className="meal-label">Dinner</span>
-                <span className="route-name">{getFoodByMealType(dayData.food, 'Dinner').name}</span>
-                <span className="route-food-type">{getFoodByMealType(dayData.food, 'Dinner').type} • {getFoodByMealType(dayData.food, 'Dinner').area}</span>
+                <span className="route-name">{getFoodByMealType(dayData.food, 'Dinner')?.name || 'Tap to add'}</span>
+                {getFoodByMealType(dayData.food, 'Dinner')?.name && <span className="route-food-type">{isDelivery(getFoodByMealType(dayData.food, 'Dinner')) ? 'Delivery' : `${getFoodByMealType(dayData.food, 'Dinner').type} • ${getFoodByMealType(dayData.food, 'Dinner').area}`}</span>}
               </div>
               <button className="edit-btn" onClick={() => replaceFood(dayIndex, 'Dinner')}>↻</button>
             </div>
@@ -1118,7 +1524,15 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
                     )}
                   </div>
                   <div className="item-actions">
-                    <button className="remove-btn" onClick={() => removeAttraction(dayIndex, 'evening', index)}>×</button>
+                    <span 
+                      style={{ cursor: 'pointer', color: '#9ca3af', fontSize: '18px' }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log("🗑️ delete evening:", dayIndex, index);
+                        removeAttraction(dayIndex, 'evening', index);
+                      }}
+                    >×</span>
                   </div>
                 </div>
               ))}
@@ -1207,6 +1621,135 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
         </div>
       )}
 
+      {showFoodModal && (
+        <div className="modal-overlay" onClick={() => setShowFoodModal(null)}>
+          <div className="modal-content food-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Choose {showFoodModal.mealType}</h3>
+            </div>
+            <div className="modal-body">
+              {(() => {
+                const dayArea = routeByDays[showFoodModal.dayIndex].area
+                const allRestaurants = foodData[showFoodModal.mealType] || []
+                const sameArea = allRestaurants.filter(r => r.area === dayArea)
+                const otherArea = allRestaurants.filter(r => r.area !== dayArea)
+                const restaurants = sameArea.length > 0 ? sameArea : otherArea
+
+                if (restaurants.length === 0) {
+                  return <p className="no-attractions">No restaurants available</p>
+                }
+
+                return (
+                  <div className="restaurant-list">
+                    {sameArea.length > 0 && (
+                      <div className="restaurant-section">
+                        <div className="restaurant-section-title">📍 Same area - {dayArea}</div>
+                        {sameArea.map(r => (
+                          <div key={r.id} className="restaurant-option" onClick={() => selectRestaurant(r)}>
+                            <span className="restaurant-name">{r.name}</span>
+                            <span className="restaurant-type">{r.type}</span>
+                            {r.tags?.map(tag => (
+                              <span key={tag} className="restaurant-tag">{tag}</span>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {otherArea.length > 0 && (
+                      <div className="restaurant-section">
+                        <div className="restaurant-section-title">Other areas</div>
+                        {otherArea.map(r => (
+                          <div key={r.id} className="restaurant-option" onClick={() => selectRestaurant(r)}>
+                            <span className="restaurant-name">{r.name}</span>
+                            <span className="restaurant-type">{r.type} • {r.area}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )
+              })()}
+            </div>
+            <div className="modal-footer">
+              <button className="btn-delivery" onClick={() => { setSelectedMealType(showFoodModal.mealType); setShowDeliveryModal(true); setShowFoodModal(null); }}>🛵 Delivery</button>
+              <button className="btn-secondary" onClick={() => setShowFoodModal(null)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showRestFoodModal && selectedCategory && (
+        <div className="modal-overlay" onClick={() => { setShowRestFoodModal(false); setSelectedCategory(null); }}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Recommended {selectedCategory === 'local' ? 'Local Food' : selectedCategory === 'light' ? 'Light Meal' : 'Milk Tea'}</h3>
+            </div>
+            <div className="modal-body">
+              <div className="restaurant-list">
+                {(restDayFoodData[selectedCategory] || []).map((item, idx) => (
+                  <div key={idx} className="restaurant-option">
+                    <span className="restaurant-name">{item}</span>
+                    <span className="restaurant-type">Popular</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-secondary" onClick={() => { setShowRestFoodModal(false); setSelectedCategory(null); }}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showDeliveryModal && (
+        <div className="modal-overlay" onClick={() => setShowDeliveryModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Choose Delivery</h3>
+            </div>
+            <div className="modal-body">
+              <div className="delivery-section">
+                <div className="delivery-section-title">📍 Same area</div>
+                <div className="delivery-grid">
+                  <div className="delivery-option" onClick={() => selectDelivery('快餐便当')}>
+                    <span className="delivery-name">快餐便当</span>
+                    <span className="delivery-type">Quick & Easy</span>
+                  </div>
+                  <div className="delivery-option" onClick={() => selectDelivery('沙拉轻食')}>
+                    <span className="delivery-name">沙拉轻食</span>
+                    <span className="delivery-type">Healthy</span>
+                  </div>
+                  <div className="delivery-option" onClick={() => selectDelivery('奶茶咖啡')}>
+                    <span className="delivery-name">奶茶咖啡</span>
+                    <span className="delivery-type">Beverages</span>
+                  </div>
+                </div>
+              </div>
+              <div className="delivery-section">
+                <div className="delivery-section-title">🔥 Popular delivery</div>
+                <div className="delivery-grid">
+                  <div className="delivery-option" onClick={() => selectDelivery('炸鸡汉堡')}>
+                    <span className="delivery-name">炸鸡汉堡</span>
+                    <span className="delivery-type">Fast Food</span>
+                  </div>
+                  <div className="delivery-option" onClick={() => selectDelivery('麻辣烫')}>
+                    <span className="delivery-name">麻辣烫</span>
+                    <span className="delivery-type">Spicy Hot</span>
+                  </div>
+                  <div className="delivery-option" onClick={() => selectDelivery('日料便当')}>
+                    <span className="delivery-name">日料便当</span>
+                    <span className="delivery-type">Japanese</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-secondary" onClick={() => setShowDeliveryModal(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="button-row">
         <button className="btn-secondary" onClick={onBack}>Back</button>
         <button className="btn-primary" onClick={onStartOver}>Start Over</button>
@@ -1222,6 +1765,7 @@ function App() {
   const [city, setCity] = useState('')
   const [days, setDays] = useState(3)
   const [selectedAttractions, setSelectedAttractions] = useState([])
+  const [userDefinedOrder, setUserDefinedOrder] = useState(false)
 
   const handleCityNext = (selectedCity, selectedDays) => {
     setCity(selectedCity)
@@ -1230,8 +1774,9 @@ function App() {
     setStep(2)
   }
 
-  const handleAttractionNext = (attractions) => {
+  const handleAttractionNext = (attractions, hasUserOrder = false) => {
     setSelectedAttractions(attractions)
+    setUserDefinedOrder(hasUserOrder)
     setStep(3)
   }
 
@@ -1264,6 +1809,7 @@ function App() {
             city={city}
             days={days}
             attractions={selectedAttractions}
+            userDefinedOrder={userDefinedOrder}
             onStartOver={handleStartOver}
             onBack={handleBack}
           />
