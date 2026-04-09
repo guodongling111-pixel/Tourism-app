@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Pagination } from 'swiper/modules'
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet'
@@ -392,6 +392,8 @@ function AttractionSelection({ city, days, onNext, onBack }) {
   const [selected, setSelected] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [xhsInput, setXhsInput] = useState('')
+  const [xhsCustomItems, setXhsCustomItems] = useState([])
 
   const attractions = ATTRACTIONS[city] || ATTRACTIONS.default
 
@@ -414,17 +416,120 @@ function AttractionSelection({ city, days, onNext, onBack }) {
     setError('')
   }
 
+  const parseXiaohongshu = (text) => {
+    try {
+      if (!text || text.trim() === '') {
+        setError('Please paste some content first')
+        return
+      }
+
+      const allAttractions = Object.values(ATTRACTIONS).flat()
+      
+      const lines = text.split(/\n+/)
+      const result = []
+      
+      lines.forEach(line => {
+        const trimmed = line.trim()
+        if (!trimmed) return
+        
+        const match = trimmed.match(/Day(\d+)/)
+        const dayNum = match ? parseInt(match[1]) : null
+        
+        const parts = trimmed.split("：")
+        const content = parts.length > 1 ? parts[1] : (parts[0].split(/Day\d+/)[1] || parts[0])
+        
+        const locations = content.split(/\s+/).filter(l => l.trim())
+        
+        const morning = []
+        const afternoon = []
+        const evening = []
+        
+        locations.forEach((loc, idx) => {
+          const cleaned = loc.trim()
+          if (!cleaned || cleaned.length < 2) return
+          
+          const matched = allAttractions.find(attr => {
+            const chineseNames = attr.name.match(/[\u4e00-\u9fa5]+/g) || []
+            return chineseNames.some(cn => cleaned.includes(cn)) ||
+                   cleaned.toLowerCase().includes(attr.name.split(' ')[0].toLowerCase())
+          })
+          
+          if (matched) {
+            const item = { ...matched, source: 'known', originalName: cleaned }
+            if (idx < 2) morning.push(item)
+            else if (idx < locations.length - 1) afternoon.push(item)
+            else evening.push(item)
+          } else {
+            const chineseMatch = cleaned.match(/[\u4e00-\u9fa5]{2,}/g)
+            if (chineseMatch) {
+              chineseMatch.forEach(cn => {
+                const customItem = {
+                  id: `custom-${Date.now()}-${Math.random()}`,
+                  name: cn,
+                  description: 'Custom location',
+                  priority: 'medium',
+                  area: 'Custom',
+                  category: 'citywalk',
+                  label: '📍 Custom',
+                  source: 'custom',
+                  lat: null,
+                  lng: null
+                }
+                if (idx < 2) morning.push(customItem)
+                else if (idx < locations.length - 1) afternoon.push(customItem)
+                else evening.push(customItem)
+              })
+            }
+          }
+        })
+        
+        if (morning.length > 0 || afternoon.length > 0 || evening.length > 0) {
+          result.push({
+            day: dayNum || result.length + 1,
+            morning: morning.map((a, i) => ({ ...a, idx: i })),
+            afternoon: afternoon.map((a, i) => ({ ...a, idx: i })),
+            evening: evening.map((a, i) => ({ ...a, idx: i })),
+            food: []
+          })
+        }
+      })
+      
+      if (result.length === 0) {
+        setError('No valid travel info found')
+        return
+      }
+      
+      console.log("parsed days:", result)
+      
+      while (result.length < days) {
+        result.push({ day: result.length + 1, morning: [], afternoon: [], evening: [], food: [] })
+      }
+      
+      setSelected([])
+      setXhsCustomItems([])
+      setXhsInput('')
+      setError('')
+      
+      const hasUserOrder = /morning|afternoon|evening|上午|下午|晚上/i.test(text)
+      onNext(result, hasUserOrder)
+    } catch (err) {
+      console.error("parse error:", err)
+      setError('Parsing failed: ' + err.message)
+    }
+  }
+
   const handleSubmit = () => {
     const selectedAttractions = attractions.filter((a) => selected.includes(a.id))
     console.log('Selected attractions:', selectedAttractions)
     
-    if (selectedAttractions.length === 0) {
+    if (selectedAttractions.length === 0 && xhsCustomItems.length === 0) {
       alert('Please select at least 1 attraction')
       return
     }
     setLoading(true)
     setTimeout(() => {
-      onNext(selectedAttractions)
+      const dayData = [{ day: 1, attractions: [...selectedAttractions, ...xhsCustomItems] }]
+      onNext(dayData, false)
       setLoading(false)
     }, 800)
   }
@@ -433,6 +538,24 @@ function AttractionSelection({ city, days, onNext, onBack }) {
     <div className="page">
       <h2>Select Attractions</h2>
       <p className="subtitle">{city} - {days} days</p>
+      
+      <div className="xhs-import">
+        <div className="xhs-header">
+          <span className="xhs-icon">📕</span>
+          <span className="xhs-title">Import from Xiaohongshu</span>
+        </div>
+        <textarea
+          className="xhs-textarea"
+          placeholder="Paste Xiaohongshu post content or link"
+          value={xhsInput}
+          onChange={(e) => setXhsInput(e.target.value)}
+        />
+        <button className="btn-primary xhs-btn" onClick={() => parseXiaohongshu(xhsInput)}>
+          Generate from Post
+        </button>
+        {error && <p className="xhs-error">{error}</p>}
+      </div>
+      
       <div className="attraction-list">
         {Object.entries(grouped).map(([category, items]) => {
           const config = CATEGORY_CONFIG[category] || CATEGORY_CONFIG.attractions
@@ -607,7 +730,7 @@ function SortableItem({ id, children }) {
   )
 }
 
-function RouteResult({ city, days, attractions, onStartOver, onBack }) {
+function RouteResult({ city, days, attractions, userDefinedOrder = false, onStartOver, onBack }) {
   const [currentDay, setCurrentDay] = useState(0)
   const [routeData, setRouteData] = useState(null)
   const [showAddModal, setShowAddModal] = useState(null)
@@ -615,7 +738,21 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
   const [showRestFoodModal, setShowRestFoodModal] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState(null)
   const [restDays, setRestDays] = useState(new Set())
+  const [showDeliveryModal, setShowDeliveryModal] = useState(false)
+  const [selectedMealType, setSelectedMealType] = useState(null)
   const foodData = FOOD_SPOTS[city] || FOOD_SPOTS.default
+
+  const processedAttractions = React.useMemo(() => {
+    if (!attractions || !Array.isArray(attractions)) return []
+    if (attractions.length === 0) return []
+    if (attractions[0] && attractions[0].morning !== undefined) {
+      return attractions
+    }
+    if (attractions[0] && attractions[0].attractions !== undefined) {
+      return attractions.flatMap(d => d.attractions || [])
+    }
+    return attractions
+  }, [attractions])
 
   const restDayFoodData = {
     local: ["生煎包", "小笼包", "葱油拌面", "蟹粉拌面"],
@@ -685,6 +822,18 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
     'Night Cruise', 'Night View', 'Evening', 'dinner', 'Rooftop'
   ]
 
+  useEffect(() => {
+    if (!userDefinedOrder) return
+    if (!attractions || !Array.isArray(attractions) || attractions.length === 0) return
+    
+    const firstItem = attractions[0]
+    const hasSlotFormat = firstItem && firstItem.morning !== undefined
+    
+    if (hasSlotFormat) {
+      setRouteData(attractions)
+    }
+  }, [userDefinedOrder, attractions])
+
   const isNightAttraction = (name) => {
     return NIGHT_ATTRACTIONS.some(key => 
       name.toLowerCase().includes(key.toLowerCase())
@@ -732,10 +881,17 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
   }
 
   const groupByDays = () => {
+    if (!processedAttractions || processedAttractions.length === 0) return []
+    
+    const firstItem = processedAttractions[0]
+    if (firstItem && firstItem.morning !== undefined) {
+      return processedAttractions
+    }
+    
     const result = []
     const mealTypes = ['Breakfast', 'Lunch', 'Dinner']
     
-    const attractionsWithMeta = attractions.map(a => ({
+    const attractionsWithMeta = processedAttractions.map(a => ({
       ...a,
       area: a.area || 'default',
       isNight: isNightAttraction(a.name),
@@ -970,6 +1126,16 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
 
   const getFoodByMealType = (food, type) => food.find(f => f.mealType === type)
 
+  const isDelivery = (foodItem) => foodItem?.type === 'delivery'
+
+  const getFoodDisplay = (foodItem) => {
+    if (!foodItem) return null
+    if (foodItem.type === 'delivery') {
+      return { icon: '🛵', name: foodItem.name, subtitle: 'Delivery' }
+    }
+    return { icon: foodItem.mealType === 'Breakfast' ? '🍳' : foodItem.mealType === 'Lunch' ? '🍜' : '🍽️', name: foodItem.name, subtitle: `${foodItem.type} • ${foodItem.area}` }
+  }
+
   const removeAttraction = (dayIndex, time, index) => {
     const newData = routeByDays.map((day, i) => {
       if (i !== dayIndex) return day;
@@ -998,6 +1164,23 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
     }
     setRouteData(newData)
     setShowFoodModal(null)
+  }
+
+  const selectDelivery = (deliveryName) => {
+    if (!selectedMealType) return
+    const dayIndex = showFoodModal?.dayIndex
+    if (dayIndex === undefined) return
+    
+    const currentFood = routeByDays[dayIndex].food
+    
+    const newData = [...routeByDays]
+    newData[dayIndex] = {
+      ...newData[dayIndex],
+      food: currentFood.map(f => f.mealType === selectedMealType ? { name: deliveryName, type: 'delivery', mealType: selectedMealType } : f)
+    }
+    setRouteData(newData)
+    setShowDeliveryModal(false)
+    setSelectedMealType(null)
   }
 
   const moveItem = (dayIndex, slot, itemIdx, direction) => {
@@ -1097,11 +1280,11 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
           </div>
           {getFoodByMealType(dayData.food, 'Breakfast') && (
             <div className={`route-item food meal-breakfast`}>
-              <span className="meal-icon">🍳</span>
+              <span className="meal-icon">{isDelivery(getFoodByMealType(dayData.food, 'Breakfast')) ? '🛵' : '🍳'}</span>
               <div className="route-food-info">
                 <span className="meal-label">Breakfast</span>
                 <span className="route-name">{getFoodByMealType(dayData.food, 'Breakfast').name}</span>
-                <span className="route-food-type">{getFoodByMealType(dayData.food, 'Breakfast').type} • {getFoodByMealType(dayData.food, 'Breakfast').area}</span>
+                <span className="route-food-type">{isDelivery(getFoodByMealType(dayData.food, 'Breakfast')) ? 'Delivery' : `${getFoodByMealType(dayData.food, 'Breakfast').type} • ${getFoodByMealType(dayData.food, 'Breakfast').area}`}</span>
               </div>
               <button className="edit-btn" onClick={() => replaceFood(dayIndex, 'Breakfast')}>↻</button>
             </div>
@@ -1155,11 +1338,11 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
           
           {getFoodByMealType(dayData.food, 'Lunch') && (
             <div className={`route-item food meal-lunch`}>
-              <span className="meal-icon">🍜</span>
+              <span className="meal-icon">{isDelivery(getFoodByMealType(dayData.food, 'Lunch')) ? '🛵' : '🍜'}</span>
               <div className="route-food-info">
                 <span className="meal-label">Lunch</span>
                 <span className="route-name">{getFoodByMealType(dayData.food, 'Lunch').name}</span>
-                <span className="route-food-type">{getFoodByMealType(dayData.food, 'Lunch').type} • {getFoodByMealType(dayData.food, 'Lunch').area}</span>
+                <span className="route-food-type">{isDelivery(getFoodByMealType(dayData.food, 'Lunch')) ? 'Delivery' : `${getFoodByMealType(dayData.food, 'Lunch').type} • ${getFoodByMealType(dayData.food, 'Lunch').area}`}</span>
               </div>
               <button className="edit-btn" onClick={() => replaceFood(dayIndex, 'Lunch')}>↻</button>
             </div>
@@ -1213,11 +1396,11 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
           
           {getFoodByMealType(dayData.food, 'Dinner') && (
             <div className={`route-item food meal-dinner`}>
-              <span className="meal-icon">🍽️</span>
+              <span className="meal-icon">{isDelivery(getFoodByMealType(dayData.food, 'Dinner')) ? '🛵' : '🍽️'}</span>
               <div className="route-food-info">
                 <span className="meal-label">Dinner</span>
                 <span className="route-name">{getFoodByMealType(dayData.food, 'Dinner').name}</span>
-                <span className="route-food-type">{getFoodByMealType(dayData.food, 'Dinner').type} • {getFoodByMealType(dayData.food, 'Dinner').area}</span>
+                <span className="route-food-type">{isDelivery(getFoodByMealType(dayData.food, 'Dinner')) ? 'Delivery' : `${getFoodByMealType(dayData.food, 'Dinner').type} • ${getFoodByMealType(dayData.food, 'Dinner').area}`}</span>
               </div>
               <button className="edit-btn" onClick={() => replaceFood(dayIndex, 'Dinner')}>↻</button>
             </div>
@@ -1388,6 +1571,7 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
               })()}
             </div>
             <div className="modal-footer">
+              <button className="btn-delivery" onClick={() => { setSelectedMealType(showFoodModal.mealType); setShowDeliveryModal(true); setShowFoodModal(null); }}>🛵 Delivery</button>
               <button className="btn-secondary" onClick={() => setShowFoodModal(null)}>Cancel</button>
             </div>
           </div>
@@ -1417,6 +1601,55 @@ function RouteResult({ city, days, attractions, onStartOver, onBack }) {
         </div>
       )}
 
+      {showDeliveryModal && (
+        <div className="modal-overlay" onClick={() => setShowDeliveryModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Choose Delivery</h3>
+            </div>
+            <div className="modal-body">
+              <div className="delivery-section">
+                <div className="delivery-section-title">📍 Same area</div>
+                <div className="delivery-grid">
+                  <div className="delivery-option" onClick={() => selectDelivery('快餐便当')}>
+                    <span className="delivery-name">快餐便当</span>
+                    <span className="delivery-type">Quick & Easy</span>
+                  </div>
+                  <div className="delivery-option" onClick={() => selectDelivery('沙拉轻食')}>
+                    <span className="delivery-name">沙拉轻食</span>
+                    <span className="delivery-type">Healthy</span>
+                  </div>
+                  <div className="delivery-option" onClick={() => selectDelivery('奶茶咖啡')}>
+                    <span className="delivery-name">奶茶咖啡</span>
+                    <span className="delivery-type">Beverages</span>
+                  </div>
+                </div>
+              </div>
+              <div className="delivery-section">
+                <div className="delivery-section-title">🔥 Popular delivery</div>
+                <div className="delivery-grid">
+                  <div className="delivery-option" onClick={() => selectDelivery('炸鸡汉堡')}>
+                    <span className="delivery-name">炸鸡汉堡</span>
+                    <span className="delivery-type">Fast Food</span>
+                  </div>
+                  <div className="delivery-option" onClick={() => selectDelivery('麻辣烫')}>
+                    <span className="delivery-name">麻辣烫</span>
+                    <span className="delivery-type">Spicy Hot</span>
+                  </div>
+                  <div className="delivery-option" onClick={() => selectDelivery('日料便当')}>
+                    <span className="delivery-name">日料便当</span>
+                    <span className="delivery-type">Japanese</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-secondary" onClick={() => setShowDeliveryModal(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="button-row">
         <button className="btn-secondary" onClick={onBack}>Back</button>
         <button className="btn-primary" onClick={onStartOver}>Start Over</button>
@@ -1432,6 +1665,7 @@ function App() {
   const [city, setCity] = useState('')
   const [days, setDays] = useState(3)
   const [selectedAttractions, setSelectedAttractions] = useState([])
+  const [userDefinedOrder, setUserDefinedOrder] = useState(false)
 
   const handleCityNext = (selectedCity, selectedDays) => {
     setCity(selectedCity)
@@ -1440,8 +1674,9 @@ function App() {
     setStep(2)
   }
 
-  const handleAttractionNext = (attractions) => {
+  const handleAttractionNext = (attractions, hasUserOrder = false) => {
     setSelectedAttractions(attractions)
+    setUserDefinedOrder(hasUserOrder)
     setStep(3)
   }
 
@@ -1474,6 +1709,7 @@ function App() {
             city={city}
             days={days}
             attractions={selectedAttractions}
+            userDefinedOrder={userDefinedOrder}
             onStartOver={handleStartOver}
             onBack={handleBack}
           />
