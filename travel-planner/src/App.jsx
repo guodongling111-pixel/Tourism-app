@@ -425,6 +425,92 @@ function AttractionSelection({ city, days, onNext, onBack }) {
 
       const allAttractions = Object.values(ATTRACTIONS).flat()
       
+      if (text.includes('→') || text.includes('->')) {
+        const places = text.split(/→|->/).map(p => p.trim()).filter(Boolean)
+        
+        const morning = []
+        const afternoon = []
+        const evening = []
+        
+        places.forEach((loc, idx) => {
+          const cleaned = loc.trim()
+          if (!cleaned || cleaned.length < 2) return
+          
+          const matched = allAttractions.find(attr => {
+            const chineseNames = attr.name.match(/[\u4e00-\u9fa5]+/g) || []
+            return chineseNames.some(cn => cleaned.includes(cn)) ||
+                   cleaned.toLowerCase().includes(attr.name.split(' ')[0].toLowerCase())
+          })
+          
+          if (matched) {
+            const item = { ...matched, source: 'known' }
+            if (places.length >= 4) {
+              if (idx < 2) morning.push(item)
+              else if (idx < places.length - 1) afternoon.push(item)
+              else evening.push(item)
+            } else if (places.length === 3) {
+              if (idx === 0) morning.push(item)
+              else if (idx === 1) afternoon.push(item)
+              else evening.push(item)
+            } else if (places.length === 2) {
+              if (idx === 0) morning.push(item)
+              else afternoon.push(item)
+            }
+          } else {
+            const chineseMatch = cleaned.match(/[\u4e00-\u9fa5]{2,}/g)
+            if (chineseMatch) {
+              chineseMatch.forEach(cn => {
+                const customItem = {
+                  id: `custom-${Date.now()}-${Math.random()}`,
+                  name: cn,
+                  description: 'Custom location',
+                  priority: 'medium',
+                  area: 'Custom',
+                  category: 'citywalk',
+                  label: '📍 Custom',
+                  source: 'custom',
+                  lat: null,
+                  lng: null
+                }
+                if (places.length >= 4) {
+                  if (idx < 2) morning.push(customItem)
+                  else if (idx < places.length - 1) afternoon.push(customItem)
+                  else evening.push(customItem)
+                } else if (places.length === 3) {
+                  if (idx === 0) morning.push(customItem)
+                  else if (idx === 1) afternoon.push(customItem)
+                  else evening.push(customItem)
+                } else if (places.length === 2) {
+                  if (idx === 0) morning.push(customItem)
+                  else afternoon.push(customItem)
+                }
+              })
+            }
+          }
+        })
+        
+        if (morning.length === 0 && afternoon.length === 0 && evening.length === 0) {
+          setError('No valid travel info found')
+          return
+        }
+        
+        const result = [{
+          day: 1,
+          morning: morning.map((a, i) => ({ ...a, idx: i })),
+          afternoon: afternoon.map((a, i) => ({ ...a, idx: i })),
+          evening: evening.map((a, i) => ({ ...a, idx: i })),
+          food: []
+        }]
+        
+        setSelected([])
+        setXhsCustomItems([])
+        setXhsInput('')
+        setError('')
+        
+        onNext(result, true)
+        return
+      }
+      
       const lines = text.split(/\n+/)
       const result = []
       
@@ -823,14 +909,27 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
   ]
 
   useEffect(() => {
-    if (!userDefinedOrder) return
+    console.log("useEffect running:", { userDefinedOrder, attractionsLength: attractions?.length })
     if (!attractions || !Array.isArray(attractions) || attractions.length === 0) return
     
     const firstItem = attractions[0]
     const hasSlotFormat = firstItem && firstItem.morning !== undefined
+    console.log("hasSlotFormat:", hasSlotFormat)
     
-    if (hasSlotFormat) {
-      setRouteData(attractions)
+    if (userDefinedOrder || hasSlotFormat) {
+      const processedData = attractions.map(day => ({
+        ...day,
+        morning: day.morning || [],
+        afternoon: day.afternoon || [],
+        evening: day.evening || [],
+        food: day.food && day.food.length > 0 ? day.food : [
+          { mealType: 'Breakfast', name: null, type: null, area: null },
+          { mealType: 'Lunch', name: null, type: null, area: null },
+          { mealType: 'Dinner', name: null, type: null, area: null }
+        ]
+      }))
+      console.log("setting routeData:", processedData)
+      setRouteData(processedData)
     }
   }, [userDefinedOrder, attractions])
 
@@ -1278,13 +1377,14 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
               </div>
             ))}
           </div>
-          {getFoodByMealType(dayData.food, 'Breakfast') && (
+          
+          {dayData.food && dayData.food.find(f => f.mealType === 'Breakfast') && (
             <div className={`route-item food meal-breakfast`}>
               <span className="meal-icon">{isDelivery(getFoodByMealType(dayData.food, 'Breakfast')) ? '🛵' : '🍳'}</span>
               <div className="route-food-info">
                 <span className="meal-label">Breakfast</span>
-                <span className="route-name">{getFoodByMealType(dayData.food, 'Breakfast').name}</span>
-                <span className="route-food-type">{isDelivery(getFoodByMealType(dayData.food, 'Breakfast')) ? 'Delivery' : `${getFoodByMealType(dayData.food, 'Breakfast').type} • ${getFoodByMealType(dayData.food, 'Breakfast').area}`}</span>
+                <span className="route-name">{getFoodByMealType(dayData.food, 'Breakfast')?.name || 'Tap to add'}</span>
+                {getFoodByMealType(dayData.food, 'Breakfast')?.name && <span className="route-food-type">{isDelivery(getFoodByMealType(dayData.food, 'Breakfast')) ? 'Delivery' : `${getFoodByMealType(dayData.food, 'Breakfast').type} • ${getFoodByMealType(dayData.food, 'Breakfast').area}`}</span>}
               </div>
               <button className="edit-btn" onClick={() => replaceFood(dayIndex, 'Breakfast')}>↻</button>
             </div>
@@ -1336,13 +1436,13 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
             <button className="add-btn" onClick={() => handleAddClick(dayIndex, 'morning')}>+ Add Attraction</button>
           </div>
           
-          {getFoodByMealType(dayData.food, 'Lunch') && (
+          {dayData.food && dayData.food.find(f => f.mealType === 'Lunch') && (
             <div className={`route-item food meal-lunch`}>
               <span className="meal-icon">{isDelivery(getFoodByMealType(dayData.food, 'Lunch')) ? '🛵' : '🍜'}</span>
               <div className="route-food-info">
                 <span className="meal-label">Lunch</span>
-                <span className="route-name">{getFoodByMealType(dayData.food, 'Lunch').name}</span>
-                <span className="route-food-type">{isDelivery(getFoodByMealType(dayData.food, 'Lunch')) ? 'Delivery' : `${getFoodByMealType(dayData.food, 'Lunch').type} • ${getFoodByMealType(dayData.food, 'Lunch').area}`}</span>
+                <span className="route-name">{getFoodByMealType(dayData.food, 'Lunch')?.name || 'Tap to add'}</span>
+                {getFoodByMealType(dayData.food, 'Lunch')?.name && <span className="route-food-type">{isDelivery(getFoodByMealType(dayData.food, 'Lunch')) ? 'Delivery' : `${getFoodByMealType(dayData.food, 'Lunch').type} • ${getFoodByMealType(dayData.food, 'Lunch').area}`}</span>}
               </div>
               <button className="edit-btn" onClick={() => replaceFood(dayIndex, 'Lunch')}>↻</button>
             </div>
@@ -1394,13 +1494,13 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
             <button className="add-btn" onClick={() => handleAddClick(dayIndex, 'afternoon')}>+ Add Attraction</button>
           </div>
           
-          {getFoodByMealType(dayData.food, 'Dinner') && (
+          {dayData.food && dayData.food.find(f => f.mealType === 'Dinner') && (
             <div className={`route-item food meal-dinner`}>
               <span className="meal-icon">{isDelivery(getFoodByMealType(dayData.food, 'Dinner')) ? '🛵' : '🍽️'}</span>
               <div className="route-food-info">
                 <span className="meal-label">Dinner</span>
-                <span className="route-name">{getFoodByMealType(dayData.food, 'Dinner').name}</span>
-                <span className="route-food-type">{isDelivery(getFoodByMealType(dayData.food, 'Dinner')) ? 'Delivery' : `${getFoodByMealType(dayData.food, 'Dinner').type} • ${getFoodByMealType(dayData.food, 'Dinner').area}`}</span>
+                <span className="route-name">{getFoodByMealType(dayData.food, 'Dinner')?.name || 'Tap to add'}</span>
+                {getFoodByMealType(dayData.food, 'Dinner')?.name && <span className="route-food-type">{isDelivery(getFoodByMealType(dayData.food, 'Dinner')) ? 'Delivery' : `${getFoodByMealType(dayData.food, 'Dinner').type} • ${getFoodByMealType(dayData.food, 'Dinner').area}`}</span>}
               </div>
               <button className="edit-btn" onClick={() => replaceFood(dayIndex, 'Dinner')}>↻</button>
             </div>
