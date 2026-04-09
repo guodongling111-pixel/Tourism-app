@@ -128,22 +128,22 @@ function RouteMap({ dayData, currentDay }) {
 
 const ATTRACTIONS = {
   Shanghai: [
-    { id: 1, name: 'Yu Garden (豫园)', description: 'Classic Chinese garden in old town', priority: 'high', area: 'Huangpu', category: 'attractions', label: '🏛️ Historic', lat: 31.2278, lng: 121.4921 },
-    { id: 2, name: 'The Bund (外滩)', description: 'Iconic waterfront with colonial buildings', priority: 'high', area: 'Huangpu', category: 'attractions', label: '🏛️ Landmark', lat: 31.2408, lng: 121.4901 },
-    { id: 3, name: 'Jing\'an Temple (静安寺)', description: 'Ancient Buddhist temple in CBD', priority: 'high', area: 'Jing\'an', category: 'attractions', label: '🏛️ Cultural', lat: 31.2286, lng: 121.4458 },
-    { id: 4, name: 'Tianzhu Church (天主教堂)', description: 'Former French Concession Gothic church', priority: 'medium', area: 'Xuhui', category: 'attractions', label: '🏛️ Historic', lat: 31.2061, lng: 121.4329 },
-    { id: 5, name: 'Lujiazui (陆家嘴)', description: 'Financial district with skyscrapers', priority: 'medium', area: 'Pudong', category: 'attractions', label: '🏛️ Skyline', lat: 31.2203, lng: 121.5356 },
-    { id: 6, name: 'Wukang Road (武康路)', description: 'Historic street with colonial architecture', priority: 'high', area: 'Xuhui', category: 'citywalk', label: '🚶 Citywalk', lat: 31.2089, lng: 121.4361 },
-    { id: 7, name: 'Former French Concession', description: 'Tree-lined streets with shikumen houses', priority: 'high', area: 'Xuhui', category: 'citywalk', label: '🚶 Citywalk', lat: 31.2043, lng: 121.4482 },
-    { id: 8, name: 'Xintiandi (新天地)', description: 'Shikumen houses converted to trendy nightlife', priority: 'high', area: 'Huangpu', category: 'citywalk', label: '🚶 Citywalk', lat: 31.2184, lng: 121.4811 },
-    { id: 9, name: 'West Huangpu Rd (西黄浦路)', description: 'Street with old buildings along the river', priority: 'medium', area: 'Huangpu', category: 'citywalk', label: '🚶 Citywalk', lat: 31.2324, lng: 121.4872 },
-    { id: 10, name: 'Xujiahui (徐家汇)', description: 'Shopping and cathedral area', priority: 'low', area: 'Xuhui', category: 'citywalk', label: '🚶 Citywalk', lat: 31.2004, lng: 121.4334 },
-    { id: 11, name: 'Seesaw Coffee (见闻咖啡)', description: 'Modern specialty coffee brand', priority: 'high', area: 'Jing\'an', category: 'cafe', label: '☕ Coffee', lat: 31.2234, lng: 121.4478 },
-    { id: 12, name: 'Manner Coffee', description: 'Popular specialty coffee with affordable prices', priority: 'high', area: 'Xuhui', category: 'cafe', label: '☕ Coffee', lat: 31.2078, lng: 121.4412 },
-    { id: 13, name: 'Peet\'s Coffee (皮爷咖啡)', description: 'American-style specialty coffee', priority: 'medium', area: 'Xuhui', category: 'cafe', label: '☕ Coffee', lat: 31.2099, lng: 121.4501 },
-    { id: 14, name: 'Huangpu River Night Cruise', description: 'Night cruise with skyline views', priority: 'high', area: 'Huangpu', category: 'photo', label: '📸 Photo Spot', lat: 31.2389, lng: 121.5012 },
-    { id: 15, name: 'Nanjing Road (南京路)', description: 'Famous shopping street', priority: 'medium', area: 'Huangpu', category: 'shopping', label: '🛍️ Shopping', lat: 31.2297, lng: 121.4809 },
-    { id: 16, name: 'Wuzhen (乌镇)', description: 'Water town with canals and bridges', priority: 'medium', area: 'Tongxiang', category: 'citywalk', label: '🚶 Day Trip', lat: 30.7421, lng: 120.4932 },
+    { id: 1, name: 'Yu Garden (豫园)', description: '古风出片地，汉服爱好者必冲📿', priority: 'high', area: 'Huangpu', category: 'attractions', label: '📸 出片', lat: 31.2278, lng: 121.4921 },
+    { id: 2, name: 'The Bund (外滩)', description: '魔都C位，夜景绝美 🌃', priority: 'high', area: 'Huangpu', category: 'attractions', label: '🌃 地标', lat: 31.2408, lng: 121.4901 },
+    { id: 3, name: 'Jing\'an Temple (静安寺)', description: '闹市祈福，超灵验🙏', priority: 'high', area: 'Jing\'an', category: 'attractions', label: '🙏 祈福', lat: 31.2286, lng: 121.4458 },
+    { id: 4, name: 'Tianzhu Church (天主教堂)', description: '法式浪漫教堂，超级出片💒', priority: 'medium', area: 'Xuhui', category: 'attractions', label: '💒 出片', lat: 31.2061, lng: 121.4329 },
+    { id: 5, name: 'Lujiazui (陆家嘴)', description: '魔都天际线，CBD大片 📸', priority: 'medium', area: 'Pudong', category: 'attractions', label: '📸 打卡', lat: 31.2203, lng: 121.5356 },
+    { id: 6, name: 'Wukang Road (武康路)', description: '梧桐树下的浪漫街区🚶', priority: 'high', area: 'Xuhui', category: 'citywalk', label: '🚶 扫街', lat: 31.2089, lng: 121.4361 },
+    { id: 7, name: 'Former French Concession', description: '超浪漫的法租界，超适合拍照📸', priority: 'high', area: 'Xuhui', category: 'citywalk', label: '📸 出片', lat: 31.2043, lng: 121.4482 },
+    { id: 8, name: 'Xintiandi (新天地)', description: '石库门改造的潮流地标✨', priority: 'high', area: 'Huangpu', category: 'citywalk', label: '✨ 潮流', lat: 31.2184, lng: 121.4811 },
+    { id: 9, name: 'West Huangpu Rd (西黄浦路)', description: '沿江复古建筑，超有氛围📸', priority: 'medium', area: 'Huangpu', category: 'citywalk', label: '📸 出片', lat: 31.2324, lng: 121.4872 },
+    { id: 10, name: 'Xujiahui (徐家汇)', description: '超好逛的商圈，买买买🛍️', priority: 'low', area: 'Xuhui', category: 'citywalk', label: '🛍️ 逛街', lat: 31.2004, lng: 121.4334 },
+    { id: 11, name: 'Seesaw Coffee (见闻咖啡)', description: 'ins风咖啡馆，出片神器☕', priority: 'high', area: 'Jing\'an', category: 'cafe', label: '☕ 打卡', lat: 31.2234, lng: 121.4478 },
+    { id: 12, name: 'Manner Coffee', description: '性价比神咖啡，便宜好喝☕', priority: 'high', area: 'Xuhui', category: 'cafe', label: '☕ 咖啡', lat: 31.2078, lng: 121.4412 },
+    { id: 13, name: 'Peet\'s Coffee (皮爷咖啡)', description: '复古美式咖啡，超有质感☕', priority: 'medium', area: 'Xuhui', category: 'cafe', label: '☕ 咖啡', lat: 31.2099, lng: 121.4501 },
+    { id: 14, name: 'Huangpu River Night Cruise', description: '黄浦江夜游，绝美灯光秀🌃', priority: 'high', area: 'Huangpu', category: 'photo', label: '🌃 夜景', lat: 31.2389, lng: 121.5012 },
+    { id: 15, name: 'Nanjing Road (南京路)', description: '超好逛的商业街，买买买🛍️', priority: 'medium', area: 'Huangpu', category: 'shopping', label: '🛍️ 逛街', lat: 31.2297, lng: 121.4809 },
+    { id: 16, name: 'Wuzhen (乌镇)', description: '水乡古镇，汉服拍照圣地📸', priority: 'medium', area: 'Tongxiang', category: 'citywalk', label: '📸 出片', lat: 30.7421, lng: 120.4932 },
   ],
   Tokyo: [
     { id: 1, name: 'Tokyo Tower', description: 'Iconic red communications tower', priority: 'high', area: 'Minato', category: 'attractions', label: '🏛️ Landmark', lat: 35.6586, lng: 139.7454 },
@@ -352,27 +352,27 @@ function CitySelection({ onNext }) {
 
   return (
     <div className="page">
-      <h2>Plan Your Trip</h2>
+      <h2>开启你的心动之旅 ✨</h2>
       <div className="form-group">
-        <label>Select a City</label>
+        <label>想去哪个城市逛吃？</label>
         <select value={city} onChange={(e) => { setCity(e.target.value); setCustomCity(''); }}>
-          <option value="">-- Choose a city --</option>
+          <option value="">解锁宝藏城市 📍</option>
           {CITIES.map((c) => (
             <option key={c} value={c}>{c}</option>
           ))}
         </select>
       </div>
       <div className="form-group">
-        <label>Or enter your own city</label>
+        <label>或者私藏一个神仙地～</label>
         <input
           type="text"
-          placeholder="Enter city name"
+          placeholder="偷偷输入想去的角落"
           value={customCity}
           onChange={(e) => { setCustomCity(e.target.value); setCity(''); }}
         />
       </div>
       <div className="form-group">
-        <label>Number of Days: {days}</label>
+        <label>逛吃天数设定 📅</label>
         <input
           type="number"
           min="1"
@@ -382,7 +382,7 @@ function CitySelection({ onNext }) {
         />
       </div>
       <button className="btn-primary" onClick={handleSubmit} disabled={!isValid}>
-        Next
+        选好啦，出发 ✨
       </button>
     </div>
   )
@@ -622,22 +622,22 @@ function AttractionSelection({ city, days, onNext, onBack }) {
 
   return (
     <div className="page">
-      <h2>Select Attractions</h2>
-      <p className="subtitle">{city} - {days} days</p>
+      <h2>挑出你的必打卡清单</h2>
+      <p className="subtitle">{city} - {days} 天</p>
       
       <div className="xhs-import">
         <div className="xhs-header">
           <span className="xhs-icon">📕</span>
-          <span className="xhs-title">Import from Xiaohongshu</span>
+          <span className="xhs-title">💥 抄小红书爆款作业</span>
         </div>
         <textarea
           className="xhs-textarea"
-          placeholder="Paste Xiaohongshu post content or link"
+          placeholder="粘贴笔记链接或文案"
           value={xhsInput}
           onChange={(e) => setXhsInput(e.target.value)}
         />
         <button className="btn-primary xhs-btn" onClick={() => parseXiaohongshu(xhsInput)}>
-          Generate from Post
+          一键生成行程 🍓
         </button>
         {error && <p className="xhs-error">{error}</p>}
       </div>
@@ -671,10 +671,10 @@ function AttractionSelection({ city, days, onNext, onBack }) {
       </div>
       {error && <p className="error-message">{error}</p>}
       <div className="button-row">
-        <button className="btn-secondary" onClick={onBack}>Back</button>
+        <button className="btn-secondary" onClick={onBack}>返回</button>
         <button className="btn-primary" onClick={handleSubmit} disabled={loading}>
           {loading && <span className="loading-spinner"></span>}
-          {loading ? 'Generating...' : 'Generate Route'}
+          {loading ? '生成中...' : '生成路线 ✨'}
         </button>
       </div>
     </div>
@@ -682,12 +682,12 @@ function AttractionSelection({ city, days, onNext, onBack }) {
 }
 
 const CATEGORY_CONFIG = {
-  attractions: { icon: '🏛️', name: 'Attractions', color: '#3b82f6' },
-  citywalk: { icon: '🚶', name: 'Citywalk', color: '#10b981' },
-  cafe: { icon: '☕', name: 'Cafe', color: '#92400e' },
-  photo: { icon: '📸', name: 'Photo Spot', color: '#ec4899' },
-  food: { icon: '🍜', name: 'Food', color: '#f59e0b' },
-  shopping: { icon: '🛍️', name: 'Shopping', color: '#8b5cf6' },
+  attractions: { icon: '🏛️', name: '景点打卡', color: '#3b82f6' },
+  citywalk: { icon: '🚶', name: 'citywalk', color: '#10b981' },
+  cafe: { icon: '☕', name: '咖啡馆', color: '#92400e' },
+  photo: { icon: '📸', name: '出片地', color: '#ec4899' },
+  food: { icon: '🍜', name: '美食', color: '#f59e0b' },
+  shopping: { icon: '🛍️', name: '逛街', color: '#8b5cf6' },
 }
 
 function AddModalList({ items, onSelect }) {
@@ -1330,7 +1330,7 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
     return (
     <div className="day-card">
       <div className="day-header">
-        <span>Day {dayData.day}</span>
+        <span>第{dayData.day}天</span>
       </div>
       
       {isRestDay ? (
@@ -1361,7 +1361,7 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
       ) : isEmpty ? (
         <div className="empty-day">
           <p className="empty-day-text">No places planned yet</p>
-          <button className="add-btn" onClick={() => handleAddClick(dayIndex, 'morning')}>+ Add Attraction</button>
+          <button className="add-btn" onClick={() => handleAddClick(dayIndex, 'morning')}>+ 加个打卡点</button>
           <button className="btn-secondary rest-day-btn" onClick={() => toggleRestDay(dayIndex)}>Mark as Rest Day</button>
         </div>
       ) : (
@@ -1382,19 +1382,19 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
             <div className={`route-item food meal-breakfast`}>
               <span className="meal-icon">{isDelivery(getFoodByMealType(dayData.food, 'Breakfast')) ? '🛵' : '🍳'}</span>
               <div className="route-food-info">
-                <span className="meal-label">Breakfast</span>
-                <span className="route-name">{getFoodByMealType(dayData.food, 'Breakfast')?.name || 'Tap to add'}</span>
-                {getFoodByMealType(dayData.food, 'Breakfast')?.name && <span className="route-food-type">{isDelivery(getFoodByMealType(dayData.food, 'Breakfast')) ? 'Delivery' : `${getFoodByMealType(dayData.food, 'Breakfast').type} • ${getFoodByMealType(dayData.food, 'Breakfast').area}`}</span>}
+                <span className="meal-label">早餐</span>
+                <span className="route-name">{getFoodByMealType(dayData.food, 'Breakfast')?.name || '点个早餐吧'}</span>
+                {getFoodByMealType(dayData.food, 'Breakfast')?.name && <span className="route-food-type">{isDelivery(getFoodByMealType(dayData.food, 'Breakfast')) ? '外卖' : `${getFoodByMealType(dayData.food, 'Breakfast').type} • ${getFoodByMealType(dayData.food, 'Breakfast').area}`}</span>}
               </div>
               <button className="edit-btn" onClick={() => replaceFood(dayIndex, 'Breakfast')}>↻</button>
             </div>
           )}
           
           <div className="time-slot">
-            <div className="time-label morning">Morning</div>
+            <div className="time-label morning">上午 · 刷街模式 🚶‍♀️</div>
             {dayData.morning.length === 0 ? (
               <div className="route-item empty-slot">
-                <span className="route-name">Free time</span>
+                <span className="route-name">躺平</span>
               </div>
             ) : (
               <SortableContext
@@ -1433,26 +1433,26 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
                 ))}
               </SortableContext>
             )}
-            <button className="add-btn" onClick={() => handleAddClick(dayIndex, 'morning')}>+ Add Attraction</button>
+            <button className="add-btn" onClick={() => handleAddClick(dayIndex, 'morning')}>+ 加个打卡点</button>
           </div>
           
           {dayData.food && dayData.food.find(f => f.mealType === 'Lunch') && (
             <div className={`route-item food meal-lunch`}>
               <span className="meal-icon">{isDelivery(getFoodByMealType(dayData.food, 'Lunch')) ? '🛵' : '🍜'}</span>
               <div className="route-food-info">
-                <span className="meal-label">Lunch</span>
-                <span className="route-name">{getFoodByMealType(dayData.food, 'Lunch')?.name || 'Tap to add'}</span>
-                {getFoodByMealType(dayData.food, 'Lunch')?.name && <span className="route-food-type">{isDelivery(getFoodByMealType(dayData.food, 'Lunch')) ? 'Delivery' : `${getFoodByMealType(dayData.food, 'Lunch').type} • ${getFoodByMealType(dayData.food, 'Lunch').area}`}</span>}
+                <span className="meal-label">午餐</span>
+                <span className="route-name">{getFoodByMealType(dayData.food, 'Lunch')?.name || '午餐吃什么呢'}</span>
+                {getFoodByMealType(dayData.food, 'Lunch')?.name && <span className="route-food-type">{isDelivery(getFoodByMealType(dayData.food, 'Lunch')) ? '外卖' : `${getFoodByMealType(dayData.food, 'Lunch').type} • ${getFoodByMealType(dayData.food, 'Lunch').area}`}</span>}
               </div>
               <button className="edit-btn" onClick={() => replaceFood(dayIndex, 'Lunch')}>↻</button>
             </div>
           )}
           
           <div className="time-slot">
-            <div className="time-label afternoon">Afternoon</div>
+            <div className="time-label afternoon">下午 · 悠闲出片 ☀️</div>
             {dayData.afternoon.length === 0 ? (
               <div className="route-item empty-slot">
-                <span className="route-name">Free time</span>
+                <span className="route-name">躺平</span>
               </div>
             ) : (
               <SortableContext
@@ -1491,16 +1491,16 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
                 ))}
               </SortableContext>
             )}
-            <button className="add-btn" onClick={() => handleAddClick(dayIndex, 'afternoon')}>+ Add Attraction</button>
+            <button className="add-btn" onClick={() => handleAddClick(dayIndex, 'afternoon')}>+ 加个打卡点</button>
           </div>
           
           {dayData.food && dayData.food.find(f => f.mealType === 'Dinner') && (
             <div className={`route-item food meal-dinner`}>
               <span className="meal-icon">{isDelivery(getFoodByMealType(dayData.food, 'Dinner')) ? '🛵' : '🍽️'}</span>
               <div className="route-food-info">
-                <span className="meal-label">Dinner</span>
-                <span className="route-name">{getFoodByMealType(dayData.food, 'Dinner')?.name || 'Tap to add'}</span>
-                {getFoodByMealType(dayData.food, 'Dinner')?.name && <span className="route-food-type">{isDelivery(getFoodByMealType(dayData.food, 'Dinner')) ? 'Delivery' : `${getFoodByMealType(dayData.food, 'Dinner').type} • ${getFoodByMealType(dayData.food, 'Dinner').area}`}</span>}
+                <span className="meal-label">晚餐</span>
+                <span className="route-name">{getFoodByMealType(dayData.food, 'Dinner')?.name || '晚餐约会呀'}</span>
+                {getFoodByMealType(dayData.food, 'Dinner')?.name && <span className="route-food-type">{isDelivery(getFoodByMealType(dayData.food, 'Dinner')) ? '外卖' : `${getFoodByMealType(dayData.food, 'Dinner').type} • ${getFoodByMealType(dayData.food, 'Dinner').area}`}</span>}
               </div>
               <button className="edit-btn" onClick={() => replaceFood(dayIndex, 'Dinner')}>↻</button>
             </div>
@@ -1508,7 +1508,7 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
 
           {dayData.evening && dayData.evening.length > 0 && (
             <div className="time-slot">
-              <div className="time-label evening">Evening</div>
+              <div className="time-label evening">夜晚 · 城市漫游 🌙</div>
               {dayData.evening.map((attraction, index) => (
                 <div key={`e-${index}`} className="route-item attraction">
                   <span className="route-bullet">🌙</span>
@@ -1547,12 +1547,12 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
   if (attractions.length === 0) {
     return (
       <div className="page">
-        <h2>Your Route</h2>
-        <p className="subtitle">{city} - {days} day{days > 1 ? 's' : ''}</p>
-        <p className="no-attractions">No attractions selected</p>
+        <h2>你的专属路线 ✨</h2>
+        <p className="subtitle">{city} - {days} 天</p>
+        <p className="no-attractions">还没有选景点呢</p>
         <div className="button-row">
-          <button className="btn-secondary" onClick={onBack}>Back</button>
-          <button className="btn-primary" onClick={onStartOver}>Start Over</button>
+          <button className="btn-secondary" onClick={onBack}>返回</button>
+          <button className="btn-primary" onClick={onStartOver}>重新开始 🔄</button>
         </div>
       </div>
     )
@@ -1560,13 +1560,13 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
 
   return (
     <div className="page">
-      <h2>Your Route</h2>
-      <p className="subtitle">{city} - {days} day{days > 1 ? 's' : ''}</p>
+      <h2>你的专属路线 ✨</h2>
+      <p className="subtitle">{city} - {days} 天</p>
       
       <div className="hotel-notice">
         <span className="hotel-icon">🏨</span>
-        <span>Hotel location</span>
-        <span className="coming-soon">Coming soon</span>
+        <span>酒店位置</span>
+        <span className="coming-soon">即将上线</span>
       </div>
 
       <DndContext
@@ -1594,7 +1594,7 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
         <div className="empty-itinerary">
           <p className="empty-title">No itinerary yet</p>
           <p className="empty-subtitle">Start adding places ✨</p>
-          <button className="btn-primary" onClick={() => handleAddClick(0, 'morning')}>+ Add Attraction</button>
+          <button className="btn-primary" onClick={() => handleAddClick(0, 'morning')}>+ 加个打卡点</button>
         </div>
       )}
 
@@ -1602,11 +1602,11 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
         <div className="modal-overlay" onClick={() => setShowAddModal(null)}>
           <div className="modal-content add-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>Add Attraction</h3>
+              <h3>添加打卡点 ✨</h3>
             </div>
             <div className="modal-body">
               {unusedAttractions.length === 0 ? (
-                <p className="no-attractions">All attractions have been selected</p>
+                <p className="no-attractions">所有景点都安排上啦</p>
               ) : (
                 <AddModalList 
                   items={unusedAttractions} 
@@ -1615,7 +1615,7 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
               )}
             </div>
             <div className="modal-footer">
-              <button className="btn-secondary" onClick={() => setShowAddModal(null)}>Cancel</button>
+              <button className="btn-secondary" onClick={() => setShowAddModal(null)}>取消</button>
             </div>
           </div>
         </div>
@@ -1625,7 +1625,7 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
         <div className="modal-overlay" onClick={() => setShowFoodModal(null)}>
           <div className="modal-content food-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>Choose {showFoodModal.mealType}</h3>
+              <h3>选一家喜欢的餐厅吧 ✨</h3>
             </div>
             <div className="modal-body">
               {(() => {
@@ -1636,7 +1636,7 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
                 const restaurants = sameArea.length > 0 ? sameArea : otherArea
 
                 if (restaurants.length === 0) {
-                  return <p className="no-attractions">No restaurants available</p>
+                  return <p className="no-attractions">暂无餐厅可选</p>
                 }
 
                 return (
@@ -1671,8 +1671,8 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
               })()}
             </div>
             <div className="modal-footer">
-              <button className="btn-delivery" onClick={() => { setSelectedMealType(showFoodModal.mealType); setShowDeliveryModal(true); setShowFoodModal(null); }}>🛵 Delivery</button>
-              <button className="btn-secondary" onClick={() => setShowFoodModal(null)}>Cancel</button>
+              <button className="btn-delivery" onClick={() => { setSelectedMealType(showFoodModal.mealType); setShowDeliveryModal(true); setShowFoodModal(null); }}>外卖到酒店 🛵</button>
+              <button className="btn-secondary" onClick={() => setShowFoodModal(null)}>取消</button>
             </div>
           </div>
         </div>
@@ -1682,7 +1682,7 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
         <div className="modal-overlay" onClick={() => { setShowRestFoodModal(false); setSelectedCategory(null); }}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>Recommended {selectedCategory === 'local' ? 'Local Food' : selectedCategory === 'light' ? 'Light Meal' : 'Milk Tea'}</h3>
+              <h3>{selectedCategory === 'local' ? '🍜 本地美食' : selectedCategory === 'light' ? '🥗 轻食简餐' : '🧋 奶茶时刻'}</h3>
             </div>
             <div className="modal-body">
               <div className="restaurant-list">
@@ -1695,7 +1695,7 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
               </div>
             </div>
             <div className="modal-footer">
-              <button className="btn-secondary" onClick={() => { setShowRestFoodModal(false); setSelectedCategory(null); }}>Close</button>
+              <button className="btn-secondary" onClick={() => { setShowRestFoodModal(false); setSelectedCategory(null); }}>关闭</button>
             </div>
           </div>
         </div>
@@ -1705,7 +1705,7 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
         <div className="modal-overlay" onClick={() => setShowDeliveryModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>Choose Delivery</h3>
+              <h3>点外卖时间 🛵</h3>
             </div>
             <div className="modal-body">
               <div className="delivery-section">
@@ -1744,15 +1744,15 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
               </div>
             </div>
             <div className="modal-footer">
-              <button className="btn-secondary" onClick={() => setShowDeliveryModal(false)}>Cancel</button>
+              <button className="btn-secondary" onClick={() => setShowDeliveryModal(false)}>取消</button>
             </div>
           </div>
         </div>
       )}
 
       <div className="button-row">
-        <button className="btn-secondary" onClick={onBack}>Back</button>
-        <button className="btn-primary" onClick={onStartOver}>Start Over</button>
+        <button className="btn-secondary" onClick={onBack}>返回</button>
+        <button className="btn-primary" onClick={onStartOver}>重置全部 🔄</button>
       </div>
 
       <RouteMap dayData={routeByDays[currentDay]} currentDay={currentDay} />
