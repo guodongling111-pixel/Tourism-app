@@ -323,7 +323,7 @@ const FOOD_SPOTS = {
 const CITIES = ['Shanghai', 'Tokyo', 'Paris', 'New York', 'London', 'Rome']
 
 function StepIndicator({ currentStep }) {
-  const steps = ['City', 'Attractions', 'Route']
+  const steps = ['目的地', '必打卡清单', '我的行程']
   return (
     <div className="step-indicator">
       {steps.map((label, index) => (
