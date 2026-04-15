@@ -2,90 +2,96 @@
 
 ## 1️⃣ 前端
 
-**技术栈：** React + TypeScript + TailwindCSS + 高德/Mapbox JS SDK  
+**技术栈：** React + TypeScript + TailwindCSS + Leaflet
 
 **理由：**
-- React：组件化开发，社区大，维护和迭代方便
-- TypeScript：类型检查，减少 bug，商用项目推荐
-- TailwindCSS：快速布局，UI 风格统一，适合工具型产品
-- 高德/Mapbox JS SDK：地图展示、路线可视化、景点标记
-- ✅ 主流成熟，问题容易找到解决方案
+- React：组件化开发，维护与迭代效率高
+- TypeScript：类型约束，降低运行错误，适合中长期维护
+- TailwindCSS：快速构建 UI，保证风格统一
+- Leaflet：轻量级地图组件，用于地图展示与路线可视化
+- ✅ 当前采用本地 Mock 数据驱动（ATTRACTIONS / FOOD_SPOTS / cityCoords）
 
 ---
 
 ## 2️⃣ 后端
 
-**技术栈：** Python + FastAPI + Celery + Redis  
+**技术栈：** Python + FastAPI + Celery + Redis（规划中）
 
 **理由：**
-- FastAPI：快速开发 RESTful API，文档自动生成，支持异步
-- Celery + Redis：处理异步任务（如小红书抓取、路线计算）
-- ✅ Python 生态成熟，社区丰富，商用稳定
+- FastAPI：高性能 REST API 框架，支持异步处理
+- Celery + Redis：用于异步任务调度（如攻略解析、路线计算）
+- 当前版本主要用于逻辑预留与后续扩展
+- ✅ 当前 MVP 未完全启用后端服务（以 Mock 前端为主）
 
 ---
 
-## 3️⃣ 数据库
+## 3️⃣ 数据存储
 
-**技术栈：** PostgreSQL + PostGIS  
+**技术栈：** 前端 Mock JSON（当前版本）
 
 **理由：**
-- PostgreSQL：开源、稳定，商用可靠，社区活跃
-- PostGIS：地理计算能力（距离、路线优化），减少算法实现成本
-- ✅ 适合路线规划项目，成熟可靠
+- 当前数据直接定义在前端代码中（src/App.jsx）
+- 包括：
+  - ATTRACTIONS（景点数据）
+  - FOOD_SPOTS（餐饮数据）
+  - cityCoords（城市坐标）
+- 无数据库、无 API、无后端持久化存储
+- ✅ 适用于 MVP 快速验证阶段
 
 ---
 
 ## 4️⃣ 地图与路线计算
 
-**技术栈：** 高德地图 API / Mapbox  
+**技术栈：** Leaflet（后续可接入高德 API）
 
 **理由：**
-- 路线可视化、距离计算、路径优化
-- 文档完善，社区多案例
-- ✅ 成熟、易用，匹配中小型行程规划项目
+- Leaflet：轻量级地图方案，快速实现可视化
+- 支持基础路线展示与点位标记
+- 后续可升级接入高德/Mapbox 提升路径规划能力
+- ✅ 当前为前端本地计算 + 可视化展示
 
 ---
 
-## 5️⃣ 数据抓取（小红书/攻略导入）
+## 5️⃣ 数据处理 / 攻略解析
 
-**技术栈：** Selenium + Requests/BeautifulSoup + Asyncio  
+**技术栈：** 前端本地处理 + NLP/LLM（规划中）
 
 **理由：**
-- Selenium：处理动态网页
-- Requests/BeautifulSoup：处理静态网页，快速解析
-- Asyncio / aiohttp：提高并发抓取效率
-- ✅ 成熟方案，问题容易解决，支持中小规模商用爬取
+- 当前采用用户输入文本解析（小红书攻略）
+- 通过前端逻辑 + 结构化规则生成候选行程卡片
+- 后续可升级为后端 NLP/LLM 服务
+- ❌ 当前无爬虫、无外部数据抓取
 
 ---
 
 ## 6️⃣ 部署与运维
 
-**技术栈：** Docker + Nginx + Gunicorn + 云服务器（AWS/阿里云）  
+**技术栈：** Vercel + Serverless
 
 **理由：**
-- Docker：环境一致性，方便部署
-- Nginx：反向代理，静态资源服务
-- Gunicorn：FastAPI 生产环境部署
-- 云服务器：按需扩容，支持未来多城市扩展
-- ✅ 标准商用方案，成熟稳定，坑少
+- Vercel：前端一键部署，自动 CI/CD
+- Serverless Functions：用于轻量 API（如未来扩展）
+- CDN 自动加速静态资源
+- ✅ 零运维，适合 MVP 快速上线与迭代
 
 ---
 
 ## 7️⃣ 技术选型原则
 
-1. 技术主流、社区活跃 → 遇到问题容易解决  
-2. 工具成熟、坑少 → 商用稳定性高  
-3. 匹配项目规模 → MVP 快速开发，未来可迭代扩展  
+1. 优先 MVP 快速验证，降低后端复杂度  
+2. 使用轻量技术栈，减少运维成本  
+3. 所有复杂能力（爬虫 / 数据库 / AI）均预留扩展接口  
+4. 以“前端驱动 + Mock 数据 + 可迭代架构”为核心  
 
 ---
 
 ## 8️⃣ 技术选型总结表
 
-| 模块           | 技术栈                     | 选择理由 |
-|----------------|----------------------------|---------|
-| 前端           | React + TypeScript + TailwindCSS + 高德/Mapbox | 组件化开发、社区大、易维护、易扩展 |
-| 后端           | Python + FastAPI + Celery + Redis | 快速开发 API、异步任务成熟、社区支持好 |
-| 数据库         | PostgreSQL + PostGIS       | 商用稳定、地理计算成熟、社区活跃 |
-| 地图/路线       | 高德/Mapbox API           | 路线可视化、文档完善、匹配项目规模 |
-| 爬虫/数据抓取   | Selenium + Requests/BeautifulSoup + Asyncio | 成熟方案、问题容易解决、支持动态网页 |
-| 部署/运维       | Docker + Nginx + Gunicorn + 云服务器 | 商用标准方案、易扩展、坑少 |
+| 模块         | 技术栈 | 当前实现状态 |
+|--------------|--------|--------------|
+| 前端         | React + TypeScript + TailwindCSS + Leaflet | 已完成 |
+| 后端         | FastAPI + Celery + Redis | 规划中（未完全启用） |
+| 数据存储     | 前端 Mock JSON（src/App.jsx） | 已完成 |
+| 地图/路线     | Leaflet | 已完成 |
+| 攻略解析     | 前端规则 + NLP/LLM（逻辑层） | 部分实现 |
+| 部署/运维     | Vercel + Serverless | 已完成 |

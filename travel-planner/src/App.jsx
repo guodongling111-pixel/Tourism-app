@@ -75,6 +75,7 @@ function RouteMap({ dayData, currentDay }) {
     'New York': [40.7128, -74.0060],
     London: [51.5074, -0.1278],
     Rome: [41.9028, 12.4964],
+    Xiamen: [24.4798, 118.0894],
   }
   
   const defaultCenter = [31.2304, 121.4737]
@@ -186,6 +187,28 @@ const ATTRACTIONS = {
     { id: 3, name: 'Local Market', description: 'Fresh produce and crafts', priority: 'medium', area: 'Downtown', label: '🛒 Local', lat: 40.7150, lng: -74.0080 },
     { id: 4, name: 'Central Park', description: 'Beautiful city park', priority: 'medium', area: 'Midtown', label: '🌳 Nature', lat: 40.7829, lng: -73.9654 },
     { id: 5, name: 'Museum District', description: 'Cultural attractions', priority: 'low', area: 'Cultural', label: '🎨 Culture', lat: 40.7794, lng: -73.9632 },
+  ],
+  Xiamen: [
+    { id: 1, name: '鼓浪屿', description: '世界文化遗产，钢琴之岛', priority: 'high', area: '鼓浪屿', category: 'attractions', label: '🏛️ 景点', lat: 24.4333, lng: 118.0650 },
+    { id: 2, name: '双子塔', description: '厦门地标建筑', priority: 'high', area: '思明', category: 'attractions', label: '🏛️ 地标', lat: 24.4790, lng: 118.0890 },
+    { id: 3, name: '环岛路白城沙滩', description: '美丽海岸线', priority: 'medium', area: '思明', category: 'attractions', label: '🏖️ 沙滩', lat: 24.4360, lng: 118.1100 },
+    { id: 4, name: '菽庄花园', description: '鼓浪屿上的江南园林', priority: 'medium', area: '鼓浪屿', category: 'attractions', label: '🌳 园林', lat: 24.4420, lng: 118.0630 },
+    { id: 5, name: '植物园', description: '闯入现实版绿野仙踪，雨林喷雾丁达尔光，多肉区仙人掌王国', priority: 'high', area: '思明', category: 'attractions', label: '🌿 森系秘境', lat: 24.4425, lng: 118.1025 },
+    { id: 6, name: '钟鼓索道', description: '40分钟高空飞驰，左手山城，右手大海，红蓝绿吊箱超好拍', priority: 'high', area: '思明', category: 'attractions', label: '🚡 高空视角', lat: 24.4875, lng: 118.1195 },
+    { id: 7, name: '厦门大学', description: '依山傍海的百年学府，芙蓉湖有天鹅，芙蓉隧道涂鸦超多', priority: 'high', area: '思明', category: 'attractions', label: '🎓 文艺校园', lat: 24.4348, lng: 118.1006 },
+    { id: 8, name: '嘉庚公园', description: '红砖白石的嘉庚建筑，中西合璧，还能在海边玩沙、赶海', priority: 'medium', area: '集美', category: 'attractions', label: '🏖️ 海边散步', lat: 24.5720, lng: 118.0960 },
+    { id: 9, name: '十里长堤', description: '看橘子海日落，追海上列车，吹着海风，氛围感拉满', priority: 'high', area: '集美', category: 'attractions', label: '🌅 日落必去', lat: 24.5680, lng: 118.0985 },
+    { id: 10, name: '集美学村', description: '嘉庚建筑群，文艺烟火气，还能坐海上地铁，看浪漫日落', priority: 'high', area: '集美', category: 'attractions', label: '🚇 海上地铁', lat: 24.5668, lng: 118.0968 },
+    { id: 11, name: '园博苑', description: '免费的异国风情园林，可乘小火车，还能邂逅黑天鹅', priority: 'medium', area: '集美', category: 'attractions', label: '🌍 异国园林', lat: 24.5510, lng: 118.0880 },
+    { id: 12, name: '龙舟池', description: '嘉庚建筑与五球装置碰撞，红砖绿瓦，夜景灯光秀超梦幻', priority: 'medium', area: '集美', category: 'attractions', label: '🌃 夜景灯光', lat: 24.5705, lng: 118.0945 },
+    { id: 13, name: '黄厝沙滩', description: '本地人私藏的看日出圣地，沙质细腻，人相对较少', priority: 'medium', area: '思明', category: 'attractions', label: '🌄 小众日出', lat: 24.4502, lng: 118.1448 },
+    { id: 14, name: '山海健康步道', description: '穿越城市森林的空中走廊，可以欣赏海景和城市风光', priority: 'medium', area: '思明', category: 'attractions', label: '🌿 城市徒步', lat: 24.4605, lng: 118.1050 },
+    { id: 15, name: '沙坡尾', description: '艺术西区→大学路→避风坞→顶澳仔猫街', priority: 'high', area: '思明', category: 'citywalk', label: '🚶 Citywalk', lat: 24.4615, lng: 118.0920 },
+    { id: 16, name: '幸福路文创街区', description: '文艺街区', priority: 'high', area: '思明', category: 'citywalk', label: '🚶 Citywalk', lat: 24.4620, lng: 118.0930 },
+    { id: 17, name: '顶澳仔猫街', description: '猫主题街区', priority: 'high', area: '思明', category: 'citywalk', label: '🐱 猫街', lat: 24.4630, lng: 118.0910 },
+    { id: 18, name: '转角合作社日系斑马线', description: '日系拍照点', priority: 'medium', area: '思明', category: 'photo', label: '📸 出片', lat: 24.4625, lng: 118.0925 },
+    { id: 19, name: '查查斯门头', description: '拍照打卡点', priority: 'medium', area: '思明', category: 'photo', label: '📸 出片', lat: 24.4610, lng: 118.0910 },
+    { id: 20, name: '幸福路买手店 & 杂货铺', description: '买手店杂货铺', priority: 'medium', area: '思明', category: 'shopping', label: '🛍️ 逛街', lat: 24.4620, lng: 118.0930 },
   ],
 }
 
@@ -318,9 +341,29 @@ const FOOD_SPOTS = {
       { id: 6, name: 'Family Restaurant', type: 'Casual', area: 'Downtown', tags: ['cozy', 'budget'] },
     ],
   },
+  Xiamen: {
+    Breakfast: [
+      { id: 1, name: 'Ensemble191', type: '咖啡馆', area: '沙坡尾', tags: ['文艺', '打卡'] },
+      { id: 2, name: '向日葵之家', type: '咖啡馆', area: '沙坡尾', tags: ['温馨', '拍照'] },
+      { id: 3, name: '小曾咖啡', type: '咖啡馆', area: '思明', tags: ['社区店'] },
+      { id: 4, name: 'JUICY bakery', type: '面包店', area: '思明', tags: ['网红'] },
+      { id: 5, name: '澜今烘焙', type: '烘焙', area: '思明', tags: ['烘焙', '甜品'] },
+      { id: 6, name: '野鹿甜点铺', type: '甜品店', area: '思明', tags: ['文艺'] },
+      { id: 7, name: '茉莉奶白', type: '奶茶', area: '思明', tags: ['奶茶', '网红'] },
+    ],
+    Lunch: [
+      { id: 7, name: '乌堂沙茶面', type: '沙茶面', area: '中山路', tags: ['本地特色'] },
+      { id: 8, name: '芋包嫂', type: '小吃', area: '中山路', tags: ['传统'] },
+      { id: 9, name: '百万万汉堡', type: '汉堡', area: '沙坡尾', tags: ['网红', '打卡'] },
+    ],
+    Dinner: [
+      { id: 10, name: 'JOJO刨冰', type: '甜品', area: '沙坡尾', tags: ['网红'] },
+      { id: 11, name: '吸客本土奶茶', type: '奶茶', area: '思明', tags: ['本地品牌'] },
+    ],
+  },
 }
 
-const CITIES = ['Shanghai', 'Tokyo', 'Paris', 'New York', 'London', 'Rome']
+const CITIES = ['Shanghai', 'Tokyo', 'Paris', 'New York', 'London', 'Rome', 'Xiamen']
 
 function StepIndicator({ currentStep }) {
   const steps = ['目的地', '必打卡清单', '我的行程']
