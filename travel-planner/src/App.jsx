@@ -365,6 +365,16 @@ const FOOD_SPOTS = {
 
 const CITIES = ['Shanghai', 'Tokyo', 'Paris', 'New York', 'London', 'Rome', 'Xiamen']
 
+const cityMap = {
+  Shanghai: '上海',
+  Tokyo: '东京',
+  Paris: '巴黎',
+  'New York': '纽约',
+  London: '伦敦',
+  Rome: '罗马',
+  Xiamen: '厦门',
+}
+
 function StepIndicator({ currentStep }) {
   const steps = ['目的地', '必打卡清单', '我的行程']
   return (
@@ -401,7 +411,7 @@ function CitySelection({ onNext }) {
         <select value={city} onChange={(e) => { setCity(e.target.value); setCustomCity(''); }}>
           <option value="">解锁宝藏城市 📍</option>
           {CITIES.map((c) => (
-            <option key={c} value={c}>{c}</option>
+            <option key={c} value={c}>{cityMap[c]}</option>
           ))}
         </select>
       </div>
@@ -666,7 +676,7 @@ function AttractionSelection({ city, days, onNext, onBack }) {
   return (
     <div className="page">
       <h2>挑出你的必打卡清单</h2>
-      <p className="subtitle">{city} - {days} 天</p>
+      <p className="subtitle">{cityMap[city] || city} - {days} 天</p>
       
       <div className="xhs-import">
         <div className="xhs-header">
@@ -1591,7 +1601,7 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
     return (
       <div className="page">
         <h2>你的专属路线 ✨</h2>
-        <p className="subtitle">{city} - {days} 天</p>
+        <p className="subtitle">{cityMap[city] || city} - {days} 天</p>
         <p className="no-attractions">还没有选景点呢</p>
         <div className="button-row">
           <button className="btn-secondary" onClick={onBack}>返回</button>
@@ -1604,7 +1614,7 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
   return (
     <div className="page">
       <h2>你的专属路线 ✨</h2>
-      <p className="subtitle">{city} - {days} 天</p>
+      <p className="subtitle">{cityMap[city] || city} - {days} 天</p>
       
       <div className="hotel-notice">
         <span className="hotel-icon">🏨</span>
