@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "npm run build && if exist docs rd /s /q docs && mkdir docs && xcopy /e /q dist docs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
