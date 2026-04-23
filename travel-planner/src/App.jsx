@@ -404,39 +404,104 @@ function CitySelection({ onNext }) {
   const isValid = (city || customCity) && days >= 1 && days <= 30
 
   return (
-    <div className="page">
-      <h2>开启你的心动之旅 ✨</h2>
-      <div className="form-group">
-        <label>想去哪个城市逛吃？</label>
-        <select value={city} onChange={(e) => { setCity(e.target.value); setCustomCity(''); }}>
-          <option value="">解锁宝藏城市 📍</option>
-          {CITIES.map((c) => (
-            <option key={c} value={c}>{cityMap[c]}</option>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', position: 'relative', backgroundColor: '#fff' }}>
+      <div style={{
+        position: 'sticky',
+        top: 0,
+        height: '80px',
+        zIndex: 1000,
+        background: '#fff',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 16px',
+        borderBottom: '1px solid #eee',
+        flexShrink: 0
+      }}>
+        <div style={{ width: '50px' }}></div>
+        <div className="step-indicator">
+          {['目的地', '必打卡清单', '我的行程'].map((label, index) => (
+            <div key={index} className={`step ${index + 1 <= 1 ? 'active' : ''}`}>
+              <span className="step-number">{index + 1}</span>
+              <span className="step-label">{label}</span>
+            </div>
           ))}
-        </select>
+        </div>
+        <div style={{ width: '50px' }}></div>
       </div>
-      <div className="form-group">
-        <label>或者私藏一个神仙地～</label>
-        <input
-          type="text"
-          placeholder="偷偷输入想去的角落"
-          value={customCity}
-          onChange={(e) => { setCustomCity(e.target.value); setCity(''); }}
-        />
-      </div>
-      <div className="form-group">
-        <label>逛吃天数设定 📅</label>
-        <input
-          type="number"
-          min="1"
-          max="30"
-          value={days}
-          onChange={(e) => setDays(e.target.value)}
-        />
-      </div>
-      <button className="btn-primary" onClick={handleSubmit} disabled={!isValid}>
-        选好啦，出发 ✨
-      </button>
+
+      <main style={{
+        flex: 1,
+        overflowY: 'auto',
+        background: '#f8f9fa',
+        padding: '20px',
+        WebkitOverflowScrolling: 'touch',
+        scrollbarWidth: 'none'
+      }}>
+        <div className="form-group">
+          <label>想去哪个城市逛吃？</label>
+          <select value={city} onChange={(e) => { setCity(e.target.value); setCustomCity(''); }}>
+            <option value="">解锁宝藏城市 📍</option>
+            {CITIES.map((c) => (
+              <option key={c} value={c}>{cityMap[c]}</option>
+            ))}
+          </select>
+        </div>
+        <div className="form-group">
+          <label>或者私藏一个神仙地～</label>
+          <input
+            type="text"
+            placeholder="偷偷输入想去的角落"
+            value={customCity}
+            onChange={(e) => { setCustomCity(e.target.value); setCity(''); }}
+          />
+        </div>
+        <div className="form-group">
+          <label>逛吃天数设定 📅</label>
+          <input
+            type="number"
+            min="1"
+            max="30"
+            value={days}
+            onChange={(e) => setDays(e.target.value)}
+          />
+        </div>
+      </main>
+
+      <footer style={{
+        position: 'sticky',
+        bottom: 0,
+        height: '100px',
+        zIndex: 1000,
+        background: '#fff',
+        borderTop: '1px solid #eee',
+        padding: '16px 20px 34px 20px',
+        borderBottomLeftRadius: '24px',
+        borderBottomRightRadius: '24px',
+        flexShrink: 0
+      }}>
+        <button 
+          className="btn-primary" 
+          onClick={handleSubmit} 
+          disabled={!isValid}
+          style={{
+            flex: 1,
+            backgroundColor: isValid ? '#FF5A77' : '#fda4af',
+            color: 'white',
+            border: 'none',
+            borderRadius: '12px',
+            fontWeight: 'bold',
+            fontSize: '16px',
+            cursor: isValid ? 'pointer' : 'not-allowed',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px'
+          }}
+        >
+          选好啦，出发 ✨
+        </button>
+      </footer>
     </div>
   )
 }
@@ -674,62 +739,153 @@ function AttractionSelection({ city, days, onNext, onBack }) {
   }
 
   return (
-    <div className="page">
-      <h2>挑出你的必打卡清单</h2>
-      <p className="subtitle">{cityMap[city] || city} - {days} 天</p>
-      
-      <div className="xhs-import">
-        <div className="xhs-header">
-          <span className="xhs-icon">📕</span>
-          <span className="xhs-title">💥 抄小红书爆款作业</span>
-        </div>
-        <textarea
-          className="xhs-textarea"
-          placeholder="粘贴笔记链接或文案"
-          value={xhsInput}
-          onChange={(e) => setXhsInput(e.target.value)}
-        />
-        <button className="btn-primary xhs-btn" onClick={() => parseXiaohongshu(xhsInput)}>
-          一键生成行程 🍓
+    <div style={{ position: 'relative', height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', backgroundColor: '#fff' }}>
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '80px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 16px',
+        background: '#fff',
+        zIndex: 1000,
+        borderBottom: '1px solid #f3f4f6'
+      }}>
+        <button 
+          onClick={onBack}
+          style={{ background: 'none', border: 'none', fontSize: '16px', color: '#FF5A77', cursor: 'pointer', padding: '8px' }}
+        >
+          ← 返回
         </button>
-        {error && <p className="xhs-error">{error}</p>}
-      </div>
-      
-      <div className="attraction-list">
-        {Object.entries(grouped).map(([category, items]) => {
-          const config = CATEGORY_CONFIG[category] || CATEGORY_CONFIG.attractions
-          return (
-            <div key={category} className="category-group">
-              <div className="category-header" style={{ borderLeftColor: config.color }}>
-                <span className="category-icon">{config.icon}</span>
-                <span className="category-name">{config.name}</span>
-              </div>
-              {items.map((attraction) => (
-                <label key={attraction.id} className={`attraction-item ${selected.includes(attraction.id) ? 'selected' : ''}`}>
-                  <input
-                    type="checkbox"
-                    checked={selected.includes(attraction.id)}
-                    onChange={() => toggleAttraction(attraction.id)}
-                  />
-                  <div className="attraction-info">
-                    <span className="attraction-name">{attraction.name}</span>
-                    <span className="attraction-desc">{attraction.description}</span>
-                  </div>
-                  <span className="item-label" style={{ backgroundColor: config.color + '20', color: config.color }}>{attraction.label}</span>
-                </label>
-              ))}
+        <div className="step-indicator">
+          {['目的地', '必打卡清单', '我的行程'].map((label, index) => (
+            <div key={index} className={`step ${index + 1 <= 2 ? 'active' : ''}`}>
+              <span className="step-number">{index + 1}</span>
+              <span className="step-label">{label}</span>
             </div>
-          )
-        })}
+          ))}
+        </div>
+        <button 
+          onClick={() => { setSelected([]); setXhsInput(''); }}
+          style={{ background: 'none', border: 'none', fontSize: '16px', color: '#666', cursor: 'pointer', padding: '8px' }}
+        >
+          🔄
+        </button>
       </div>
-      {error && <p className="error-message">{error}</p>}
-      <div className="button-row">
-        <button className="btn-secondary" onClick={onBack}>返回</button>
-        <button className="btn-primary" onClick={handleSubmit} disabled={loading}>
+
+<main style={{
+        flex: 1,
+        overflowY: 'auto',
+        background: '#f8f9fa',
+        padding: '20px',
+        WebkitOverflowScrolling: 'touch',
+        scrollbarWidth: 'none'
+      }}>
+        <div className="xhs-import">
+          <div className="xhs-header">
+            <span className="xhs-icon">📕</span>
+            <span className="xhs-title">💥 抄小红书爆款作业</span>
+          </div>
+          <textarea
+            className="xhs-textarea"
+            placeholder="粘贴笔记链接或文案"
+            value={xhsInput}
+            onChange={(e) => setXhsInput(e.target.value)}
+          />
+          <button className="btn-primary xhs-btn" onClick={() => parseXiaohongshu(xhsInput)}>
+            一键生成行程 🍓
+          </button>
+          {error && <p className="xhs-error">{error}</p>}
+        </div>
+        
+        <div className="attraction-list">
+          {Object.entries(grouped).map(([category, items]) => {
+            const config = CATEGORY_CONFIG[category] || CATEGORY_CONFIG.attractions
+            return (
+              <div key={category} className="category-group">
+                <div className="category-header" style={{ borderLeftColor: config.color }}>
+                  <span className="category-icon">{config.icon}</span>
+                  <span className="category-name">{config.name}</span>
+                </div>
+                {items.map((attraction) => (
+                  <label key={attraction.id} className={`attraction-item ${selected.includes(attraction.id) ? 'selected' : ''}`}>
+                    <input
+                      type="checkbox"
+                      checked={selected.includes(attraction.id)}
+                      onChange={() => toggleAttraction(attraction.id)}
+                    />
+                    <div className="attraction-info">
+                      <span className="attraction-name">{attraction.name}</span>
+                      <span className="attraction-desc">{attraction.description}</span>
+                    </div>
+                    <span className="item-label" style={{ backgroundColor: config.color + '20', color: config.color }}>{attraction.label}</span>
+                  </label>
+                ))}
+              </div>
+            )
+          })}
+        </div>
+        {error && <p className="error-message">{error}</p>}
+      </main>
+
+      <footer style={{
+        position: 'sticky',
+        bottom: 0,
+        zIndex: 1000,
+        background: '#fff',
+        borderTop: '1px solid #eee',
+        padding: '16px 20px 34px 20px',
+        display: 'flex',
+        gap: '12px',
+        borderBottomLeftRadius: '24px',
+        borderBottomRightRadius: '24px'
+      }}>
+        <button 
+          onClick={() => console.log("准备弹出景点清单浮表")}
+          style={{
+            flex: 1,
+            backgroundColor: '#f5f3ff',
+            border: 'none',
+            borderRadius: '12px',
+            padding: '10px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            cursor: 'pointer'
+          }}
+        >
+          <span style={{ color: '#6d28d9', fontWeight: 'bold', fontSize: '14px' }}>📌 已选</span>
+          <span style={{ color: '#a78bfa', fontSize: '12px' }}>{selected.length} 个</span>
+        </button>
+
+        <button 
+          onClick={() => {
+            console.log("准备跳转生成路线界面");
+            handleSubmit();
+          }}
+          disabled={loading}
+          style={{
+            flex: 1,
+            backgroundColor: loading ? '#fda4af' : '#FF5A77',
+            color: 'white',
+            border: 'none',
+            borderRadius: '12px',
+            fontWeight: 'bold',
+            fontSize: '16px',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px'
+          }}
+        >
           {loading && <span className="loading-spinner"></span>}
           {loading ? '生成中...' : '生成路线 ✨'}
         </button>
-      </div>
+      </footer>
     </div>
   )
 }
@@ -1597,197 +1753,313 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
   )
 }
 
-  if (attractions.length === 0) {
+if (attractions.length === 0) {
     return (
-      <div className="page">
-        <h2>你的专属路线 ✨</h2>
-        <p className="subtitle">{cityMap[city] || city} - {days} 天</p>
-        <p className="no-attractions">还没有选景点呢</p>
-        <div className="button-row">
-          <button className="btn-secondary" onClick={onBack}>返回</button>
-          <button className="btn-primary" onClick={onStartOver}>重新开始 🔄</button>
+      <div style={{ position: 'relative', height: '100vh', width: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden', backgroundColor: '#fff' }}>
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '80px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 16px',
+          background: '#fff',
+          zIndex: 1000,
+          borderBottom: '1px solid #f3f4f6'
+        }}>
+          <button 
+            onClick={onBack}
+            style={{ background: 'none', border: 'none', fontSize: '16px', color: '#FF5A77', cursor: 'pointer', padding: '8px' }}
+          >
+            ← 返回
+          </button>
+          <div className="step-indicator">
+            {['目的地', '必打卡清单', '我的行程'].map((label, index) => (
+              <div key={index} className={`step ${index + 1 <= 3 ? 'active' : ''}`}>
+                <span className="step-number">{index + 1}</span>
+                <span className="step-label">{label}</span>
+              </div>
+            ))}
+          </div>
+          <button 
+            onClick={onStartOver}
+            style={{ background: 'none', border: 'none', fontSize: '16px', color: '#666', cursor: 'pointer', padding: '8px' }}
+          >
+            🔄
+          </button>
         </div>
+
+<main style={{
+          flex: 1,
+          overflowY: 'auto',
+          background: '#f8f9fa',
+          padding: '20px',
+          WebkitOverflowScrolling: 'touch',
+          scrollbarWidth: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <p className="no-attractions">还没有选景点呢</p>
+        </main>
+
+        <footer style={{
+          position: 'sticky',
+          bottom: 0,
+          zIndex: 1000,
+          background: '#fff',
+          borderTop: '1px solid #eee',
+          padding: '16px 20px 34px 20px',
+          borderBottomLeftRadius: '24px',
+          borderBottomRightRadius: '24px'
+        }}>
+          <button 
+            onClick={onStartOver}
+            style={{
+              width: '100%',
+              height: '56px',
+              backgroundColor: '#FF5A77',
+              color: 'white',
+              border: 'none',
+              borderRadius: '16px',
+              fontWeight: 'bold',
+              fontSize: '18px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              boxShadow: '0 4px 12px rgba(255,90,119,0.3)'
+            }}
+          >
+            开始行程 🚀
+          </button>
+        </footer>
       </div>
     )
   }
 
   return (
-    <div className="page">
-      <h2>你的专属路线 ✨</h2>
-      <p className="subtitle">{cityMap[city] || city} - {days} 天</p>
-      
-      <div className="hotel-notice">
-        <span className="hotel-icon">🏨</span>
-        <span>酒店位置</span>
-        <span className="coming-soon">即将上线</span>
+    <div style={{ position: 'relative', height: '100vh', width: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden', backgroundColor: '#fff' }}>
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '80px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 16px',
+        background: '#fff',
+        zIndex: 1000,
+        borderBottom: '1px solid #f3f4f6'
+      }}>
+        <button 
+          onClick={onBack}
+          style={{ background: 'none', border: 'none', fontSize: '16px', color: '#FF5A77', cursor: 'pointer', padding: '8px' }}
+        >
+          ← 返回
+        </button>
+        <div className="step-indicator">
+          {['目的地', '必打卡清单', '我的行程'].map((label, index) => (
+            <div key={index} className={`step ${index + 1 <= 3 ? 'active' : ''}`}>
+              <span className="step-number">{index + 1}</span>
+              <span className="step-label">{label}</span>
+            </div>
+          ))}
+        </div>
+        <button 
+          onClick={onStartOver}
+          style={{ background: 'none', border: 'none', fontSize: '16px', color: '#666', cursor: 'pointer', padding: '8px' }}
+        >
+          🔄
+        </button>
       </div>
 
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        <Swiper
-          modules={[Pagination]}
-          spaceBetween={0}
-          slidesPerView={1}
-          pagination={{ clickable: true }}
-          onSlideChange={(swiper) => setCurrentDay(swiper.activeIndex)}
-          className="day-swiper"
+      <main style={{
+        flex: 1,
+        overflowY: 'auto',
+        background: '#f8f9fa',
+        padding: '20px',
+        WebkitOverflowScrolling: 'touch',
+        scrollbarWidth: 'none'
+      }}>
+        <div className="hotel-notice">
+          <span className="hotel-icon">🏨</span>
+          <span>酒店位置</span>
+          <span className="coming-soon">即将上线</span>
+        </div>
+
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
         >
-          {routeByDays.map((dayData, index) => (
-            <SwiperSlide key={index}>
-              {renderDayCard(dayData, index)}
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </DndContext>
+          <Swiper
+            modules={[Pagination]}
+            spaceBetween={0}
+            slidesPerView={1}
+            pagination={{ clickable: true }}
+            onSlideChange={(swiper) => setCurrentDay(swiper.activeIndex)}
+            className="day-swiper"
+          >
+            {routeByDays.map((dayData, index) => (
+              <SwiperSlide key={index}>
+                {renderDayCard(dayData, index)}
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </DndContext>
 
-      {isItineraryEmpty && (
-        <div className="empty-itinerary">
-          <p className="empty-title">No itinerary yet</p>
-          <p className="empty-subtitle">Start adding places ✨</p>
-          <button className="btn-primary" onClick={() => handleAddClick(0, 'morning')}>+ 加个打卡点</button>
-        </div>
-      )}
-
-      {showAddModal && (
-        <div className="modal-overlay" onClick={() => setShowAddModal(null)}>
-          <div className="modal-content add-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>添加打卡点 ✨</h3>
-            </div>
-            <div className="modal-body">
-              {unusedAttractions.length === 0 ? (
-                <p className="no-attractions">所有景点都安排上啦</p>
-              ) : (
-                <AddModalList 
-                  items={unusedAttractions} 
-                  onSelect={(attraction) => addAttraction(showAddModal.dayIndex, showAddModal.slot, attraction)}
-                />
-              )}
-            </div>
-            <div className="modal-footer">
-              <button className="btn-secondary" onClick={() => setShowAddModal(null)}>取消</button>
-            </div>
+        {isItineraryEmpty && (
+          <div className="empty-itinerary">
+            <p className="empty-title">No itinerary yet</p>
+            <p className="empty-subtitle">Start adding places ✨</p>
+            <button className="btn-primary" onClick={() => handleAddClick(0, 'morning')}>+ 加个打卡点</button>
           </div>
-        </div>
-      )}
+        )}
 
-      {showFoodModal && (
-        <div className="modal-overlay" onClick={() => setShowFoodModal(null)}>
-          <div className="modal-content food-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>选一家喜欢的餐厅吧 ✨</h3>
-            </div>
-            <div className="modal-body">
-              {(() => {
-                const dayArea = routeByDays[showFoodModal.dayIndex].area
-                const allRestaurants = foodData[showFoodModal.mealType] || []
-                const sameArea = allRestaurants.filter(r => r.area === dayArea)
-                const otherArea = allRestaurants.filter(r => r.area !== dayArea)
-                const restaurants = sameArea.length > 0 ? sameArea : otherArea
-
-                if (restaurants.length === 0) {
-                  return <p className="no-attractions">暂无餐厅可选</p>
-                }
-
-                return (
-                  <div className="restaurant-list">
-                    {sameArea.length > 0 && (
-                      <div className="restaurant-section">
-                        <div className="restaurant-section-title">📍 Same area - {dayArea}</div>
-                        {sameArea.map(r => (
-                          <div key={r.id} className="restaurant-option" onClick={() => selectRestaurant(r)}>
-                            <span className="restaurant-name">{r.name}</span>
-                            <span className="restaurant-type">{r.type}</span>
-                            {r.tags?.map(tag => (
-                              <span key={tag} className="restaurant-tag">{tag}</span>
-                            ))}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {otherArea.length > 0 && (
-                      <div className="restaurant-section">
-                        <div className="restaurant-section-title">Other areas</div>
-                        {otherArea.map(r => (
-                          <div key={r.id} className="restaurant-option" onClick={() => selectRestaurant(r)}>
-                            <span className="restaurant-name">{r.name}</span>
-                            <span className="restaurant-type">{r.type} • {r.area}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )
-              })()}
-            </div>
-            <div className="modal-footer">
-              <button className="btn-delivery" onClick={() => { setSelectedMealType(showFoodModal.mealType); setShowDeliveryModal(true); setShowFoodModal(null); }}>外卖到酒店 🛵</button>
-              <button className="btn-secondary" onClick={() => setShowFoodModal(null)}>取消</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showRestFoodModal && selectedCategory && (
-        <div className="modal-overlay" onClick={() => { setShowRestFoodModal(false); setSelectedCategory(null); }}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>{selectedCategory === 'local' ? '🍜 本地美食' : selectedCategory === 'light' ? '🥗 轻食简餐' : '🧋 奶茶时刻'}</h3>
-            </div>
-            <div className="modal-body">
-              <div className="restaurant-list">
-                {(restDayFoodData[selectedCategory] || []).map((item, idx) => (
-                  <div key={idx} className="restaurant-option">
-                    <span className="restaurant-name">{item}</span>
-                    <span className="restaurant-type">Popular</span>
-                  </div>
-                ))}
+        {showAddModal && (
+          <div className="modal-overlay" onClick={() => setShowAddModal(null)}>
+            <div className="modal-content add-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>添加打卡点 ✨</h3>
+              </div>
+              <div className="modal-body">
+                {unusedAttractions.length === 0 ? (
+                  <p className="no-attractions">所有景点都安排上啦</p>
+                ) : (
+                  <AddModalList 
+                    items={unusedAttractions} 
+                    onSelect={(attraction) => addAttraction(showAddModal.dayIndex, showAddModal.slot, attraction)}
+                  />
+                )}
+              </div>
+              <div className="modal-footer">
+                <button className="btn-secondary" onClick={() => setShowAddModal(null)}>取消</button>
               </div>
             </div>
-            <div className="modal-footer">
-              <button className="btn-secondary" onClick={() => { setShowRestFoodModal(false); setSelectedCategory(null); }}>关闭</button>
+          </div>
+        )}
+
+        {showFoodModal && (
+          <div className="modal-overlay" onClick={() => setShowFoodModal(null)}>
+            <div className="modal-content food-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>选一家喜欢的餐厅吧 ✨</h3>
+              </div>
+              <div className="modal-body">
+                {(() => {
+                  const dayArea = routeByDays[showFoodModal.dayIndex].area
+                  const allRestaurants = foodData[showFoodModal.mealType] || []
+                  const sameArea = allRestaurants.filter(r => r.area === dayArea)
+                  const otherArea = allRestaurants.filter(r => r.area !== dayArea)
+                  const restaurants = sameArea.length > 0 ? sameArea : otherArea
+
+                  if (restaurants.length === 0) {
+                    return <p className="no-attractions">暂无餐厅可选</p>
+                  }
+
+                  return (
+                    <div className="restaurant-list">
+                      {sameArea.length > 0 && (
+                        <div className="restaurant-section">
+                          <div className="restaurant-section-title">📍 Same area - {dayArea}</div>
+                          {sameArea.map(r => (
+                            <div key={r.id} className="restaurant-option" onClick={() => selectRestaurant(r)}>
+                              <span className="restaurant-name">{r.name}</span>
+                              <span className="restaurant-type">{r.type}</span>
+                              {r.tags?.map(tag => (
+                                <span key={tag} className="restaurant-tag">{tag}</span>
+                              ))}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {otherArea.length > 0 && (
+                        <div className="restaurant-section">
+                          <div className="restaurant-section-title">Other areas</div>
+                          {otherArea.map(r => (
+                            <div key={r.id} className="restaurant-option" onClick={() => selectRestaurant(r)}>
+                              <span className="restaurant-name">{r.name}</span>
+                              <span className="restaurant-type">{r.type} • {r.area}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })()}
+              </div>
+              <div className="modal-footer">
+                <button className="btn-delivery" onClick={() => { setSelectedMealType(showFoodModal.mealType); setShowDeliveryModal(true); setShowFoodModal(null); }}>外卖到酒店 🛵</button>
+                <button className="btn-secondary" onClick={() => setShowFoodModal(null)}>取消</button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {showDeliveryModal && (
-        <div className="modal-overlay" onClick={() => setShowDeliveryModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>点外卖时间 🛵</h3>
-            </div>
-            <div className="modal-body">
-              <div className="delivery-section">
-                <div className="delivery-section-title">📍 Same area</div>
-                <div className="delivery-grid">
-                  <div className="delivery-option" onClick={() => selectDelivery('快餐便当')}>
-                    <span className="delivery-name">快餐便当</span>
-                    <span className="delivery-type">Quick & Easy</span>
-                  </div>
-                  <div className="delivery-option" onClick={() => selectDelivery('沙拉轻食')}>
-                    <span className="delivery-name">沙拉轻食</span>
-                    <span className="delivery-type">Healthy</span>
-                  </div>
-                  <div className="delivery-option" onClick={() => selectDelivery('奶茶咖啡')}>
-                    <span className="delivery-name">奶茶咖啡</span>
-                    <span className="delivery-type">Beverages</span>
-                  </div>
+        {showRestFoodModal && selectedCategory && (
+          <div className="modal-overlay" onClick={() => { setShowRestFoodModal(false); setSelectedCategory(null); }}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>{selectedCategory === 'local' ? '🍜 本地美食' : selectedCategory === 'light' ? '🥗 轻食简餐' : '🧋 奶茶时刻'}</h3>
+              </div>
+              <div className="modal-body">
+                <div className="restaurant-list">
+                  {(restDayFoodData[selectedCategory] || []).map((item, idx) => (
+                    <div key={idx} className="restaurant-option">
+                      <span className="restaurant-name">{item}</span>
+                      <span className="restaurant-type">Popular</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <div className="delivery-section">
-                <div className="delivery-section-title">🔥 Popular delivery</div>
-                <div className="delivery-grid">
-                  <div className="delivery-option" onClick={() => selectDelivery('炸鸡汉堡')}>
-                    <span className="delivery-name">炸鸡汉堡</span>
-                    <span className="delivery-type">Fast Food</span>
+              <div className="modal-footer">
+                <button className="btn-secondary" onClick={() => { setShowRestFoodModal(false); setSelectedCategory(null); }}>关闭</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showDeliveryModal && (
+          <div className="modal-overlay" onClick={() => setShowDeliveryModal(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>点外卖时间 🛵</h3>
+              </div>
+              <div className="modal-body">
+                <div className="delivery-section">
+                  <div className="delivery-section-title">📍 Same area</div>
+                  <div className="delivery-grid">
+                    <div className="delivery-option" onClick={() => selectDelivery('快餐便当')}>
+                      <span className="delivery-name">快餐便当</span>
+                      <span className="delivery-type">Quick & Easy</span>
+                    </div>
+                    <div className="delivery-option" onClick={() => selectDelivery('沙拉轻食')}>
+                      <span className="delivery-name">沙拉轻食</span>
+                      <span className="delivery-type">Healthy</span>
+                    </div>
+                    <div className="delivery-option" onClick={() => selectDelivery('奶茶咖啡')}>
+                      <span className="delivery-name">奶茶咖啡</span>
+                      <span className="delivery-type">Beverages</span>
+                    </div>
                   </div>
-                  <div className="delivery-option" onClick={() => selectDelivery('麻辣烫')}>
-                    <span className="delivery-name">麻辣烫</span>
-                    <span className="delivery-type">Spicy Hot</span>
+                </div>
+                <div className="delivery-section">
+                  <div className="delivery-section-title">🔥 Popular delivery</div>
+                  <div className="delivery-grid">
+                    <div className="delivery-option" onClick={() => selectDelivery('炸鸡汉堡')}>
+                      <span className="delivery-name">炸鸡汉堡</span>
+                      <span className="delivery-type">Fast Food</span>
+                    </div>
+                    <div className="delivery-option" onClick={() => selectDelivery('麻辣烫')}>
+                      <span className="delivery-name">麻辣烫</span>
+                      <span className="delivery-type">Spicy Hot</span>
                   </div>
                   <div className="delivery-option" onClick={() => selectDelivery('日料便当')}>
                     <span className="delivery-name">日料便当</span>
@@ -1803,12 +2075,41 @@ function RouteResult({ city, days, attractions, userDefinedOrder = false, onStar
         </div>
       )}
 
-      <div className="button-row">
-        <button className="btn-secondary" onClick={onBack}>返回</button>
-        <button className="btn-primary" onClick={onStartOver}>重置全部 🔄</button>
-      </div>
-
       <RouteMap dayData={routeByDays[currentDay]} currentDay={currentDay} />
+      </main>
+
+      <footer style={{
+        position: 'sticky',
+        bottom: 0,
+        zIndex: 1000,
+        background: '#fff',
+        borderTop: '1px solid #eee',
+        padding: '16px 20px 34px 20px',
+        borderBottomLeftRadius: '24px',
+        borderBottomRightRadius: '24px'
+      }}>
+        <button 
+          onClick={onStartOver}
+          style={{
+            width: '100%',
+            height: '56px',
+            backgroundColor: '#FF5A77',
+            color: 'white',
+            border: 'none',
+            borderRadius: '16px',
+            fontWeight: 'bold',
+            fontSize: '18px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            boxShadow: '0 4px 12px rgba(255,90,119,0.3)'
+          }}
+        >
+          开始行程 🚀
+        </button>
+      </footer>
     </div>
   )
 }
